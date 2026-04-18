@@ -6077,12 +6077,22 @@ function getLayerScore(layerId) {
   var layer = layersData.find(function(l){ return l.id === layerId; });
   if (!layer || !layer.microsoft) return { score: 0, max: 0 };
   var score = 0, max = 0;
+  // Part 1: tool-matrix scores (assessment grid), keyed `<layerId>_<toolIdx>`
   layer.microsoft.forEach(function(tool, idx) {
     var w = tool.assessmentWeight || 1;
     var key = layerId + '_' + idx;
     var s = assessmentState[key] !== undefined ? assessmentState[key] : 0;
     score += s * w;
     max   += 3 * w;
+  });
+  // Part 2: interview answers, keyed `<layerId>_iv<qIdx>`. These are independent
+  // of the tool-matrix and DO NOT require tool-name matching. This fixes the
+  // long-standing interview scoring bug where answers silently dropped.
+  Object.keys(assessmentState).forEach(function(key) {
+    if (key.indexOf(layerId + '_iv') === 0) {
+      score += (assessmentState[key] || 0);
+      max += 3;
+    }
   });
   return { score: score, max: max, pct: max > 0 ? Math.round(score / max * 100) : 0 };
 }
@@ -6113,6 +6123,14 @@ function updateAllLayerScores() {
 
 function resetAssessment() {
   assessmentState = {};
+  // Also clear interview state so the Client Interview restarts from question 1
+  // with the radar, per-layer bars, and Story narrative all fully reset.
+  try {
+    if (typeof interviewAnswers !== 'undefined') interviewAnswers = {};
+    if (typeof _interviewAnswerLog !== 'undefined') _interviewAnswerLog = [];
+    if (typeof interviewCursor !== 'undefined') interviewCursor = 0;
+  } catch (e) {}
+
   document.querySelectorAll('.assessment-option').forEach(function(opt){
     opt.classList.remove('selected-0','selected-1','selected-2','selected-3');
   });
@@ -6120,6 +6138,15 @@ function resetAssessment() {
   drawRadar();
   generateRoadmap();
   updateStickyMaturity();
+
+  // If the user is in Interview mode, re-render the live panel to reflect the clear.
+  if (document.body.classList.contains('interview-mode')) {
+    if (typeof renderInterviewQuestion === 'function') renderInterviewQuestion();
+    if (typeof drawRadarOnCanvas === 'function') drawRadarOnCanvas('radarCanvasInterview');
+    if (typeof renderInterviewLayerBars === 'function') renderInterviewLayerBars();
+    if (typeof updateInterviewMaturityTotal === 'function') updateInterviewMaturityTotal();
+    if (typeof updateInterviewStory === 'function') updateInterviewStory();
+  }
 }
 
 /* ── Client name sync between sticky bar & assessment panel ── */
@@ -7097,10 +7124,32 @@ function setInterviewAnswer(layerId, qi, answerKey, score) {
   var key = layerId + '_q' + qi;
   interviewAnswers[key] = answerKey;
 
+  // PRIMARY write: always land the score in assessmentState under a per-question
+  // key that doesn't depend on tool-name matching. This is what powers the live
+  // Coverage Map, maturity %, per-layer bars, radar, and Story narrative.
+  assessmentState[layerId + '_iv' + qi] = score;
+
+  // BONUS: best-effort sync to the assessment-grid tool index so the matching
+  // tool card also shows the score in Assessment mode. Safe to fail silently.
   var layer = layersData.find(function(l){ return l.id === layerId; });
   if (layer && interviewQuestions[layerId] && interviewQuestions[layerId][qi]) {
     var toolName = interviewQuestions[layerId][qi].tool;
     var toolIdx = layer.microsoft.findIndex(function(t){ return t.name === toolName; });
+    if (toolIdx < 0) {
+      // Relaxed token match (e.g. "Microsoft Intune" -> "Intune MDM/MAM",
+      // "Entra Internet Access / GSA" -> "Entra Internet Access"). Try each
+      // meaningful token in order until one hits.
+      var tokens = toolName.split(/[\s\/]+/).filter(function(t) {
+        var low = (t || '').toLowerCase();
+        return low && low !== 'microsoft' && low.length > 2;
+      });
+      for (var ti = 0; ti < tokens.length && toolIdx < 0; ti++) {
+        var tok = tokens[ti].toLowerCase();
+        toolIdx = layer.microsoft.findIndex(function(t) {
+          return (t.name || '').toLowerCase().indexOf(tok) >= 0;
+        });
+      }
+    }
     if (toolIdx >= 0) {
       assessmentState[layerId + '_' + toolIdx] = score;
     }
