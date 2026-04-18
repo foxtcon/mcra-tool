@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Myriad360 Security Coverage Assessment — MCRA Framework</title>
+<title>Myriad360 | MCRA Security Coverage Assessment</title>
 
 <!-- SEO & Sharing -->
-<meta name="description" content="Interactive Microsoft Cybersecurity Reference Architecture (MCRA) security assessment — evaluate posture across 12 security layers, generate executive reports, and calculate E5 ROI.">
+<meta name="description" content="Find your Microsoft security coverage gaps in 20 minutes. Map 12 MCRA layers, surface E5 value you are not using, and get a 90-day action plan your exec team can act on.">
 <meta name="author" content="VJ Barot, Microsoft Security Architect">
 <meta name="keywords" content="MCRA, Microsoft security, Zero Trust, E5, Sentinel, Defender XDR, security assessment, Myriad360">
 <meta name="robots" content="noindex, nofollow">
 
 <!-- Open Graph (renders in Teams, Slack, LinkedIn previews) -->
 <meta property="og:type"        content="website">
-<meta property="og:title"       content="Myriad360 Security Coverage Assessment — MCRA Framework">
-<meta property="og:description" content="Interactive MCRA assessment tool — score your security posture across 12 layers, surface E5 waste, and generate a client-ready executive report in minutes.">
+<meta property="og:title"       content="Myriad360 | MCRA Security Coverage Assessment">
+<meta property="og:description" content="Find the gaps in your Microsoft security stack. Score 12 MCRA layers, see what E5 tools you are paying for and not using, and walk away with an executive-ready report.">
 <meta property="og:url"         content="https://myriad360.foxtcon.com">
 <meta property="og:image"       content="https://myriad360.foxtcon.com/og-preview.png">
 
@@ -2561,6 +2561,52 @@ body.interview-mode .search-section { display: none; }
 }
 </style>
 </head>
+
+<script>
+// ── URL Personalization ──────────────────────────────────────────────────────
+// SE/AE teams share links like:
+//   myriad360.foxtcon.com/?company=AcmeCorp&industry=healthcare&rep=VJBarot
+// The tool auto-fills client name, industry filter, and preparer name.
+(function() {
+  var p = new URLSearchParams(window.location.search);
+  var co = p.get('company') || p.get('c') || '';
+  var ind = (p.get('industry') || p.get('i') || '').toLowerCase();
+  var rep = p.get('rep') || p.get('r') || '';
+
+  // Show a branded welcome banner if a company param was passed
+  if (co) {
+    document.addEventListener('DOMContentLoaded', function() {
+      // Fill all client name inputs
+      ['clientNameInput','clientNameInputAlt'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) { el.value = co; el.dispatchEvent(new Event('input')); }
+      });
+      // Fill rep name if provided
+      if (rep) {
+        var repEl = document.getElementById('preparerNameInput');
+        if (repEl) { repEl.value = rep; repEl.dispatchEvent(new Event('input')); }
+      }
+      // Apply industry filter
+      var validIndustries = ['healthcare','finance','government','manufacturing','energy','education'];
+      if (validIndustries.indexOf(ind) !== -1) {
+        var btns = document.querySelectorAll('.filter-btn');
+        btns.forEach(function(btn) {
+          if (btn.textContent.trim().toLowerCase().indexOf(ind) !== -1) {
+            btn.click();
+          }
+        });
+      }
+      // Show welcome banner
+      var banner = document.createElement('div');
+      banner.id = 'urlWelcomeBanner';
+      banner.style.cssText = 'background:linear-gradient(135deg,#0D1B2A,#1e3a5f);color:#fff;text-align:center;padding:12px 24px;font-size:13px;font-weight:600;letter-spacing:0.5px;';
+      banner.innerHTML = '🎯 This assessment has been prepared for <strong style="color:#FFC300;">' + co + '</strong>' + (rep ? ' by <strong style="color:#4fc3f7;">' + rep + '</strong>' : '') + ' &nbsp;|&nbsp; <a href="#assessment-start" style="color:#4fc3f7;text-decoration:none;" onclick="startAssessmentFromHero(event)">Start your assessment below →</a>';
+      document.body.insertBefore(banner, document.body.firstChild);
+    });
+  }
+})();
+</script>
+
 <body>
 
 <!-- MODE TOGGLE BAR — hidden by default on the landing view so prospects
@@ -2597,7 +2643,7 @@ body.interview-mode .search-section { display: none; }
   <div class="maturity-radar-section">
     <h3 id="radarTitle">Client Security Maturity Assessment</h3>
     <div class="assessment-client-input">
-      <label style="color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:800;display:block;margin-bottom:4px;">Step 1 — Enter Client Name</label>
+      <label style="color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:800;display:block;margin-bottom:4px;">Step 1: Enter Client Name</label>
       <input type="text" id="clientNameInputAlt" placeholder="Enter client organization name..." oninput="syncClientNameAlt()">
       <button class="assessment-reset-btn" onclick="confirmReset()">↺ Reset Assessment</button>
       <button onclick="saveAndShare()" style="padding:10px 20px;background:rgba(0,180,216,0.1);color:#0284c7;border:1px solid rgba(0,180,216,0.3);border-radius:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🔗 Save & Share</button>
@@ -2653,13 +2699,22 @@ body.interview-mode .search-section { display: none; }
     <div class="brand-divider">|</div>
     <div class="brand-myriad"><img src="data:image/png;base64,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" alt="Myriad360 Logo">Prepared for <strong>Myriad360</strong> Security Practice</div>
   </div>
-  <h1>Your Microsoft security posture — <em>mapped in 20 minutes</em>.</h1>
+  <div style="display:flex;justify-content:center;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:20px;position:relative;z-index:2;">
+    <div style="text-align:center;"><div style="font-family:Oswald,sans-serif;font-size:22px;font-weight:700;color:#FFC300;">700+</div><div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;">Technology Partnerships</div></div>
+    <div style="width:1px;height:32px;background:rgba(255,255,255,0.15);"></div>
+    <div style="text-align:center;"><div style="font-family:Oswald,sans-serif;font-size:22px;font-weight:700;color:#FFC300;">400+</div><div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;">Enterprise Clients</div></div>
+    <div style="width:1px;height:32px;background:rgba(255,255,255,0.15);"></div>
+    <div style="text-align:center;"><div style="font-family:Oswald,sans-serif;font-size:22px;font-weight:700;color:#FFC300;">160+</div><div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;">Countries</div></div>
+    <div style="width:1px;height:32px;background:rgba(255,255,255,0.15);"></div>
+    <div style="text-align:center;"><div style="font-family:Oswald,sans-serif;font-size:22px;font-weight:700;color:#FFC300;">CRN SP500</div><div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;">13 Consecutive Years</div></div>
+  </div>
+  <h1>Where are the gaps in your <em>Microsoft security stack?</em></h1>
   <div class="hero-subtitle">
-    We score your coverage across the 12 layers Microsoft recommends, surface the E5 capabilities you're already paying for but not using, and leave you with an executive PDF to drive the next 90 days.
+    Most Microsoft environments have critical coverage gaps across identity, data, and threat detection that go undetected for months. We map your exposure in 20 minutes, show you which E5 tools you are already paying for and not using, and give you a 90-day action plan your exec team can present.
   </div>
 
   <a href="#assessment-start" class="hero-primary-cta" onclick="startAssessmentFromHero(event)">
-    Start the assessment →
+    Find My Gaps →
   </a>
 
   <div class="hero-credit">
@@ -2673,24 +2728,24 @@ body.interview-mode .search-section { display: none; }
   <div class="hiw-step">
     <div class="hiw-num">1</div>
     <div class="hiw-body">
-      <div class="hiw-title">Frame the business</div>
-      <div class="hiw-desc">Industry, org size, E5 licenses in play.</div>
+      <div class="hiw-title">Frame the exposure</div>
+      <div class="hiw-desc">Tell us your industry, size, and which Microsoft licenses are active.</div>
     </div>
   </div>
   <div class="hiw-arrow">→</div>
   <div class="hiw-step">
     <div class="hiw-num">2</div>
     <div class="hiw-body">
-      <div class="hiw-title">Score 12 layers</div>
-      <div class="hiw-desc">Microsoft-led, partner-led, or gap — 20-minute interview.</div>
+      <div class="hiw-title">Map the gaps</div>
+      <div class="hiw-desc">Walk through 12 security layers. Where Microsoft leads, where you decide, and where you are exposed.</div>
     </div>
   </div>
   <div class="hiw-arrow">→</div>
   <div class="hiw-step">
     <div class="hiw-num">3</div>
     <div class="hiw-body">
-      <div class="hiw-title">Get the report</div>
-      <div class="hiw-desc">8-page executive PDF with top gaps, E5 waste, and 90-day roadmap.</div>
+      <div class="hiw-title">Get the plan</div>
+      <div class="hiw-desc">An exec one-pager your CISO shares up the chain, plus a full technical report for the follow-on call.</div>
     </div>
   </div>
 </div>
@@ -2736,7 +2791,7 @@ body.interview-mode .search-section { display: none; }
         <div id="htu-panel-ae" class="htu-panel">
           <div style="background:linear-gradient(135deg,rgba(255,195,0,0.08),rgba(0,180,216,0.04));border:1px solid rgba(255,195,0,0.2);border-radius:12px;padding:20px;margin-bottom:20px;">
             <div style="font-family:Oswald,sans-serif;font-size:16px;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">🎯 AE Workflow: Discovery Call → Report Same Day</div>
-            <div style="font-size:13px;color:var(--text-light);line-height:1.7;">Use the <strong style="color:var(--navy);">Client Interview Mode</strong> to run a structured 20-minute assessment with any IT leader — no security knowledge required. The plain-English questions map to MCRA scores automatically.</div>
+            <div style="font-size:13px;color:var(--text-light);line-height:1.7;">Use the <strong style="color:var(--navy);">Client Interview Mode</strong> to run a structured 20-minute assessment with any IT leader. No security knowledge required. The plain-English questions map to MCRA scores automatically.</div>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;">
             <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
@@ -2752,7 +2807,7 @@ body.interview-mode .search-section { display: none; }
             <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
               <div style="font-size:20px;margin-bottom:8px;">3️⃣</div>
               <div style="font-weight:700;color:var(--navy);margin-bottom:6px;font-size:13px;">During the Call</div>
-              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">When you see a gap, check the <strong>E5 Waste Calculator</strong> — if the tool is in E5 and not deployed, the dollar waste tells the story. "You're paying for this and not using it" is a powerful opening.</div>
+              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">When you see a gap, check the <strong>E5 Waste Calculator</strong>. If the tool is in E5 and not deployed, the dollar waste tells the story. "You're paying for this and not using it" is a powerful opening.</div>
             </div>
             <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
               <div style="font-size:20px;margin-bottom:8px;">4️⃣</div>
@@ -2814,11 +2869,11 @@ body.interview-mode .search-section { display: none; }
 
         <!-- Map Overview Tab -->
         <div id="htu-panel-overview" class="htu-panel" style="display:none;">
-          <div style="font-size:13px;color:var(--text-light);line-height:1.7;margin-bottom:16px;">This is an interactive assessment tool built on the <strong style="color:var(--navy);">Microsoft Cybersecurity Reference Architecture (MCRA)</strong> — the definitive best-practice framework for enterprise Microsoft security deployments.</div>
+          <div style="font-size:13px;color:var(--text-light);line-height:1.7;margin-bottom:16px;">This is an interactive assessment tool built on the <strong style="color:var(--navy);">Microsoft Cybersecurity Reference Architecture (MCRA)</strong>, the definitive best-practice framework for enterprise Microsoft security deployments.</div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;">
             <div style="background:#f1f5f9;border-radius:8px;padding:14px;border-left:3px solid var(--cyan);">
               <strong style="color:var(--navy);">🎨 Color System</strong>
-              <div style="margin-top:8px;font-size:12px;color:var(--text-light);line-height:1.7;"><span style="color:var(--green);font-weight:700;">Green</span> — Microsoft leads, no partner outperforms it. <span style="color:var(--amber);font-weight:700;">Amber</span> — Customer decides based on existing investments. <span style="color:var(--red);font-weight:700;">Red</span> — Specialist partner outperforms Microsoft at this layer.</div>
+              <div style="margin-top:8px;font-size:12px;color:var(--text-light);line-height:1.7;"><span style="color:var(--green);font-weight:700;">Green</span>: Microsoft leads, no partner outperforms it. <span style="color:var(--amber);font-weight:700;">Amber</span>: Customer decides based on existing investments. <span style="color:var(--red);font-weight:700;">Red</span>: Specialist partner outperforms Microsoft at this layer.</div>
             </div>
             <div style="background:#f1f5f9;border-radius:8px;padding:14px;border-left:3px solid var(--gold);">
               <strong style="color:var(--navy);">🔍 Search by Tool</strong>
@@ -2826,7 +2881,7 @@ body.interview-mode .search-section { display: none; }
             </div>
             <div style="background:#f1f5f9;border-radius:8px;padding:14px;border-left:3px solid var(--green);">
               <strong style="color:var(--navy);">🏭 Industry Filters</strong>
-              <div style="font-size:12px;color:var(--text-light);margin-top:6px;line-height:1.6;">Click any industry button to see deployment-specific guidance for every layer — what worked, what didn't, and what matters most in that vertical.</div>
+              <div style="font-size:12px;color:var(--text-light);margin-top:6px;line-height:1.6;">Click any industry button to see deployment-specific guidance for every layer: what worked, what did not work, and what matters most in that vertical.</div>
             </div>
             <div style="background:#f1f5f9;border-radius:8px;padding:14px;border-left:3px solid var(--cyan);">
               <strong style="color:var(--navy);">📑 Deep Dive Tabs</strong>
@@ -2846,6 +2901,67 @@ body.interview-mode .search-section { display: none; }
     </div>
   </div>
 </div>
+
+
+<!-- SHAREABLE LINK GENERATOR -->
+<div style="background:linear-gradient(135deg,#0D1B2A 0%,#1e3a5f 100%);padding:28px 24px;border-bottom:3px solid #FFC300;">
+  <div style="max-width:900px;margin:0 auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-family:Oswald,sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FFC300;margin-bottom:4px;">Send to a Customer</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);">Generate a personalized link your customer opens in their browser. No login needed.</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <input type="text" id="shareLinkCompany" placeholder="Company name" style="padding:9px 14px;border:1px solid rgba(255,255,255,0.2);border-radius:8px;background:rgba(255,255,255,0.08);color:#fff;font-family:Inter,sans-serif;font-size:13px;width:180px;outline:none;" oninput="generateShareLink()">
+        <select id="shareLinkIndustry" onchange="generateShareLink()" style="padding:9px 14px;border:1px solid rgba(255,255,255,0.2);border-radius:8px;background:rgba(255,255,255,0.08);color:#fff;font-family:Inter,sans-serif;font-size:13px;outline:none;cursor:pointer;">
+          <option value="">Industry (optional)</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="finance">Financial Services</option>
+          <option value="government">Government</option>
+          <option value="manufacturing">Manufacturing</option>
+          <option value="energy">Energy</option>
+          <option value="education">Education</option>
+        </select>
+        <button onclick="copyShareLink()" style="padding:9px 20px;background:#FFC300;color:#0D1B2A;border:none;border-radius:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;" id="shareLinkCopyBtn">Copy Link</button>
+      </div>
+    </div>
+    <div id="shareLinkPreview" style="display:none;margin-top:12px;padding:10px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,195,0,0.25);border-radius:8px;font-size:12px;color:rgba(255,255,255,0.7);font-family:monospace;word-break:break-all;"></div>
+  </div>
+</div>
+<script>
+function generateShareLink() {
+  var co = (document.getElementById('shareLinkCompany').value || '').trim();
+  var ind = document.getElementById('shareLinkIndustry').value;
+  var rep = (document.getElementById('preparerNameInput') || {value:''}).value || '';
+  var base = window.location.origin + window.location.pathname;
+  var params = [];
+  if (co) params.push('company=' + encodeURIComponent(co));
+  if (ind) params.push('industry=' + encodeURIComponent(ind));
+  if (rep) params.push('rep=' + encodeURIComponent(rep));
+  var url = base + (params.length ? '?' + params.join('&') : '');
+  var preview = document.getElementById('shareLinkPreview');
+  if (co || ind) {
+    preview.style.display = 'block';
+    preview.textContent = url;
+  } else {
+    preview.style.display = 'none';
+  }
+  return url;
+}
+function copyShareLink() {
+  var url = generateShareLink();
+  var co = (document.getElementById('shareLinkCompany').value || '').trim();
+  if (!co) { alert('Enter a company name first.'); return; }
+  navigator.clipboard.writeText(url).then(function() {
+    var btn = document.getElementById('shareLinkCopyBtn');
+    btn.textContent = 'Copied!';
+    btn.style.background = '#22c55e';
+    setTimeout(function(){ btn.textContent = 'Copy Link'; btn.style.background = '#FFC300'; }, 2000);
+  }).catch(function() {
+    prompt('Copy this link:', url);
+  });
+}
+</script>
 
 <!-- SEARCH BY TOOL -->
 <div class="search-section">
@@ -3127,7 +3243,7 @@ const layersData = [
           • Entra Identity Protection high-risk user signal → CyberArk auto-revokes active sessions
         </div>
         <div class="integration-block">
-          <strong>KQL Example — Privileged Account Anomaly Detection</strong><br>
+          <strong>KQL Example: Privileged Account Anomaly Detection</strong><br>
           <code>CommonSecurityLog | where DeviceVendor == "CyberArk" | where Activity contains "CheckOut" | join kind=leftouter (SigninLogs | where RiskLevelDuringSignIn == "high") on $left.SourceUserName == $right.UserPrincipalName | where RiskLevelDuringSignIn == "high" | project TimeGenerated, SourceUserName, Activity, DestinationHostName</code>
         </div>
         <div class="integration-block">
@@ -3341,7 +3457,7 @@ const layersData = [
             <h4>✅ Recommend MDO-Only When:</h4>
             <ul>
               <li>Organization is fully M365 with low-to-medium threat profile</li>
-              <li>E5 includes MDO P2 — already paid for, activation is the priority</li>
+              <li>E5 includes MDO P2. Already paid for, activation is the priority</li>
               <li>Attack Simulation Training is not yet deployed (highest ROI first)</li>
               <li>No existing Proofpoint or Cisco contract approaching renewal</li>
               <li>Threat profile does not include nation-state or targeted supplier fraud</li>
@@ -3351,10 +3467,10 @@ const layersData = [
             <h4>🔴 Layer Proofpoint / Cisco Secure Email When:</h4>
             <ul>
               <li>Customer faces targeted BEC or wire fraud attempts on finance/executive teams</li>
-              <li>Existing Proofpoint or Cisco contract — consolidate intelligence, not platform</li>
+              <li>Existing Proofpoint or Cisco contract. Consolidate intelligence, not platform</li>
               <li>Supplier/vendor risk monitoring is a board-level requirement (Proofpoint TAPA)</li>
               <li>Healthcare or financial services with elevated phishing targeting</li>
-              <li>MDO P1 only (not E5) — Proofpoint fills the gap in targeted attack protection</li>
+              <li>MDO P1 only (not E5). Proofpoint fills the gap in targeted attack protection</li>
             </ul>
             <div class="objection">💬 Objection: "MDO is included in E5, layering Proofpoint doubles the cost." → Proofpoint TAP adds threat intelligence, supplier risk scoring, and targeted attack protection that MDO does not include at any tier. For high-risk orgs, the economics favor layered defense over a single breach.</div>
           </div>
@@ -3372,7 +3488,7 @@ const layersData = [
           • Proofpoint TAP SIEM API exports threat intel to Sentinel every 5 minutes
         </div>
         <div class="integration-block">
-          <strong>KQL Example — Cross-Platform Email Threat Correlation</strong><br>
+          <strong>KQL Example: Cross-Platform Email Threat Correlation</strong><br>
           <code>ProofpointTAP_CL | where TimeGenerated > ago(1h) | where ThreatCategory_s == "phish" | join kind=inner (EmailEvents | where DeliveryAction == "Delivered") on $left.RecipientAddress_s == $right.RecipientEmailAddress | project TimeGenerated, RecipientAddress_s, ThreatCategory_s, Subject_s, SenderIPAddress_s</code>
         </div>
         <div class="integration-block">
@@ -3431,7 +3547,7 @@ const layersData = [
               <li>SaaS footprint is primarily Microsoft 365 apps (Teams, SharePoint, OneDrive)</li>
               <li>Shadow IT discovery is needed but inline proxy is not yet required</li>
               <li>Entra Internet Access (SWG) is being evaluated as the SASE path</li>
-              <li>Budget is limited — MDA is included in E5 at no additional cost</li>
+              <li>Budget is limited. MDA is included in E5 at no additional cost</li>
               <li>App Governance for OAuth app control is the immediate priority</li>
             </ul>
           </div>
@@ -3439,12 +3555,12 @@ const layersData = [
             <h4>🔴 Recommend Palo Alto Prisma / Netskope When:</h4>
             <ul>
               <li>Non-Microsoft SaaS (Salesforce, ServiceNow, Box, Google Workspace) needs inline DLP</li>
-              <li>SASE/SSE is the target architecture — replace legacy proxies and VPN</li>
+              <li>SASE/SSE is the target architecture. Replace legacy proxies and VPN</li>
               <li>Multi-cloud ZTNA is required (Azure + AWS + GCP workloads)</li>
               <li>Netskope for organizations that prioritize granular SaaS DLP policies over ZTNA</li>
-              <li>Customer has Palo Alto NGFW investment — Prisma Access is the natural extension</li>
+              <li>Customer has Palo Alto NGFW investment. Prisma Access is the natural extension</li>
             </ul>
-            <div class="objection">💬 Objection: "MDA is already in our E5, we don't need Prisma." → MDA provides API-based controls for sanctioned Microsoft apps. Prisma Access provides inline controls for ALL SaaS apps plus ZTNA for private apps. They are architecturally different — MDA is reactive, Prisma is inline.</div>
+            <div class="objection">💬 Objection: "MDA is already in our E5, we don't need Prisma.". MDA provides API-based controls for sanctioned Microsoft apps. Prisma Access provides inline controls for ALL SaaS apps plus ZTNA for private apps. They are architecturally different. MDA is reactive, Prisma is inline.</div>
           </div>
         </div>
       `,
@@ -3460,7 +3576,7 @@ const layersData = [
           • Prisma App-ID + User-ID tied to Entra Object IDs for identity attribution in Sentinel
         </div>
         <div class="integration-block">
-          <strong>KQL Example — Shadow IT + Risky App Detection</strong><br>
+          <strong>KQL Example: Shadow IT + Risky App Detection</strong><br>
           <code>McasShadowItReporting | where TimeGenerated > ago(7d) | where AppScore < 50 | summarize TotalUploadedBytes=sum(UploadedBytes), UserCount=dcount(UserName) by AppName, AppScore | order by TotalUploadedBytes desc | take 20</code>
         </div>
       `,
@@ -3514,7 +3630,7 @@ const layersData = [
               <li>Data primarily lives in M365 (Exchange, SharePoint, OneDrive, Teams)</li>
               <li>E5 Purview DLP + Sensitivity Labels + Insider Risk are not yet fully deployed</li>
               <li>Classification taxonomy is the first priority (labels before discovery)</li>
-              <li>Organization is single-cloud (Azure only) — Defender for Cloud covers storage</li>
+              <li>Organization is single-cloud (Azure only). Defender for Cloud covers storage</li>
               <li>Data residency is within Microsoft tenant boundary</li>
             </ul>
           </div>
@@ -3524,10 +3640,10 @@ const layersData = [
               <li>Sensitive data lives in AWS S3, GCP, Snowflake, or non-Microsoft databases</li>
               <li>Automatic discovery of unknown sensitive data stores is the immediate need</li>
               <li>DSPM (Data Security Posture Management) is required for compliance audit</li>
-              <li>Shadow data problem — data teams create untracked copies in data lakes</li>
+              <li>Shadow data problem. Data teams create untracked copies in data lakes</li>
               <li>Regulatory scope includes PCI cardholder data or PHI that has migrated to cloud data platforms</li>
             </ul>
-            <div class="objection">💬 Objection: "Purview already classifies our data, why add Cyera?" → Purview classifies what it can see — M365 content. Cyera discovers data you didn't know existed in cloud storage, databases, and data pipelines. It's the reconnaissance layer that makes Purview more effective by telling you where to apply labels.</div>
+            <div class="objection">💬 Objection: "Purview already classifies our data, why add Cyera?". Purview classifies what it can see: M365 content. Cyera discovers data you didn't know existed in cloud storage, databases, and data pipelines. It's the reconnaissance layer that makes Purview more effective by telling you where to apply labels.</div>
           </div>
         </div>
       `,
@@ -3543,7 +3659,7 @@ const layersData = [
           • Purview extends label coverage to newly discovered assets via Cyera recommendations
         </div>
         <div class="integration-block">
-          <strong>KQL Example — Cross-Cloud Sensitive Data Exposure Alert</strong><br>
+          <strong>KQL Example: Cross-Cloud Sensitive Data Exposure Alert</strong><br>
           <code>Cyera_CL | where TimeGenerated > ago(24h) | where SensitivityClassification_s in ("PHI","PCI","PII") | where PublicAccess_b == true | summarize ExposedAssets=count() by StorageService_s, Region_s, Owner_s | order by ExposedAssets desc</code>
         </div>
       `,
@@ -3924,19 +4040,19 @@ const layersData = [
               <li>E5 + Defender for Cloud Plan 2 is already licensed</li>
               <li>CSPM recommendations via Secure Score are the immediate priority</li>
               <li>Microsoft Defender EASM for external attack surface monitoring is needed</li>
-              <li>Multi-cloud footprint is small — AWS/GCP connectors are available in DfC</li>
+              <li>Multi-cloud footprint is small. AWS/GCP connectors are available in DfC</li>
             </ul>
           </div>
           <div class="decision-card partner">
             <h4>🔴 Recommend Wiz When:</h4>
             <ul>
               <li>Multi-cloud environment (AWS + Azure + GCP) at significant scale</li>
-              <li>Agentless scanning is required — Wiz scans via cloud APIs, no agents needed</li>
-              <li>Developer-first security culture — Wiz integrates into CI/CD pipelines natively</li>
+              <li>Agentless scanning is required. Wiz scans via cloud APIs, no agents needed</li>
+              <li>Developer-first security culture. Wiz integrates into CI/CD pipelines natively</li>
               <li>Container and Kubernetes security posture is the primary use case</li>
               <li>Cloud security team needs a unified risk graph across all cloud resources</li>
             </ul>
-            <div class="objection">💬 Objection: "Defender for Cloud covers multi-cloud, why pay for Wiz?" → Defender for Cloud's multi-cloud coverage is agent-dependent and Azure-centric in UX. Wiz's agentless approach and unified risk graph across all three major clouds is architecturally different — particularly for dev teams shipping to AWS and GCP.</div>
+            <div class="objection">💬 Objection: "Defender for Cloud covers multi-cloud, why pay for Wiz?". Defender for Cloud's multi-cloud coverage is agent-dependent and Azure-centric in UX. Wiz's agentless approach and unified risk graph across all three major clouds is architecturally different, particularly for dev teams shipping to AWS and GCP.</div>
           </div>
         </div>
       `,
@@ -3952,7 +4068,7 @@ const layersData = [
           • Sentinel correlates both → unified cloud security posture in one SIEM
         </div>
         <div class="integration-block">
-          <strong>KQL Example — Cloud Misconfiguration + Threat Correlation</strong><br>
+          <strong>KQL Example: Cloud Misconfiguration + Threat Correlation</strong><br>
           <code>Wiz_CL | where Severity_s == "Critical" | join kind=inner (SecurityAlert | where ProductName contains "Defender for Cloud") on $left.ResourceId_s == $right.ResourceId | project TimeGenerated, WizIssue=Title_s, DefenderAlert=AlertName, Severity_s, ResourceId_s</code>
         </div>
       `,
@@ -4003,10 +4119,10 @@ const layersData = [
             <h4>✅ Recommend Defender Vulnerability Management When:</h4>
             <ul>
               <li>Device fleet is primarily Windows-managed endpoints with MDE deployed</li>
-              <li>E5 includes Defender TVM — activate before buying additional scanning tools</li>
+              <li>E5 includes Defender TVM. Activate before buying additional scanning tools</li>
               <li>Threat-based prioritization tied to Defender telemetry is the key requirement</li>
               <li>Azure VM vulnerability assessment via Defender for Cloud covers cloud scope</li>
-              <li>Organization lacks dedicated VM team — TVM integrated into MDE console reduces tool sprawl</li>
+              <li>Organization lacks dedicated VM team. TVM integrated into MDE console reduces tool sprawl</li>
             </ul>
           </div>
           <div class="decision-card partner">
@@ -4018,7 +4134,7 @@ const layersData = [
               <li>Vulnerability SLA reporting to board/audit committee requires standalone VM platform</li>
               <li>Unauthenticated perimeter scanning for external attack surface management</li>
             </ul>
-            <div class="objection">💬 Objection: "Defender TVM is already in E5." → Defender TVM only scans managed Windows endpoints. Rapid7 InsightVM scans everything else — Linux servers, network devices, printers, unmanaged OT systems — with authenticated and unauthenticated scanning. The gap is everything non-Windows and non-managed.</div>
+            <div class="objection">💬 Objection: "Defender TVM is already in E5.". Defender TVM only scans managed Windows endpoints. Rapid7 InsightVM scans everything else: Linux servers, network devices, printers, unmanaged OT systems, with authenticated and unauthenticated scanning. The gap is everything non-Windows and non-managed.</div>
           </div>
         </div>
       `,
@@ -4034,7 +4150,7 @@ const layersData = [
           • Rapid7 InsightVM: Linux, network devices, OT/SCADA, unmanaged assets, perimeter scanning
         </div>
         <div class="integration-block">
-          <strong>KQL Example — Unpatched Critical CVE with Active Exploit</strong><br>
+          <strong>KQL Example: Unpatched Critical CVE with Active Exploit</strong><br>
           <code>DeviceTvmSoftwareVulnerabilities | where CvssScore >= 9.0 | join kind=inner (DeviceTvmSoftwareVulnerabilitiesKB | where IsExploitAvailable == 1) on CveId | join kind=inner (DeviceInfo | where OnboardingStatus == "Onboarded") on DeviceId | summarize AffectedDevices=dcount(DeviceId) by CveId, SoftwareName, CvssScore | order by CvssScore desc</code>
         </div>
       `,
@@ -4083,10 +4199,10 @@ const layersData = [
           <div class="decision-card microsoft">
             <h4>✅ Recommend Defender for IoT When:</h4>
             <ul>
-              <li>Azure-connected OT/IoT environment — Defender for IoT integrates natively with Sentinel</li>
+              <li>Azure-connected OT/IoT environment. Defender for IoT integrates natively with Sentinel</li>
               <li>Building automation systems (BAS), HVAC, physical security integrated with Azure</li>
               <li>Healthcare IoT (medical devices) on managed networks with passive monitoring requirement</li>
-              <li>Small-to-medium OT footprint — passive network scanning via Enterprise IoT sensor</li>
+              <li>Small-to-medium OT footprint. Passive network scanning via Enterprise IoT sensor</li>
               <li>ICS/SCADA visibility is needed but OT team lacks dedicated OT security platform budget</li>
             </ul>
           </div>
@@ -4096,10 +4212,10 @@ const layersData = [
               <li>Complex industrial environment with Purdue Model architecture, multiple OT vendors</li>
               <li>NERC CIP compliance requires continuous OT asset inventory and change detection</li>
               <li>IEC 62443 compliance program requires dedicated OT security management platform</li>
-              <li>Claroty for healthcare — FDA-grade medical device inventory + vulnerability management</li>
-              <li>Nozomi for energy/utilities — proven at large-scale substations and grid operations</li>
+              <li>Claroty for healthcare: FDA-grade medical device inventory and vulnerability management</li>
+              <li>Nozomi for energy/utilities: proven at large-scale substations and grid operations</li>
             </ul>
-            <div class="objection">💬 Objection: "We have Defender for IoT in our E5 — why add Claroty?" → Defender for IoT provides passive asset discovery. Claroty provides active OT vulnerability management, NERC CIP compliance reporting, medical device FDA risk scoring, and workflow integration with OT change management. The depth is fundamentally different for regulated industries.</div>
+            <div class="objection">💬 Objection: "We have Defender for IoT in our E5. Why add Claroty?". Defender for IoT provides passive asset discovery. Claroty provides active OT vulnerability management, NERC CIP compliance reporting, medical device FDA risk scoring, and workflow integration with OT change management. The depth is fundamentally different for regulated industries.</div>
           </div>
         </div>
       `,
@@ -4116,7 +4232,7 @@ const layersData = [
           • Defender for IoT Enterprise IoT sensor for Azure-connected environments
         </div>
         <div class="integration-block">
-          <strong>KQL Example — OT Device Anomalous Communication</strong><br>
+          <strong>KQL Example: OT Device Anomalous Communication</strong><br>
           <code>DefenderIoTRawEvent | where TimeGenerated > ago(1h) | where DeviceType == "PLC" | where CommunicationDirection == "Outbound" | where RemoteIPType == "Internet" | project TimeGenerated, DeviceName, LocalIP, RemoteIP, Protocol, Port | order by TimeGenerated desc</code>
         </div>
       `,
@@ -4165,11 +4281,11 @@ const layersData = [
           <div class="decision-card microsoft">
             <h4>✅ Recommend Azure API Management When:</h4>
             <ul>
-              <li>APIs are published via Azure API Management — built-in threat protection available</li>
+              <li>APIs are published via Azure API Management. Built-in threat protection available</li>
               <li>Microsoft Defender for APIs (preview) is included in Defender for Cloud plan</li>
               <li>API security posture in Defender for Cloud is the priority use case</li>
               <li>Azure-native API gateway with Entra ID OAuth 2.0 authorization</li>
-              <li>Small API surface area — fewer than 100 external API endpoints</li>
+              <li>Small API surface area. Fewer than 100 external API endpoints</li>
             </ul>
           </div>
           <div class="decision-card partner">
@@ -4178,10 +4294,10 @@ const layersData = [
               <li>External API surface is large (100+ endpoints) with mixed cloud and on-premises gateways</li>
               <li>API discovery needed across multi-cloud and non-Azure gateways (AWS API GW, Kong)</li>
               <li>OWASP API Top 10 protections needed inline (not just posture scanning)</li>
-              <li>F5 WAF is already deployed — unify API + web application security in one platform</li>
+              <li>F5 WAF is already deployed. Unify API and web application security in one platform</li>
               <li>Palo Alto Prisma Cloud API Security module for customers already on Prisma Cloud</li>
             </ul>
-            <div class="objection">💬 Objection: "Defender for Cloud protects our Azure APIs already." → Defender for Cloud scans API posture and detects some threats, but only for APIs registered in Azure API Management. F5 and Prisma protect APIs across all gateways, on-prem and multi-cloud, with real-time OWASP API Top 10 blocking — not just detection.</div>
+            <div class="objection">💬 Objection: "Defender for Cloud protects our Azure APIs already.". Defender for Cloud scans API posture and detects some threats, but only for APIs registered in Azure API Management. F5 and Prisma protect APIs across all gateways, on-prem and multi-cloud, with real-time OWASP API Top 10 blocking, not just detection.</div>
           </div>
         </div>
       `,
@@ -4197,7 +4313,7 @@ const layersData = [
           • Blocked API abuse attempts → CEF syslog → Sentinel → Defender XDR incident
         </div>
         <div class="integration-block">
-          <strong>KQL Example — API Abuse Detection (OWASP API Top 10)</strong><br>
+          <strong>KQL Example: API Abuse Detection (OWASP API Top 10)</strong><br>
           <code>F5API_CL | where TimeGenerated > ago(1h) | where ThreatCategory_s in ("BrokenObjectAuth","ExcessiveDataExposure","BrokenFunctionAuth") | summarize AttackCount=count(), UniqueIPs=dcount(ClientIP_s) by ThreatCategory_s, APIEndpoint_s | order by AttackCount desc</code>
         </div>
       `,
@@ -4230,7 +4346,7 @@ const layersData = [
       { name: 'Security Copilot Governance', status: 'amber', desc: 'SCU-based metering, agent triage - foundation for AI-powered SOC governance' }
     ],
     gaps: [
-      { name: 'The Open Frontier', status: 'red', desc: 'No single vendor has solved this yet. This is where a vendor-agnostic systems integrator like Myriad360 — with Microsoft, Palo Alto, CrowdStrike, Cisco, and AI-infrastructure partnerships — can define the playbook.' },
+      { name: 'The Open Frontier', status: 'red', desc: 'No single vendor has solved this yet. This is where a vendor-agnostic systems integrator like Myriad360 (with Microsoft, Palo Alto, CrowdStrike, Cisco, and AI-infrastructure partnerships) can define the playbook.' },
       { name: 'Axonius for AI Asset Discovery', status: 'red', desc: 'Discovering all AI agents, models, and data flows across the enterprise - Axonius is positioned to be the visibility layer. Myriad360 partner.' }
     ],
     costEstimate: { microsoftAnnual: '$0 (E5)', partnerAnnual: 'TBD', note: 'Market too new for stable pricing' },
@@ -4248,19 +4364,19 @@ const layersData = [
           <div class="decision-card microsoft">
             <h4>✅ Recommend Microsoft AI Governance Stack When:</h4>
             <ul>
-              <li>Microsoft 365 Copilot is deployed or planned — Purview AI Hub is purpose-built</li>
+              <li>Microsoft 365 Copilot is deployed or planned. Purview AI Hub is purpose-built</li>
               <li>Agent 365 (GA May 2026) provides the control plane for Microsoft AI agents</li>
               <li>Entra Workload Identities covers AI agent identity governance within Azure</li>
               <li>Security Copilot is already the AI assistant for the SOC team</li>
-              <li>Compliance posture is M365-centric — Purview DLP policies apply to Copilot interactions</li>
+              <li>Compliance posture is M365-centric. Purview DLP policies apply to Copilot interactions</li>
             </ul>
           </div>
           <div class="decision-card partner">
             <h4>🔴 Recommend Axonius + Emerging AI Security When:</h4>
             <ul>
-              <li>Organization uses AI tools beyond Microsoft — OpenAI API, Anthropic, Google Gemini, custom models</li>
+              <li>Organization uses AI tools beyond Microsoft. OpenAI API, Anthropic, Google Gemini, custom models</li>
               <li>AI asset inventory needed across all AI tools (Axonius discovers AI APIs in use)</li>
-              <li>Shadow AI is a real problem — employees connecting SaaS AI tools without IT visibility</li>
+              <li>Shadow AI is a real problem. Employees connecting SaaS AI tools without IT visibility</li>
               <li>EU AI Act compliance requires formal AI system inventory and risk classification</li>
               <li>NIST AI RMF implementation requires cross-vendor AI governance framework</li>
             </ul>
@@ -4280,7 +4396,7 @@ const layersData = [
           • Security Copilot used to investigate AI-related security incidents with NL queries
         </div>
         <div class="integration-block">
-          <strong>KQL Example — AI Data Exposure Detection</strong><br>
+          <strong>KQL Example: AI Data Exposure Detection</strong><br>
           <code>PurviewAuditLogs_CL | where TimeGenerated > ago(24h) | where Operation_s contains "CopilotInteraction" | where SensitiveInfoTypeMatched_s != "" | summarize ExposureCount=count(), UniqueUsers=dcount(UserId_s) by SensitiveInfoTypeMatched_s, Application_s | order by ExposureCount desc</code>
         </div>
         <div class="integration-block">
@@ -4721,7 +4837,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize RSAC announcements
   renderRsacAnnouncements();
 });
-// Hero CTA — "Start the assessment →" scrolls the prospect to the assessment
+// Hero CTA: "Start the assessment →" scrolls the prospect to the assessment
 // header and switches to Client Interview mode so the guided flow kicks in.
 function startAssessmentFromHero(event) {
   if (event) event.preventDefault();
@@ -4736,7 +4852,7 @@ function startAssessmentFromHero(event) {
   }
 }
 
-// Hero "Advanced modes ▾" — reveals the 3-mode toggle bar for sellers who
+// Hero Advanced modes ▾" — reveals the 3-mode toggle bar for sellers who
 // want to switch between Research / Assessment / Client Interview. Kept out
 // of the landing view so it doesn't force a choice before the prospect
 // understands the tool.
@@ -4984,7 +5100,7 @@ renderLayers();
 var assessmentState = {}; // { layerId_toolIndex: score 0-3 }
 var currentMode = 'research';
 // NOTE: `currentIndustry` is declared at the top of the first <script> block
-// (as `let currentIndustry = 'all'`). Declaring it again here — even with `var` —
+// (as let currentIndustry = all). Declaring it again here, even with var,
 // throws SyntaxError because `let` at script-level blocks redeclaration across
 // all <script> tags in the document, which would abort parsing of this entire
 // script block and silently break ~1200 lines of assessment/interview/PDF code.
@@ -5032,11 +5148,11 @@ var interviewQuestions = {
     { q: "Are critical vulnerabilities patched within 30 days of discovery?", tool: "Defender Vulnerability Management", scoreMap: {yes:3, partial:2, no:0} }
   ],
   otiot: [
-    { q: "Do you have any operational technology (OT), industrial control systems (ICS), or IoT devices connected to your network?", tool: "Defender for IoT", scoreMap: {yes_secured:3, yes_unsecured:0, no:3}, labels: {yes_secured:'✅ Yes — and they are segmented, monitored, and secured', yes_unsecured:'⚠️ Yes — but they are not currently secured or monitored', no:'✅ No — we have no OT/IoT exposure'} },
+    { q: "Do you have any operational technology (OT), industrial control systems (ICS), or IoT devices connected to your network?", tool: "Defender for IoT", scoreMap: {yes_secured:3, yes_unsecured:0, no:3}, labels: {yes_secured:'✅ Yes, segmented, monitored, and secured', yes_unsecured:'⚠️ Yes, but not currently secured or monitored', no:'✅ No, we have no OT/IoT exposure'} },
     { q: "Are your OT/IoT devices monitored separately from your IT network with dedicated OT security tooling?", tool: "Defender for IoT", scoreMap: {yes:3, partial:1, no:0} }
   ],
   api: [
-    { q: "Do you expose APIs to external partners, customers, or third parties?", tool: "Azure API Management", scoreMap: {yes_protected:3, yes_unprotected:0, no:3}, labels: {yes_protected:'✅ Yes — and they are protected by an API gateway / WAF with authentication', yes_unprotected:'⚠️ Yes — but they have no dedicated API security controls', no:'✅ No — we do not expose external APIs'} },
+    { q: "Do you expose APIs to external partners, customers, or third parties?", tool: "Azure API Management", scoreMap: {yes_protected:3, yes_unprotected:0, no:3}, labels: {yes_protected:'✅ Yes, protected by an API gateway or WAF with authentication', yes_unprotected:'⚠️ Yes, but with no dedicated API security controls', no:'✅ No, we do not expose external APIs'} },
     { q: "Are your APIs protected against injection attacks, authentication bypass, and unauthorized access?", tool: "Azure API Management", scoreMap: {yes:3, partial:2, no:0} }
   ],
   shadowai: [
@@ -5072,7 +5188,7 @@ function setMode(mode) {
       var banner = document.createElement('div');
       banner.id = 'interviewLoadedBanner';
       banner.style.cssText = 'max-width:1100px;margin:12px auto 0;padding:10px 18px;background:rgba(0,180,216,0.08);border:1px solid rgba(0,180,216,0.25);border-radius:8px;font-size:12px;color:#0284c7;display:flex;align-items:center;gap:10px;';
-      banner.innerHTML = '<span style="font-size:16px;">✅</span><span><strong>Scores loaded from Client Interview</strong> — all layers pre-filled from your interview session. You can refine individual tool scores below.</span><button onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;color:#94a3b8;font-size:16px;cursor:pointer;">×</button>';
+      banner.innerHTML = '<span style="font-size:16px;">✅</span><span><strong>Scores loaded from Client Interview</strong>. All layers pre-filled from your interview session. You can refine individual tool scores below.</span><button onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;color:#94a3b8;font-size:16px;cursor:pointer;">×</button>';
       var header = document.getElementById('assessmentHeaderSection');
       if (header) header.parentNode.insertBefore(banner, header);
     }
@@ -5093,7 +5209,7 @@ function updateRadarTitle() {
   var inp = document.getElementById('clientNameInput');
   var name = inp ? inp.value.trim() : '';
   var el = document.getElementById('radarTitle');
-  if (el) el.textContent = name ? name + ' — Security Maturity Assessment' : 'Client Security Maturity Assessment';
+  if (el) el.textContent = name ? name + ': Security Maturity Assessment' : 'Client Security Maturity Assessment';
 }
 
 function setToolScore(layerId, toolIdx, score) {
@@ -5257,7 +5373,7 @@ function loadFromLocalStorage() {
     }
     /* Show restore toast */
     var savedDate = data.saved ? new Date(data.saved).toLocaleString() : 'previously';
-    showToast('✅ Session restored — ' + keys.length + ' scores for "' + (data.client || 'unnamed client') + '" (saved ' + savedDate + ')', 5000);
+    showToast('✅ Session restored: ' + keys.length + ' scores for "' + (data.client || 'unnamed client') + '" (saved ' + savedDate + ')', 5000);
   } catch(e) { /* corrupt data — ignore */ }
 }
 
@@ -5544,7 +5660,7 @@ function generateRoadmap() {
 function exportRoadmap() {
   var clientName = document.getElementById('clientNameInput') ? document.getElementById('clientNameInput').value.trim() : '';
   var preparer = getPreparerInfo();
-  var lines = ['MCRA IMPLEMENTATION ROADMAP' + (clientName ? ' — ' + clientName : ''), '='.repeat(50), 'Prepared by ' + preparer.byline, 'Date: ' + new Date().toLocaleDateString(), ''];
+  var lines = ['MCRA IMPLEMENTATION ROADMAP' + (clientName ? ': ' + clientName : ''), '='.repeat(50), 'Prepared by ' + preparer.byline, 'Date: ' + new Date().toLocaleDateString(), ''];
 
   ['Phase 1 (0-30 days): Quick Wins', 'Phase 2 (30-90 days): Foundation', 'Phase 3 (90-180 days): Optimization'].forEach(function(phaseTitle, pi) {
     lines.push(phaseTitle);
@@ -5627,13 +5743,13 @@ function copyE5WasteSummary() {
   var licenses    = parseInt((document.getElementById('e5LicenseCount')  || {value:1000}).value) || 1000;
   var monthlyCost = parseFloat((document.getElementById('e5MonthlyCost') || {value:57}).value)   || 57;
   var clientName  = (document.getElementById('clientNameInput') || {value:''}).value.trim();
-  var lines       = ['E5 WASTE ANALYSIS' + (clientName ? ' — ' + clientName : ''), '='.repeat(44),
+  var lines       = ['E5 WASTE ANALYSIS' + (clientName ? ': ' + clientName : ''), '='.repeat(44),
                      'Licenses: ' + licenses.toLocaleString() + ' | Monthly cost/user: $' + monthlyCost, ''];
   var totalWaste  = 0;
   e5WasteData.forEach(function(item) {
     var annualWaste = licenses * monthlyCost * (1 - item.utilPct/100) * item.weight * 12;
     totalWaste += annualWaste;
-    lines.push(item.label + ': ' + item.utilPct + '% utilized — $' + Math.round(annualWaste).toLocaleString() + '/yr unused');
+    lines.push(item.label + ': ' + item.utilPct + '% utilized. $' + Math.round(annualWaste).toLocaleString() + '/yr unused');
   });
   lines.push('', 'TOTAL ANNUAL WASTE: $' + Math.round(totalWaste).toLocaleString());
   try { navigator.clipboard.writeText(lines.join('\n')); alert('Waste summary copied to clipboard!'); }
@@ -5685,7 +5801,7 @@ function renderInterviewQuestion() {
     var banner = document.getElementById('interviewCompleteBanner');
     if (banner) banner.style.display = 'block';
     document.getElementById('interviewProgressFill').style.width = '100%';
-    document.getElementById('interviewProgressText').textContent = 'Complete — ' + total + ' questions answered';
+    document.getElementById('interviewProgressText').textContent = 'Complete: ' + total + ' questions answered';
     return;
   }
 
@@ -5696,13 +5812,13 @@ function renderInterviewQuestion() {
 
   var scoreMap = item.q.scoreMap;
   var answerLabels = {
-    yes: '✅ Yes — fully implemented',
-    partial: '⚠️ Partially — in progress or limited deployment',
-    no: '❌ No — not implemented',
-    yes_secured: '✅ Yes — and they are secured and monitored',
-    yes_unsecured: '⚠️ Yes — but they are not currently secured',
-    yes_protected: '✅ Yes — and they are protected by a WAF/API gateway',
-    yes_unprotected: '⚠️ Yes — but they have no dedicated API security protection'
+    yes: '✅ Yes, fully implemented',
+    partial: '⚠️ Partially, in progress or limited deployment',
+    no: '❌ No, not implemented',
+    yes_secured: '✅ Yes, secured and monitored',
+    yes_unsecured: '⚠️ Yes, but not currently secured',
+    yes_protected: '✅ Yes, protected by a WAF or API gateway',
+    yes_unprotected: '⚠️ Yes, but with no dedicated API security protection'
   };
 
   var customLabels = item.q.labels || {};
@@ -5895,7 +6011,7 @@ function generateExecReport() {
   var narrative = generateAENarrative(overallPct, topGaps, totalWaste, clientName);
 
   var win = window.open('', '_blank', 'width=900,height=700');
-  win.document.write('<!DOCTYPE html><html><head><title>Executive Security Summary — ' + clientName + '</title>');
+  win.document.write('<!DOCTYPE html><html><head><title>Executive Security Summary: ' + clientName + '</title>');
   win.document.write('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">');
   win.document.write('<style>');
   win.document.write('*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,sans-serif;background:#fff;color:#1a1a2e;line-height:1.6}');
@@ -5923,10 +6039,10 @@ function generateExecReport() {
   var industryLine = cf ? (' &nbsp;|&nbsp; ' + cf.label + ' (' + cf.framework + ')') : '';
   win.document.write('<div class="report-header"><h1>Security Maturity Executive Summary</h1><p>' + clientName + industryLine + ' &nbsp;|&nbsp; Prepared by ' + preparer.byline + ' &nbsp;|&nbsp; ' + new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) + '</p></div>');
   if (cf) {
-    win.document.write('<div style="background:rgba(0,180,216,0.06);border-left:3px solid #0284c7;padding:10px 16px;margin:0 40px 20px;font-size:12px;color:#0369a1;border-radius:0 6px 6px 0;"><strong>Compliance Framework: ' + cf.framework + '</strong> — ' + cf.note + '</div>');
+    win.document.write('<div style="background:rgba(0,180,216,0.06);border-left:3px solid #0284c7;padding:10px 16px;margin:0 40px 20px;font-size:12px;color:#0369a1;border-radius:0 6px 6px 0;"><strong>Compliance Framework: ' + cf.framework + '</strong>: ' + cf.note + '</div>');
   }
   win.document.write('<div class="report-body">');
-  win.document.write('<div class="score-hero"><div class="big-score">' + overallPct + '%</div><div class="maturity-label">' + maturityLabel + ' Security Posture</div><div style="font-size:13px;color:#64748b;margin-top:6px;">Based on Microsoft Cybersecurity Reference Architecture (MCRA) — 12 Security Layers</div></div>');
+  win.document.write('<div class="score-hero"><div class="big-score">' + overallPct + '%</div><div class="maturity-label">' + maturityLabel + ' Security Posture</div><div style="font-size:13px;color:#64748b;margin-top:6px;">Based on Microsoft Cybersecurity Reference Architecture (MCRA), 12 Security Layers</div></div>');
   if (topGaps.length > 0) {
     win.document.write('<h3 style="font-family:Oswald,sans-serif;font-size:16px;text-transform:uppercase;letter-spacing:1px;color:#0D1B2A;margin-bottom:12px;">Top Security Gaps Identified</h3>');
     win.document.write('<div class="gap-grid">');
@@ -5952,7 +6068,7 @@ function generateExecReport() {
   win.document.write('</div>');
 
   win.document.write('</div>');
-  win.document.write('<div class="footer"><span>Myriad360 Security Coverage Assessment | MCRA Framework | ' + preparerName + '</span><span>Confidential — Prepared for ' + clientName + '</span></div>');
+  win.document.write('<div class="footer"><span>Myriad360 Security Coverage Assessment | MCRA Framework | ' + preparerName + '</span><span>Confidential, Prepared for ' + clientName + '</span></div>');
   win.document.write('<div style="padding:16px 40px;"><button onclick="window.print()" style="padding:10px 24px;background:#0D1B2A;color:#fff;border:none;border-radius:8px;font-family:Inter,sans-serif;font-weight:700;cursor:pointer;margin-right:8px;">🖨️ Print / Save PDF</button></div>');
   win.document.write('</body></html>');
   win.document.close();
@@ -5967,17 +6083,17 @@ function generateAENarrative(overallPct, topGaps, totalWaste, clientName) {
 
   var openings = {
     foundational: [
-      clientName + ' is at an early stage of security maturity, scoring ' + overallPct + '% across the 12 MCRA layers — significant exposure across multiple domains.',
+      clientName + ' is at an early stage of security maturity, scoring ' + overallPct + '% across the 12 MCRA layers. Significant exposure across multiple domains.',
       'Assessment results show ' + clientName + ' at ' + overallPct + '% MCRA maturity, indicating foundational security controls in place but critical gaps requiring immediate attention.',
       clientName + '\'s security program is in the foundational stage (' + overallPct + '% MCRA coverage), with core protections deployed but key layers below minimum best-practice thresholds.'
     ],
     developing: [
-      clientName + ' has established a solid security foundation, scoring ' + overallPct + '% across the MCRA framework — well positioned to accelerate with targeted investments.',
+      clientName + ' has established a solid security foundation, scoring ' + overallPct + '% across the MCRA framework. Well positioned to accelerate with targeted investments.',
       'With ' + overallPct + '% MCRA coverage, ' + clientName + ' has meaningful security controls in place but tangible gaps in key layers that represent both risk and opportunity.',
-      clientName + '\'s security posture scores ' + overallPct + '% against the MCRA best-practice framework — in the developing stage, with clear upside from focused remediation.'
+      clientName + '\'s security posture scores ' + overallPct + '% against the MCRA best-practice framework. In the developing stage, with clear upside from focused remediation.'
     ],
     advanced: [
-      clientName + ' demonstrates an advanced security posture at ' + overallPct + '% MCRA coverage — among the stronger environments assessed, with optimization as the primary focus.',
+      clientName + ' demonstrates an advanced security posture at ' + overallPct + '% MCRA coverage. Among the stronger environments assessed, with optimization as the primary focus.',
       'Scoring ' + overallPct + '% across 12 MCRA security layers, ' + clientName + ' has a mature security program. Incremental gains come from fine-tuning tooling and closing niche gaps.',
       clientName + '\'s ' + overallPct + '% MCRA score reflects an advanced, well-configured security environment. The priority now shifts from deployment to optimization and managed outcomes.'
     ]
@@ -5988,34 +6104,34 @@ function generateAENarrative(overallPct, topGaps, totalWaste, clientName) {
 
   if (topGaps.length > 0) {
     var gapSentences = [
-      'The assessment identifies ' + gapNames + ' as the primary areas below 50% maturity — representing the highest-risk and highest-ROI remediation targets.',
+      'The assessment identifies ' + gapNames + ' as the primary areas below 50% maturity. These represent the highest-risk and highest-ROI remediation targets.',
       'Key gaps are concentrated in ' + topGap1 + ' and ' + topGap2 + '. These layers fall below the 50% maturity threshold and represent the clearest near-term engagement scope.',
-      'Coverage gaps in ' + gapNames + ' stand out as immediate priorities — each layer below 50% signals either undeployed tooling or default-only configuration that a targeted engagement can resolve quickly.'
+      'Coverage gaps in ' + gapNames + ' stand out as immediate priorities. Each layer below 50% signals either undeployed tooling or default-only configuration that a targeted engagement can resolve quickly.'
     ];
     sentences.push(pick(gapSentences));
   }
 
   var wasteSentences = [
-    'Current E5 license analysis shows approximately ' + wasteStr + ' in security capability value paid for but not yet activated — a compelling internal funding story for any remediation program.',
+    'Current E5 license analysis shows approximately ' + wasteStr + ' in security capability value paid for but not yet activated. This is a compelling internal funding story for any remediation program.',
     'E5 utilization analysis estimates ' + wasteStr + ' in annual value left on the table. This represents a budget-neutral path to closing gaps: activate what you\'re already paying for.',
-    'The E5 waste analysis identifies ' + wasteStr + ' in underutilized annual license value — often the most effective executive conversation-starter before discussing new spend.'
+    'The E5 waste analysis identifies ' + wasteStr + ' in underutilized annual license value. Often the most effective executive conversation-starter before discussing new spend.'
   ];
   sentences.push(pick(wasteSentences));
 
   var recSentences = {
     foundational: [
-      'Myriad360 recommends an immediate E5 Security Activation engagement — close critical gaps using existing licensing before evaluating net-new tooling.',
+      'Myriad360 recommends an immediate E5 Security Activation engagement. Close critical gaps using existing licensing before evaluating net-new tooling.',
       'Given the foundational maturity level, Myriad360\'s recommended first move is a structured E5 activation program targeting the ' + topGap1 + ' and ' + topGap2 + ' layers for the fastest risk reduction.',
-      'The highest-ROI next step for ' + clientName + ' is an E5 activation and Zero Trust foundation engagement — activating tools already licensed before layering in partner solutions.'
+      'The highest-ROI next step for ' + clientName + ' is an E5 activation and Zero Trust foundation engagement. Activating tools already licensed before layering in partner solutions.'
     ],
     developing: [
-      'Myriad360 recommends a targeted gap remediation engagement focused on ' + topGap1 + ' and ' + topGap2 + ' — the two highest-impact layers for risk reduction and compliance alignment.',
+      'Myriad360 recommends a targeted gap remediation engagement focused on ' + topGap1 + ' and ' + topGap2 + '. These are the two highest-impact layers for risk reduction and compliance alignment.',
       'A scoped SOW targeting the ' + topGap1 + ' layer first delivers the fastest measurable risk reduction. Myriad360 can scope Phase 1 within the E5 entitlement, minimizing net-new spend.',
       'Myriad360\'s recommended next step is a phased remediation program: Phase 1 closes the ' + topGap1 + ' and ' + topGap2 + ' gaps; Phase 2 optimizes the layers already deployed but at default configuration.'
     ],
     advanced: [
       'With a strong posture already in place, Myriad360 recommends focusing on Advanced Hunting content, Security Copilot integration, and managed detection/response to convert tooling into measurable outcomes.',
-      'Myriad360\'s recommendation for ' + clientName + ' is an optimization engagement — Advanced Hunting rule library, custom analytics in Sentinel, and a managed services layer to maximize the existing investment.',
+      'Myriad360\'s recommendation for ' + clientName + ' is an optimization engagement. Advanced Hunting rule library, custom analytics in Sentinel, and a managed services layer to maximize the existing investment.',
       'Given ' + clientName + '\'s advanced maturity, the next value conversation is around AI-augmented operations (Security Copilot), advanced threat hunting, and building a proactive managed security service layer on top of the existing stack.'
     ]
   };
@@ -6080,7 +6196,7 @@ function generatePDFReport() {
     doc.text('Priority Gaps (Below 60% Maturity)', 20, y); y += 8;
     topGaps.slice(0,5).forEach(function(g){
       doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.setTextColor(239,68,68);
-      doc.text('• ' + g.layer + ': ' + g.pct + '% — remediation recommended', 24, y); y += 7;
+      doc.text('• ' + g.layer + ': ' + g.pct + '% coverage, remediation recommended', 24, y); y += 7;
     });
   }
 
@@ -6115,7 +6231,7 @@ function generatePDFReport() {
     doc.text(noteLines, 20, y); y += noteLines.length * 5 + 5;
   }
   doc.setFontSize(9); doc.setTextColor(13,27,42);
-  doc.text('Confidential — Prepared for ' + clientName + ' | Myriad360 | ' + preparer.name, 105, 285, {align:'center'});
+  doc.text('Confidential, Prepared for ' + clientName + ' | Myriad360 | ' + preparer.name, 105, 285, {align:'center'});
 
   doc.save('MCRA_Security_Assessment_' + clientName.replace(/\s+/g,'_') + '_' + new Date().toISOString().split('T')[0] + '.pdf');
 }
@@ -6126,42 +6242,42 @@ function checkDisplacementFlags(layerId, toolName, score) {
   var displacementMap = {
     'Defender for Endpoint (MDE)': {
       competitor: 'CrowdStrike / SentinelOne',
-      message: 'MDE not deployed — prospect may have CrowdStrike Falcon or SentinelOne in place. Myriad360 opportunity: run a side-by-side assessment. If on E5, MDE is already paid for. Consolidation saves $18–28/endpoint/yr and unifies XDR telemetry into Defender XDR.',
+      message: 'MDE not deployed. Prospect may have CrowdStrike Falcon or SentinelOne in place. Myriad360 opportunity: run a side-by-side assessment. If on E5, MDE is already paid for. Consolidation saves $18–28/endpoint/yr and unifies XDR telemetry into Defender XDR.',
       action: 'Run MDE vs. CrowdStrike POC'
     },
     'Microsoft Sentinel': {
       competitor: 'Splunk / IBM QRadar',
-      message: 'Sentinel not deployed — prospect likely running Splunk or QRadar for SIEM. Myriad360 opportunity: Sentinel migration assessment. Splunk → Sentinel migrations typically save 40–60% in annual SIEM costs while gaining native Microsoft XDR integration.',
+      message: 'Sentinel not deployed. Prospect likely running Splunk or QRadar for SIEM. Myriad360 opportunity: Sentinel migration assessment. Splunk → Sentinel migrations typically save 40–60% in annual SIEM costs while gaining native Microsoft XDR integration.',
       action: 'Deliver Sentinel TCO comparison'
     },
     'Defender for Cloud Apps (MDA)': {
       competitor: 'Netskope / Zscaler',
-      message: 'MDA not deployed — prospect may have Netskope or Zscaler for CASB/SSE. Myriad360 opportunity: SASE consolidation workshop. MDA included in E5 can replace point CASB licensing ($8–15/user/yr) while adding Shadow IT discovery and session controls.',
+      message: 'MDA not deployed. Prospect may have Netskope or Zscaler for CASB/SSE. Myriad360 opportunity: SASE consolidation workshop. MDA included in E5 can replace point CASB licensing ($8–15/user/yr) while adding Shadow IT discovery and session controls.',
       action: 'Offer SASE consolidation workshop'
     },
     'Purview DLP': {
       competitor: 'Symantec / Forcepoint DLP',
-      message: 'Purview DLP not deployed — prospect may have legacy Symantec or Forcepoint DLP. Myriad360 opportunity: E5 activation engagement. Purview DLP included in E5 eliminates $20–40/user/yr in redundant DLP licensing with tighter Microsoft 365 integration.',
+      message: 'Purview DLP not deployed. Prospect may have legacy Symantec or Forcepoint DLP. Myriad360 opportunity: E5 activation engagement. Purview DLP included in E5 eliminates $20–40/user/yr in redundant DLP licensing with tighter Microsoft 365 integration.',
       action: 'Propose E5 DLP activation SOW'
     },
     'Entra ID Conditional Access': {
       competitor: 'Duo / Okta MFA',
-      message: 'Conditional Access not fully deployed — prospect may be using Duo or Okta for MFA. Myriad360 opportunity: identity consolidation. Entra ID CA included in E5 can replace $3–6/user/mo standalone MFA licensing while enabling device compliance and risk-based access.',
+      message: 'Conditional Access not fully deployed. Prospect may be using Duo or Okta for MFA. Myriad360 opportunity: identity consolidation. Entra ID CA included in E5 can replace $3–6/user/mo standalone MFA licensing while enabling device compliance and risk-based access.',
       action: 'Deliver Zero Trust Identity workshop'
     },
     'Defender for Identity (MDI)': {
       competitor: 'CrowdStrike Identity / Vectra AI',
-      message: 'MDI not deployed — identity threat detection gap. Myriad360 opportunity: immediate quick-win deployment. MDI included in E5 detects lateral movement, pass-the-hash, and DCSync attacks in Active Directory — high-impact, typically deployable in 1–2 weeks.',
+      message: 'MDI not deployed. Identity threat detection gap. Myriad360 opportunity: immediate quick-win deployment. MDI included in E5 detects lateral movement, pass-the-hash, and DCSync attacks in Active Directory — high-impact, typically deployable in 1–2 weeks.',
       action: 'Fast-track MDI deployment engagement'
     },
     'Defender for Cloud': {
       competitor: 'Palo Alto Prisma Cloud / Wiz',
-      message: 'Defender for Cloud not deployed — prospect may have Prisma Cloud or Wiz for CSPM. Myriad360 opportunity: multi-cloud CNAPP assessment. For Azure-primary workloads, Defender for Cloud included in E5 eliminates $12–20/resource/mo. Palo Alto remains best for multi-cloud with AWS/GCP dominance.',
+      message: 'Defender for Cloud not deployed. Prospect may have Prisma Cloud or Wiz for CSPM. Myriad360 opportunity: multi-cloud CNAPP assessment. For Azure-primary workloads, Defender for Cloud included in E5 eliminates $12–20/resource/mo. Palo Alto remains best for multi-cloud with AWS/GCP dominance.',
       action: 'Run CSPM coverage assessment'
     },
     'Purview Insider Risk Management': {
       competitor: 'Securonix / Exabeam UEBA',
-      message: 'Insider Risk not deployed — prospect may lack UEBA entirely or use a standalone tool. Myriad360 opportunity: E5 activation. Purview IRM included in E5 covers data theft, policy violations, and departing employee risk — a compliance and HR conversation, not just IT.',
+      message: 'Insider Risk not deployed. Prospect may lack UEBA entirely or use a standalone tool. Myriad360 opportunity: E5 activation. Purview IRM included in E5 covers data theft, policy violations, and departing employee risk — a compliance and HR conversation, not just IT.',
       action: 'Position IRM as compliance requirement'
     }
   };
@@ -6181,7 +6297,7 @@ function checkDisplacementFlags(layerId, toolName, score) {
     '<div style="display:flex;align-items:flex-start;gap:10px;">' +
       '<span style="font-size:16px;flex-shrink:0;">💡</span>' +
       '<div>' +
-        '<div style="font-weight:700;color:#b45309;margin-bottom:4px;">Myriad360 Opportunity — ' + flag.competitor + ' Displacement</div>' +
+        '<div style="font-weight:700;color:#b45309;margin-bottom:4px;">Myriad360 Opportunity: ' + flag.competitor + ' Displacement</div>' +
         '<div style="line-height:1.55;">' + flag.message + '</div>' +
         '<div style="margin-top:6px;font-weight:700;color:var(--navy);">→ Suggested next step: ' + flag.action + '</div>' +
       '</div>' +
