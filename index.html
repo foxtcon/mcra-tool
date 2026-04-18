@@ -3,31 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Myriad360 | MCRA Security Coverage Assessment</title>
+<title>Myriad360 | Security Coverage Assessment &amp; Deal Qualifier</title>
 
 <!-- SEO & Sharing -->
-<meta name="description" content="Find your Microsoft security coverage gaps in 20 minutes. Map 12 MCRA layers, surface E5 value you are not using, and get a 90-day action plan your exec team can act on.">
-<meta name="author" content="VJ Barot, Microsoft Security Architect">
-<meta name="keywords" content="MCRA, Microsoft security, Zero Trust, E5, Sentinel, Defender XDR, security assessment, Myriad360">
-<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="A multi-vendor cybersecurity coverage assessment used by Myriad360 Solution Architects and Account Executives. Map 12 security domains across your stack, quantify gaps, qualify the opportunity, and generate an executive-ready roadmap.">
+<meta name="author" content="Myriad360 Solution Architecture">
+<meta name="keywords" content="cybersecurity assessment, Zero Trust, NIST CSF, MITRE ATT&amp;CK, MCRA, security posture, SIEM, XDR, SASE, SSE, Microsoft, Palo Alto, CrowdStrike, Zscaler, Myriad360">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://myriad360.foxtcon.com/">
 
 <!-- Open Graph (renders in Teams, Slack, LinkedIn previews) -->
 <meta property="og:type"        content="website">
-<meta property="og:title"       content="Myriad360 | MCRA Security Coverage Assessment">
-<meta property="og:description" content="Find the gaps in your Microsoft security stack. Score 12 MCRA layers, see what E5 tools you are paying for and not using, and walk away with an executive-ready report.">
-<meta property="og:url"         content="https://myriad360.foxtcon.com">
+<meta property="og:site_name"   content="Myriad360 Security Coverage Assessment">
+<meta property="og:title"       content="Myriad360 | Security Coverage Assessment &amp; Deal Qualifier">
+<meta property="og:description" content="A multi-vendor, cross-framework security assessment. Score 12 domains across Microsoft, Palo Alto, CrowdStrike, Zscaler, and 700+ Myriad360 partner technologies. Used by SAs and AEs to advance deals from discovery to close.">
+<meta property="og:url"         content="https://myriad360.foxtcon.com/">
 <meta property="og:image"       content="https://myriad360.foxtcon.com/og-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt"   content="Myriad360 Security Coverage Assessment cover image">
 
 <!-- Twitter / X card -->
 <meta name="twitter:card"        content="summary_large_image">
-<meta name="twitter:title"       content="Myriad360 Security Coverage Assessment">
-<meta name="twitter:description" content="MCRA security maturity tool with radar chart, E5 waste calculator, guided client interview, and PDF export.">
+<meta name="twitter:title"       content="Myriad360 | Security Coverage Assessment &amp; Deal Qualifier">
+<meta name="twitter:description" content="Multi-vendor security coverage map for SAs and AEs. 12 domains, 700+ Myriad360 partner technologies, MEDDPICC deal qualifier, and an exec-ready readout.">
+<meta name="twitter:image"       content="https://myriad360.foxtcon.com/og-preview.png">
+
+<!-- Structured data (Organization + WebApplication) for rich results -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://myriad360.com/#org",
+      "name": "Myriad360",
+      "url": "https://myriad360.com",
+      "description": "Full-stack cybersecurity, networking, and data center solutions provider with 700+ technology partners.",
+      "sameAs": [
+        "https://www.linkedin.com/company/myriad360"
+      ]
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Myriad360 Security Coverage Assessment",
+      "url": "https://myriad360.foxtcon.com/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "Interactive, multi-vendor cybersecurity coverage assessment. Scores 12 security domains across the full technology stack, qualifies the opportunity with MEDDPICC, and produces an executive-ready roadmap. Used by Myriad360 Solution Architects and Account Executives across the sales cycle.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "provider": { "@id": "https://myriad360.com/#org" }
+    }
+  ]
+}
+</script>
 
 <!-- Inline SVG favicon -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%230D1B2A'/><text y='72' x='50' text-anchor='middle' font-size='60' font-family='Arial' fill='%23FFC300'>🛡</text></svg>">
 
+<!-- Performance: preconnect to font origin so Google Fonts load faster -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- jsPDF: defer so it does not block initial paint (report generation happens on click, not on load) -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- ===== Google Analytics 4 =====================================================
+     TODO (VJ): replace G-XXXXXXXXXX with your GA4 Measurement ID and uncomment
+     the two script blocks below to enable tracking. Leave commented to stay dark.
+-->
+<!--
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true });
+</script>
+-->
+<!-- ============================================================================= -->
 <style>
 :root {
   --navy: #0D1B2A;
@@ -52,6 +107,39 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
+}
+
+/* ---- Accessibility: visible keyboard focus ring everywhere ---- */
+:focus { outline: none; }
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Screen-reader-only utility (used by aria-only helper text) */
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}
+
+/* Respect reduced-motion preference: stop background + particle animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ---- HERO ---- */
@@ -2337,7 +2425,7 @@ body.interview-mode .search-section { display: none; }
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
-  padding: 28px;
+  padding: 24px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 .interview-summary-panel h3 {
@@ -2346,9 +2434,83 @@ body.interview-mode .search-section { display: none; }
   color: var(--navy);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   text-align: center;
 }
+.interview-radar-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 10px;
+}
+.interview-radar-wrap canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+.interview-maturity-total {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-light);
+  margin: 4px 0 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed #e2e8f0;
+}
+.interview-maturity-total strong {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  color: var(--navy);
+  margin-left: 4px;
+}
+.interview-layer-bars {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+.ilb-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 42px;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.ilb-row.current {
+  background: rgba(79,195,247,0.12);
+  box-shadow: inset 3px 0 0 var(--myriad-accent);
+}
+.ilb-row.current .ilb-label { color: var(--navy); font-weight: 700; }
+.ilb-label {
+  color: var(--text);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ilb-bar-track {
+  background: #f1f5f9;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+.ilb-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease, background 0.4s ease;
+}
+.ilb-value {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  color: var(--navy);
+  text-align: right;
+  font-weight: 700;
+}
+.ilb-value.zero { color: #cbd5e1; }
 .interview-complete-banner {
   background: linear-gradient(135deg, var(--navy), #1e3a5f);
   color: #fff;
@@ -2559,6 +2721,501 @@ body.interview-mode .search-section { display: none; }
   color: var(--gold);
   border-color: rgba(255,195,0,0.4);
 }
+
+/* ===== MEDDPICC DEAL QUALIFIER (SA/AE) ===== */
+.meddpicc-section { max-width: 1100px; margin: 32px auto 0; padding: 0 16px; }
+.meddpicc-toggle {
+  background: linear-gradient(135deg, #fff 0%, #fbfcfe 100%);
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid var(--myriad-accent);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.meddpicc-header {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+.meddpicc-header:hover { background: #f8fafc; }
+.meddpicc-header-content h3 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.meddpicc-header-content h3 .meddpicc-audience {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--myriad-accent);
+  background: rgba(79,195,247,0.1);
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 1.2px;
+  margin-left: 8px;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+.meddpicc-header-content p {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 4px;
+  font-weight: 500;
+  max-width: 760px;
+}
+.meddpicc-arrow {
+  font-size: 18px;
+  color: var(--text-light);
+  transition: transform 0.3s;
+}
+.meddpicc-toggle.open .meddpicc-arrow { transform: rotate(180deg); }
+.meddpicc-body { display: none; padding: 24px; border-top: 1px solid #f1f5f9; }
+.meddpicc-toggle.open .meddpicc-body { display: block; }
+
+.meddpicc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+@media (max-width: 1024px) { .meddpicc-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px)  { .meddpicc-grid { grid-template-columns: 1fr; } }
+
+.meddpicc-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.meddpicc-card-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.meddpicc-letter {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--myriad-accent);
+  line-height: 1;
+}
+.meddpicc-pillar {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.meddpicc-prompt {
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.45;
+}
+.meddpicc-notes {
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  color: var(--navy);
+  resize: vertical;
+}
+.meddpicc-notes:focus { border-color: var(--myriad-accent); outline: none; }
+
+.meddpicc-scoreboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  padding: 2px;
+}
+.meddpicc-score-btn {
+  background: #fff;
+  border: none;
+  padding: 6px 0;
+  border-radius: 4px;
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.meddpicc-score-btn:hover { background: #f1f5f9; color: var(--navy); }
+.meddpicc-score-btn.active {
+  background: var(--myriad-accent);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(30,58,95,0.2);
+}
+.meddpicc-score-btn[data-score="0"].active { background: #94a3b8; }
+.meddpicc-score-btn[data-score="1"].active { background: var(--red); }
+.meddpicc-score-btn[data-score="2"].active { background: var(--amber); }
+.meddpicc-score-btn[data-score="3"].active { background: var(--green); }
+
+.meddpicc-summary {
+  margin-top: 20px;
+  background: linear-gradient(135deg, #0D1B2A 0%, #1e3a5f 100%);
+  color: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+}
+.meddpicc-score-big {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: 'Oswald', sans-serif;
+}
+.meddpicc-score-big .num {
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+.meddpicc-score-big .denom {
+  font-size: 20px;
+  color: rgba(255,255,255,0.5);
+}
+.meddpicc-verdict {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 2px solid currentColor;
+}
+.meddpicc-verdict.red   { color: #fca5a5; }
+.meddpicc-verdict.amber { color: #fcd34d; }
+.meddpicc-verdict.green { color: #86efac; }
+.meddpicc-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.meddpicc-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.meddpicc-btn:hover { opacity: 0.85; }
+.meddpicc-btn.primary   { background: var(--gold); color: var(--navy); }
+.meddpicc-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
+
+/* ===== AUDIENCE POSITIONING BAND (below hero) ===== */
+.audience-band {
+  max-width: 1100px;
+  margin: -18px auto 28px;
+  padding: 14px 22px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid var(--myriad-accent);
+  border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(13,27,42,0.08);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  z-index: 3;
+}
+.audience-band-badge {
+  flex: none;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--myriad-accent);
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  background: rgba(79,195,247,0.1);
+  padding: 5px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.audience-band-copy {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.audience-band-copy strong { color: var(--navy); font-weight: 700; }
+.audience-band-cta {
+  flex: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--navy);
+  background: var(--gold);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(255,195,0,0.35);
+}
+.audience-band-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(255,195,0,0.45);
+}
+.audience-band-cta:active { transform: translateY(0); }
+@media (max-width: 900px) {
+  .audience-band { flex-wrap: wrap; }
+  .audience-band-cta { width: 100%; margin-top: 4px; }
+}
+@media (max-width: 640px) {
+  .audience-band { flex-direction: column; align-items: flex-start; margin-top: -8px; }
+}
+
+/* ===== SALES-CYCLE JOURNEY MAP ===== */
+.journey-section {
+  max-width: 1100px;
+  margin: 0 auto 32px;
+  padding: 0 16px;
+}
+.journey-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.journey-header h2 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: 700;
+}
+.journey-header p {
+  font-size: 12px;
+  color: var(--text-light);
+  max-width: 520px;
+}
+.journey-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  position: relative;
+}
+@media (max-width: 900px) { .journey-strip { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .journey-strip { grid-template-columns: 1fr; } }
+
+.journey-stage {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px 14px 12px;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+}
+.journey-stage:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(13,27,42,0.1);
+  border-color: var(--myriad-accent);
+}
+.journey-stage::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--myriad-accent), var(--cyan));
+  opacity: 0.6;
+}
+.journey-stage-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.journey-stage-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--myriad-accent);
+  line-height: 1;
+  background: rgba(79,195,247,0.1);
+  padding: 4px 7px;
+  border-radius: 4px;
+  flex: none;
+}
+.journey-stage-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.journey-role {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+.journey-role .role-ae { color: #d97706; }
+.journey-role .role-sa { color: #0369a1; }
+.journey-role .role-both { color: #7c3aed; }
+.journey-desc {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.45;
+}
+.journey-modules {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 10.5px;
+  color: var(--text-light);
+  line-height: 1.45;
+}
+.journey-modules strong { color: var(--navy); font-weight: 700; }
+
+/* ===== WEEK 1 AT MYRIAD360 ===== */
+.week1-section {
+  max-width: 1100px;
+  margin: 0 auto 36px;
+  padding: 0 16px;
+}
+.week1-wrap {
+  background: linear-gradient(135deg, #0D1B2A 0%, #132b47 45%, #1e3a5f 100%);
+  border-radius: 14px;
+  padding: 28px 28px 22px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 40px -20px rgba(13,27,42,0.4);
+}
+.week1-wrap::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,195,0,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.week1-eyebrow {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.week1-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.week1-title em { color: var(--gold); font-style: normal; }
+.week1-subtitle {
+  font-size: 13px;
+  color: rgba(255,255,255,0.72);
+  max-width: 780px;
+  line-height: 1.55;
+  margin-bottom: 22px;
+}
+.week1-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+@media (max-width: 900px) { .week1-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .week1-grid { grid-template-columns: 1fr; } }
+.week1-day {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 14px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  transition: border-color 0.18s, transform 0.18s;
+}
+.week1-day:hover {
+  border-color: rgba(255,195,0,0.4);
+  transform: translateY(-2px);
+}
+.week1-day-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.week1-day-theme {
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  line-height: 1.25;
+}
+.week1-day-detail {
+  font-size: 12px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.5;
+}
+.week1-signature {
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+}
+.week1-signature strong { color: #fff; font-weight: 700; }
+.week1-signature a {
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(255,195,0,0.4);
+}
+.week1-signature a:hover { border-bottom-color: var(--gold); }
+
 </style>
 </head>
 
@@ -2596,11 +3253,39 @@ body.interview-mode .search-section { display: none; }
           }
         });
       }
-      // Show welcome banner
+      // Show welcome banner — build via DOM APIs so URL-supplied strings cannot inject HTML.
       var banner = document.createElement('div');
       banner.id = 'urlWelcomeBanner';
+      banner.setAttribute('role', 'status');
       banner.style.cssText = 'background:linear-gradient(135deg,#0D1B2A,#1e3a5f);color:#fff;text-align:center;padding:12px 24px;font-size:13px;font-weight:600;letter-spacing:0.5px;';
-      banner.innerHTML = '🎯 This assessment has been prepared for <strong style="color:#FFC300;">' + co + '</strong>' + (rep ? ' by <strong style="color:#4fc3f7;">' + rep + '</strong>' : '') + ' &nbsp;|&nbsp; <a href="#assessment-start" style="color:#4fc3f7;text-decoration:none;" onclick="startAssessmentFromHero(event)">Start your assessment below →</a>';
+
+      banner.appendChild(document.createTextNode('🎯 This assessment has been prepared for '));
+
+      var coStrong = document.createElement('strong');
+      coStrong.style.color = '#FFC300';
+      coStrong.textContent = co;
+      banner.appendChild(coStrong);
+
+      if (rep) {
+        banner.appendChild(document.createTextNode(' by '));
+        var repStrong = document.createElement('strong');
+        repStrong.style.color = '#4fc3f7';
+        repStrong.textContent = rep;
+        banner.appendChild(repStrong);
+      }
+
+      banner.appendChild(document.createTextNode('\u00A0\u00A0|\u00A0\u00A0'));
+
+      var startLink = document.createElement('a');
+      startLink.href = '#assessment-start';
+      startLink.style.color = '#4fc3f7';
+      startLink.style.textDecoration = 'none';
+      startLink.textContent = 'Start your assessment below →';
+      startLink.addEventListener('click', function(e) {
+        if (typeof startAssessmentFromHero === 'function') startAssessmentFromHero(e);
+      });
+      banner.appendChild(startLink);
+
       document.body.insertBefore(banner, document.body.firstChild);
     });
   }
@@ -2622,19 +3307,19 @@ body.interview-mode .search-section { display: none; }
 <!-- STICKY CLIENT PROFILE BAR (assessment + interview modes) -->
 <div class="sticky-client-bar" id="stickyClientBar">
   <span class="scb-label">📋 Client</span>
-  <input type="text" id="clientNameInput" placeholder="Client organization name…" oninput="syncClientName()" autocomplete="off">
+  <input type="text" id="clientNameInput" placeholder="Client organization name…" oninput="syncClientName()" autocomplete="off" aria-label="Client organization name">
   <div class="scb-divider"></div>
   <span class="scb-label" style="font-size:11px;">👤 Preparer</span>
-  <input type="text" id="preparerNameInput" placeholder="Your name" style="max-width:160px;flex:none;" value="VJ Barot" oninput="saveToLocalStorage()" autocomplete="off">
-  <input type="text" id="preparerTitleInput" placeholder="Your title" style="max-width:200px;flex:none;" value="Microsoft Security Architect" oninput="saveToLocalStorage()" autocomplete="off">
+  <input type="text" id="preparerNameInput" placeholder="Your name" style="max-width:160px;flex:none;" value="VJ Barot" oninput="saveToLocalStorage()" autocomplete="off" aria-label="Preparer name">
+  <input type="text" id="preparerTitleInput" placeholder="Your title" style="max-width:200px;flex:none;" value="Microsoft Security Architect" oninput="saveToLocalStorage()" autocomplete="off" aria-label="Preparer title">
   <div class="scb-divider"></div>
   <div class="scb-maturity-pill">Maturity: <span id="stickyMaturityPct">0%</span></div>
   <div class="scb-divider"></div>
-  <button class="scb-reset-btn" onclick="confirmReset()">↺ Reset</button>
+  <button class="scb-reset-btn" onclick="confirmReset()" aria-label="Reset assessment">↺ Reset</button>
 </div>
 
 <!-- FLOATING RESET FAB -->
-<button class="floating-reset-fab" onclick="confirmReset()" title="Reset all assessment scores">
+<button class="floating-reset-fab" onclick="confirmReset()" title="Reset all assessment scores" aria-label="Reset all assessment scores">
   ↺ Reset
 </button>
 
@@ -2644,9 +3329,9 @@ body.interview-mode .search-section { display: none; }
     <h3 id="radarTitle">Client Security Maturity Assessment</h3>
     <div class="assessment-client-input">
       <label style="color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:800;display:block;margin-bottom:4px;">Step 1: Enter Client Name</label>
-      <input type="text" id="clientNameInputAlt" placeholder="Enter client organization name..." oninput="syncClientNameAlt()">
-      <button class="assessment-reset-btn" onclick="confirmReset()">↺ Reset Assessment</button>
-      <button onclick="saveAndShare()" style="padding:10px 20px;background:rgba(0,180,216,0.1);color:#0284c7;border:1px solid rgba(0,180,216,0.3);border-radius:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🔗 Save & Share</button>
+      <input type="text" id="clientNameInputAlt" placeholder="Enter client organization name..." oninput="syncClientNameAlt()" aria-label="Client organization name (assessment view)">
+      <button class="assessment-reset-btn" onclick="confirmReset()" aria-label="Reset assessment">↺ Reset Assessment</button>
+      <button onclick="saveAndShare()" aria-label="Copy a shareable assessment link" style="padding:10px 20px;background:rgba(0,180,216,0.1);color:#0284c7;border:1px solid rgba(0,180,216,0.3);border-radius:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🔗 Save & Share</button>
       <select onchange="if(this.value) loadIndustryTemplate(this.value); this.value='';" style="padding:10px 16px;border:2px solid #e2e8f0;border-radius:8px;font-family:Inter,sans-serif;font-size:13px;color:var(--navy);outline:none;cursor:pointer;" title="Load an industry baseline template">
         <option value="">📋 Load Industry Template...</option>
         <option value="healthcare">🏥 Healthcare</option>
@@ -2662,8 +3347,8 @@ body.interview-mode .search-section { display: none; }
       Overall Maturity: <strong id="overallMaturityPct">0%</strong> &nbsp;|&nbsp; <span id="overallMaturityFraction">0 / 0</span>
     </div>
     <div style="text-align:center;margin-top:12px;">
-      <button onclick="generateClientReport()" style="padding:10px 28px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🖨️ Generate Client Report</button>
-      <button onclick="generateExecReport()" style="padding:10px 28px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-left:8px;">📄 Executive Report</button>
+      <button onclick="generateClientReport()" aria-label="Generate full client report" style="padding:10px 28px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🖨️ Generate Client Report</button>
+      <button onclick="generateExecReport()" aria-label="Generate executive summary report" style="padding:10px 28px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-left:8px;">📄 Executive Report</button>
       <button onclick="generatePDFReport()" style="padding:10px 28px;background:var(--red);color:#fff;border:none;border-radius:8px;font-family:Inter,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-left:8px;">📥 Download PDF</button>
     </div>
   </div>
@@ -2708,9 +3393,9 @@ body.interview-mode .search-section { display: none; }
     <div style="width:1px;height:32px;background:rgba(255,255,255,0.15);"></div>
     <div style="text-align:center;"><div style="font-family:Oswald,sans-serif;font-size:22px;font-weight:700;color:#FFC300;">CRN SP500</div><div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;">13 Consecutive Years</div></div>
   </div>
-  <h1>Where are the gaps in your <em>Microsoft security stack?</em></h1>
+  <h1>Where are the gaps in your <em>security stack?</em></h1>
   <div class="hero-subtitle">
-    Most Microsoft environments have critical coverage gaps across identity, data, and threat detection that go undetected for months. We map your exposure in 20 minutes, show you which E5 tools you are already paying for and not using, and give you a 90-day action plan your exec team can present.
+    Most enterprise security stacks have coverage gaps across identity, data, network, and threat detection that go undetected for months. We map your exposure in 20 minutes across 12 domains, surface the tools you already own and are not using, and hand you a 90-day plan your exec team can present.
   </div>
 
   <a href="#assessment-start" class="hero-primary-cta" onclick="startAssessmentFromHero(event)">
@@ -2718,18 +3403,130 @@ body.interview-mode .search-section { display: none; }
   </a>
 
   <div class="hero-credit">
-    Aligned to Microsoft Cybersecurity Reference Architecture (MCRA), Zero Trust, and NIST CSF 2.0
+    Vendor-neutral coverage map. 700+ Myriad360 partner technologies evaluated against MCRA, NIST CSF 2.0, Zero Trust, and MITRE ATT&amp;CK.
     <a class="hero-advanced-toggle" onclick="toggleAdvancedModes(event)" href="#">Advanced modes ▾</a>
   </div>
 </div>
 
-<!-- HOW IT WORKS — 3-step strip (below hero, above the data-heavy sections) -->
-<div class="how-it-works">
+<!-- AUDIENCE POSITIONING BAND — removes ambiguity about who this tool is for -->
+<div class="audience-band" role="note" aria-label="Who this tool is for">
+  <span class="audience-band-badge">Built for Myriad360</span>
+  <div class="audience-band-copy">
+    <strong>A sales-cycle tool for Solution Architects and Account Executives</strong> — not a prospect survey. Every module below maps onto a stage of a live deal, from first discovery call through executive sign-off. Microsoft-led where Microsoft is the right answer, partner-led when it is not.
+  </div>
+  <button type="button" class="audience-band-cta" onclick="launchDemoScenario()" aria-label="Start a live 2-minute demo with a healthcare scenario preloaded">
+    ▶ Try the 2-minute demo
+  </button>
+</div>
+
+<!-- SALES-CYCLE JOURNEY MAP — the strategic thesis made visible -->
+<section class="journey-section" aria-labelledby="journey-heading">
+  <div class="journey-header">
+    <h2 id="journey-heading">How Myriad360 runs a deal with this tool</h2>
+    <p>Click a stage to jump to the module that powers it. Each stage has a named seller role and a concrete output the AE can paste into CRM.</p>
+  </div>
+  <div class="journey-strip">
+    <button class="journey-stage" onclick="jumpToSection('how-it-works-section', 'Discovery')" aria-label="Jump to the Discovery stage">
+      <div class="journey-stage-top">
+        <span class="journey-stage-num">01</span>
+        <span class="journey-stage-name">Discovery</span>
+      </div>
+      <div class="journey-role"><span class="role-ae">AE-LED</span></div>
+      <div class="journey-desc">Open the conversation. Surface pain by domain without yet pitching a product. Earn the follow-on call.</div>
+      <div class="journey-modules"><strong>Modules:</strong> Client Interview mode · shareable link generator · industry templates</div>
+    </button>
+
+    <button class="journey-stage" onclick="jumpToSection('meddpicc-section', 'Qualify')" aria-label="Jump to the Qualify stage">
+      <div class="journey-stage-top">
+        <span class="journey-stage-num">02</span>
+        <span class="journey-stage-name">Qualify</span>
+      </div>
+      <div class="journey-role"><span class="role-both">AE + SA</span></div>
+      <div class="journey-desc">Score the opportunity on eight pillars before burning SA hours. Gate the investment with MEDDPICC.</div>
+      <div class="journey-modules"><strong>Modules:</strong> MEDDPICC Deal Qualifier · pain auto-fill from assessment</div>
+    </button>
+
+    <button class="journey-stage" onclick="jumpToSection('layers', 'Scope')" aria-label="Jump to the Scope stage">
+      <div class="journey-stage-top">
+        <span class="journey-stage-num">03</span>
+        <span class="journey-stage-name">Scope</span>
+      </div>
+      <div class="journey-role"><span class="role-sa">SA-LED</span></div>
+      <div class="journey-desc">Technical deep-dive across 12 domains. Microsoft-led where it wins, partner-led where customers push back.</div>
+      <div class="journey-modules"><strong>Modules:</strong> 12-domain coverage map · maturity radar · E5 waste calc · Sentinel cost calc</div>
+    </button>
+
+    <button class="journey-stage" onclick="jumpToSection('e5-section', 'Propose')" aria-label="Jump to the Propose stage">
+      <div class="journey-stage-top">
+        <span class="journey-stage-num">04</span>
+        <span class="journey-stage-name">Propose</span>
+      </div>
+      <div class="journey-role"><span class="role-both">AE + SA</span></div>
+      <div class="journey-desc">Translate the assessment into numbers and a phased roadmap the customer and procurement can act on.</div>
+      <div class="journey-modules"><strong>Modules:</strong> 90-day roadmap · deal-size estimator · E5 waste + Sentinel cost outputs · <em>SOW builder — next iteration</em></div>
+    </button>
+
+    <button class="journey-stage" onclick="jumpToSection('assessmentHeaderSection', 'Close')" aria-label="Jump to the Close stage">
+      <div class="journey-stage-top">
+        <span class="journey-stage-num">05</span>
+        <span class="journey-stage-name">Close</span>
+      </div>
+      <div class="journey-role"><span class="role-ae">AE-LED</span></div>
+      <div class="journey-desc">Executive-ready readout with the four Myriad360 service lines (advisory, implementation, global, managed) priced.</div>
+      <div class="journey-modules"><strong>Modules:</strong> Executive Report · Client Report (print/PDF) · shareable result link</div>
+    </button>
+  </div>
+</section>
+
+<!-- WEEK 1 AT MYRIAD360 — personal commitment from VJ Barot to the hiring team -->
+<section class="week1-section" aria-labelledby="week1-heading">
+  <div class="week1-wrap">
+    <div class="week1-eyebrow">Hiring Commitment</div>
+    <h2 id="week1-heading" class="week1-title">My first <em>five days</em> at Myriad360</h2>
+    <p class="week1-subtitle">This tool is not a portfolio piece. It is the shape of the work I will ship in Week 1 if you hire me. Delivered, not promised. Below is the specific commitment by day, pairing with the SA-AE revenue engine that makes Myriad360 run.</p>
+
+    <div class="week1-grid">
+      <div class="week1-day">
+        <div class="week1-day-num">Day 1 · Monday</div>
+        <div class="week1-day-theme">Pair with the AEs</div>
+        <div class="week1-day-detail">15-minute syncs with each of the top five AEs. What are the open deals. Who is the economic buyer. Where is Microsoft friction real and where is it perception. Build the pairing map.</div>
+      </div>
+      <div class="week1-day">
+        <div class="week1-day-num">Day 2 · Tuesday</div>
+        <div class="week1-day-theme">Shadow live calls</div>
+        <div class="week1-day-detail">Sit in on two live discovery calls from the top two AE pipelines. Listen, do not speak. Write the same-day technical summary as a gift for the AE\u2019s warm follow-up email.</div>
+      </div>
+      <div class="week1-day">
+        <div class="week1-day-num">Day 3 · Wednesday</div>
+        <div class="week1-day-theme">Rebalance the map</div>
+        <div class="week1-day-detail">Update the 12-domain coverage map to reflect the real Myriad360 700+ partner portfolio. Start with Identity, Endpoint, Network. Pair with PJ and Russell on the technical depth.</div>
+      </div>
+      <div class="week1-day">
+        <div class="week1-day-num">Day 4 · Thursday</div>
+        <div class="week1-day-theme">Ship battlecards</div>
+        <div class="week1-day-detail">Multi-vendor battlecards for the three domains above. When Microsoft wins, when a partner wins, when the customer decides. Readable by any AE in under two minutes.</div>
+      </div>
+      <div class="week1-day">
+        <div class="week1-day-num">Day 5 · Friday</div>
+        <div class="week1-day-theme">Demo + commit</div>
+        <div class="week1-day-detail">Walk the updated tool through Neeraj and the top-AE cohort. End the week with one scoped real-deal commitment in pipeline, paired with an AE, and a Week 2 plan on the whiteboard.</div>
+      </div>
+    </div>
+
+    <div class="week1-signature">
+      <div>Prepared by <strong>VJ Barot</strong> &middot; Candidate, Senior Microsoft Security Solution Architect &middot; <a href="mailto:vj@foxtcon.com">vj@foxtcon.com</a></div>
+      <div>Built on Foxtcon infrastructure. Portable to Myriad360 on hire.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS — 3-step strip (prospect view, kept because self-guided readers need it) -->
+<div class="how-it-works" id="how-it-works-section">
   <div class="hiw-step">
     <div class="hiw-num">1</div>
     <div class="hiw-body">
       <div class="hiw-title">Frame the exposure</div>
-      <div class="hiw-desc">Tell us your industry, size, and which Microsoft licenses are active.</div>
+      <div class="hiw-desc">Tell us your industry, size, and what is already deployed in your stack.</div>
     </div>
   </div>
   <div class="hiw-arrow">→</div>
@@ -2737,7 +3534,7 @@ body.interview-mode .search-section { display: none; }
     <div class="hiw-num">2</div>
     <div class="hiw-body">
       <div class="hiw-title">Map the gaps</div>
-      <div class="hiw-desc">Walk through 12 security layers. Where Microsoft leads, where you decide, and where you are exposed.</div>
+      <div class="hiw-desc">Walk through 12 security domains. Where your incumbent leads, where you decide, and where you are exposed across the 700+ partner ecosystem.</div>
     </div>
   </div>
   <div class="hiw-arrow">→</div>
@@ -3093,6 +3890,35 @@ function copyShareLink() {
   </div>
 </div>
 
+<!-- MEDDPICC DEAL QUALIFIER (SA / AE) -->
+<div class="meddpicc-section" id="meddpicc-section">
+  <div class="meddpicc-toggle" id="meddpicc-toggle">
+    <div class="meddpicc-header" onclick="document.getElementById('meddpicc-toggle').classList.toggle('open'); if(document.getElementById('meddpicc-toggle').classList.contains('open') && !window._meddpiccRendered) renderMeddpicc();">
+      <div class="meddpicc-header-content">
+        <h3>🎯 Deal Qualifier — MEDDPICC <span class="meddpicc-audience">SA / AE</span></h3>
+        <p>Score the opportunity on eight pillars before investing SA hours. Used alongside the coverage assessment to separate real deals from interesting conversations. Vendor-neutral — works for any technology decision in the Myriad360 portfolio.</p>
+      </div>
+      <span class="meddpicc-arrow">▼</span>
+    </div>
+    <div class="meddpicc-body">
+      <div class="meddpicc-grid" id="meddpiccGrid"></div>
+
+      <div class="meddpicc-summary" role="status" aria-live="polite">
+        <div class="meddpicc-score-big">
+          <span class="num" id="meddpiccScore">0</span>
+          <span class="denom">/ 24</span>
+        </div>
+        <div class="meddpicc-verdict red" id="meddpiccVerdict">Not Qualified</div>
+        <div class="meddpicc-actions">
+          <button class="meddpicc-btn primary" onclick="copyMeddpiccSummary()" aria-label="Copy MEDDPICC summary to clipboard">📋 Copy Summary</button>
+          <button class="meddpicc-btn secondary" onclick="autoFillMeddpiccFromAssessment()" aria-label="Prefill identified pain from the assessment scores">✨ Suggest Pain from Assessment</button>
+          <button class="meddpicc-btn secondary" onclick="resetMeddpicc()" aria-label="Reset MEDDPICC scores">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- SENTINEL COST CALCULATOR -->
 <div class="sentinel-calc-section">
   <div class="sentinel-calc-toggle" id="sentinelCalcToggle">
@@ -3170,7 +3996,7 @@ function copyShareLink() {
     Third-party tool capabilities verified against vendor documentation and deployment experience as of April 2026.
     <div class="version-badge">
       <div class="version-dot"></div>
-      <span>Version 1.0 &nbsp;|&nbsp; April 2026 &nbsp;|&nbsp; Updated Quarterly &nbsp;|&nbsp; Prepared by VJ Barot, Microsoft Security Architect</span>
+      <span>Version 1.0 &nbsp;|&nbsp; <span id="versionBadgeDate">April 2026</span> &nbsp;|&nbsp; Updated Quarterly &nbsp;|&nbsp; Prepared by VJ Barot, Microsoft Security Architect</span>
     </div>
   </div>
 </div>
@@ -4955,6 +5781,23 @@ renderLayers();
   initParticles();
   loop();
 
+  // Pause the hero particle loop when the tab is hidden (saves CPU/battery on mobile).
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
+    } else if (!raf) {
+      loop();
+    }
+  });
+
+  // Keep the version-badge date current without needing code changes every month.
+  try {
+    var vbd = document.getElementById('versionBadgeDate');
+    if (vbd) {
+      vbd.textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+    }
+  } catch (e) { /* leave the hard-coded fallback in place */ }
+
   /* ── 2. FLOATING HEX SHAPES ────────────────────────────────── */
   var hexCfg = [
     { size:38, left:'6%',  dur:19, delay:0,   col:'rgba(0,180,216,0.55)' },
@@ -5756,6 +6599,301 @@ function copyE5WasteSummary() {
   catch(e) { prompt('Copy this summary:', lines.join('\n')); }
 }
 
+/* ============================================================================
+   One-click demo launcher
+   Loads a healthcare scenario (Meridian Health Services), enters Client
+   Interview mode, and scrolls to the first question. Used by the CTA in the
+   audience band and by the ?demo=1 URL shortcut.
+   ============================================================================ */
+function launchDemoScenario(opts) {
+  opts = opts || {};
+  var company  = opts.company  || 'Meridian Health Services';
+  var industry = opts.industry || 'healthcare';
+  var rep      = opts.rep      || 'VJ Barot';
+  var repTitle = opts.repTitle || 'Senior Microsoft Security Solution Architect';
+
+  // Fill client name fields (both sticky bar and assessment header)
+  ['clientNameInput', 'clientNameInputAlt'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.value = company; el.dispatchEvent(new Event('input')); }
+  });
+  var repEl = document.getElementById('preparerNameInput');
+  if (repEl) { repEl.value = rep; repEl.dispatchEvent(new Event('input')); }
+  var repTitleEl = document.getElementById('preparerTitleInput');
+  if (repTitleEl && !repTitleEl.value) { repTitleEl.value = repTitle; repTitleEl.dispatchEvent(new Event('input')); }
+
+  // Apply industry filter (the filter buttons contain the industry name text)
+  var validIndustries = ['healthcare','finance','government','manufacturing','energy','education'];
+  if (validIndustries.indexOf(industry) !== -1) {
+    var filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(function(btn) {
+      if (btn.textContent.trim().toLowerCase().indexOf(industry) !== -1) btn.click();
+    });
+  }
+
+  // Enter interview mode
+  if (typeof setMode === 'function') setMode('interview');
+
+  // Scroll to the interview wizard so the visitor lands on the first question
+  setTimeout(function() {
+    var panel = document.getElementById('interviewPanel');
+    if (panel) {
+      var top = panel.getBoundingClientRect().top + window.pageYOffset - 40;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+  }, 250);
+}
+
+// ?demo=1 URL shortcut — same effect as clicking the audience-band CTA.
+(function() {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('demo') === '1' || params.get('demo') === 'true') {
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(launchDemoScenario, 400); // let layersData + DOM settle
+      });
+    }
+  } catch (e) { /* ignore */ }
+})();
+
+/* ============================================================================
+   Sales-Cycle Journey Map — jumpToSection helper
+   Scrolls to the target section and opens its collapsible if it has one, so
+   the reader lands on the working module, not just its header.
+   ============================================================================ */
+function jumpToSection(targetId, stageName) {
+  var el = document.getElementById(targetId);
+  if (!el) return;
+  // If the target is a collapsible toggle, open it
+  var togglable = el.closest ? el.closest('.meddpicc-toggle, .e5-toggle, .methodology-toggle, .sentinel-calc-toggle, .rsac-toggle, .how-to-read-toggle') : null;
+  if (togglable && !togglable.classList.contains('open')) {
+    togglable.classList.add('open');
+    // If a render function exists, kick it
+    if (togglable.id === 'meddpicc-toggle' && !window._meddpiccRendered && typeof renderMeddpicc === 'function') renderMeddpicc();
+    if (togglable.id === 'sentinelCalcToggle' && typeof renderSentinelCalculator === 'function') renderSentinelCalculator();
+  }
+  // Smooth scroll with small offset so the sticky bar doesn't clip
+  var top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+  window.scrollTo({ top: top, behavior: 'smooth' });
+  // Accessibility: announce stage move for screen readers
+  try {
+    var live = document.getElementById('journeyLiveRegion') || (function() {
+      var d = document.createElement('div');
+      d.id = 'journeyLiveRegion';
+      d.className = 'sr-only';
+      d.setAttribute('aria-live', 'polite');
+      document.body.appendChild(d);
+      return d;
+    })();
+    live.textContent = 'Jumped to stage: ' + (stageName || targetId);
+  } catch (e) { /* ignore */ }
+}
+
+/* ============================================================================
+   MEDDPICC Deal Qualifier (SA/AE)
+   Vendor-neutral opportunity scoring. Persists in localStorage under
+   `myriad360_meddpicc`. Rendered once on first expansion; score totals 0..24.
+   ============================================================================ */
+var MEDDPICC_PILLARS = [
+  { letter: 'M',  key: 'metrics',         name: 'Metrics',           prompt: 'What measurable business outcome does this deal move? $ saved, risk reduced, time to detect, audit pass rate.' },
+  { letter: 'E',  key: 'economicBuyer',   name: 'Economic Buyer',    prompt: 'Named person with budget authority to say yes. Have you met or been introduced? CISO, CIO, CFO, VP Security?' },
+  { letter: 'D',  key: 'decisionCriteria',name: 'Decision Criteria', prompt: 'What explicit criteria will they evaluate vendors on? Have you shaped or at least seen them in writing?' },
+  { letter: 'D',  key: 'decisionProcess', name: 'Decision Process',  prompt: 'Who reviews, who approves, in what order, on what timeline? Procurement, security committee, board sign-off?' },
+  { letter: 'P',  key: 'paperProcess',    name: 'Paper Process',     prompt: 'MSA, NDA, vendor onboarding, security review, SOW redlines. Have you mapped the legal/procurement track?' },
+  { letter: 'I',  key: 'identifyPain',    name: 'Identify Pain',     prompt: 'What is broken today and what does it cost them if nothing changes? Compliance finding, breach, tool sprawl, renewal cliff?' },
+  { letter: 'C',  key: 'champion',        name: 'Champion',          prompt: 'An internal advocate with influence who sells for you when you are not in the room. Do you have one, named?' },
+  { letter: 'C',  key: 'competition',     name: 'Competition',       prompt: 'Incumbent tooling, competing vendors, or internal "do nothing" option. Is Myriad360 positioned as best fit or just one of four bids?' }
+];
+
+var MEDDPICC_SCORE_LABELS = ['Unknown', 'Weak', 'Partial', 'Validated'];
+var MEDDPICC_LS_KEY = 'myriad360_meddpicc_v1';
+
+function meddpiccLoad() {
+  try {
+    var raw = localStorage.getItem(MEDDPICC_LS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) { return {}; }
+}
+function meddpiccSave(state) {
+  try { localStorage.setItem(MEDDPICC_LS_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function renderMeddpicc() {
+  var grid = document.getElementById('meddpiccGrid');
+  if (!grid) return;
+  var state = meddpiccLoad();
+  grid.innerHTML = '';
+  MEDDPICC_PILLARS.forEach(function(p) {
+    var entry = state[p.key] || { score: 0, notes: '' };
+    var card = document.createElement('div');
+    card.className = 'meddpicc-card';
+    card.setAttribute('data-key', p.key);
+
+    // Header
+    var head = document.createElement('div');
+    head.className = 'meddpicc-card-head';
+    var letter = document.createElement('span');
+    letter.className = 'meddpicc-letter';
+    letter.textContent = p.letter;
+    var name = document.createElement('span');
+    name.className = 'meddpicc-pillar';
+    name.textContent = p.name;
+    head.appendChild(letter);
+    head.appendChild(name);
+    card.appendChild(head);
+
+    // Prompt
+    var prompt = document.createElement('div');
+    prompt.className = 'meddpicc-prompt';
+    prompt.textContent = p.prompt;
+    card.appendChild(prompt);
+
+    // Notes
+    var notes = document.createElement('textarea');
+    notes.className = 'meddpicc-notes';
+    notes.setAttribute('aria-label', p.name + ' notes');
+    notes.setAttribute('placeholder', 'Notes / evidence / names / next step');
+    notes.value = entry.notes || '';
+    notes.addEventListener('input', function() {
+      var st = meddpiccLoad();
+      st[p.key] = { score: (st[p.key] && st[p.key].score) || 0, notes: notes.value };
+      meddpiccSave(st);
+    });
+    card.appendChild(notes);
+
+    // Scoreboard
+    var board = document.createElement('div');
+    board.className = 'meddpicc-scoreboard';
+    board.setAttribute('role', 'radiogroup');
+    board.setAttribute('aria-label', p.name + ' qualification score');
+    for (var s = 0; s <= 3; s++) {
+      (function(scoreVal) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'meddpicc-score-btn' + (entry.score === scoreVal ? ' active' : '');
+        btn.setAttribute('data-score', String(scoreVal));
+        btn.setAttribute('role', 'radio');
+        btn.setAttribute('aria-checked', entry.score === scoreVal ? 'true' : 'false');
+        btn.setAttribute('aria-label', p.name + ' ' + MEDDPICC_SCORE_LABELS[scoreVal]);
+        btn.textContent = MEDDPICC_SCORE_LABELS[scoreVal];
+        btn.addEventListener('click', function() {
+          var st = meddpiccLoad();
+          st[p.key] = { score: scoreVal, notes: (st[p.key] && st[p.key].notes) || notes.value || '' };
+          meddpiccSave(st);
+          // Update active state on siblings
+          var siblings = board.querySelectorAll('.meddpicc-score-btn');
+          for (var i = 0; i < siblings.length; i++) {
+            siblings[i].classList.remove('active');
+            siblings[i].setAttribute('aria-checked', 'false');
+          }
+          btn.classList.add('active');
+          btn.setAttribute('aria-checked', 'true');
+          updateMeddpiccSummary();
+        });
+        board.appendChild(btn);
+      })(s);
+    }
+    card.appendChild(board);
+
+    grid.appendChild(card);
+  });
+
+  window._meddpiccRendered = true;
+  updateMeddpiccSummary();
+}
+
+function updateMeddpiccSummary() {
+  var state = meddpiccLoad();
+  var total = 0;
+  MEDDPICC_PILLARS.forEach(function(p) {
+    total += (state[p.key] && state[p.key].score) || 0;
+  });
+  var scoreEl = document.getElementById('meddpiccScore');
+  var verdictEl = document.getElementById('meddpiccVerdict');
+  if (scoreEl) scoreEl.textContent = String(total);
+  if (verdictEl) {
+    verdictEl.classList.remove('red', 'amber', 'green');
+    if (total <= 8)       { verdictEl.classList.add('red');   verdictEl.textContent = 'Not Qualified — Discovery Needed'; }
+    else if (total <= 16) { verdictEl.classList.add('amber'); verdictEl.textContent = 'Qualifying — Invest Selectively'; }
+    else                  { verdictEl.classList.add('green'); verdictEl.textContent = 'Qualified — Advance the Deal'; }
+  }
+}
+
+function resetMeddpicc() {
+  if (!confirm('Reset MEDDPICC scores and notes for this deal?')) return;
+  try { localStorage.removeItem(MEDDPICC_LS_KEY); } catch (e) {}
+  window._meddpiccRendered = false;
+  renderMeddpicc();
+}
+
+function copyMeddpiccSummary() {
+  var state = meddpiccLoad();
+  var clientEl = document.getElementById('clientNameInput') || document.getElementById('clientNameInputAlt');
+  var client = (clientEl && clientEl.value) ? clientEl.value.trim() : '(unnamed opportunity)';
+  var prep = (document.getElementById('preparerNameInput') || {value:''}).value.trim();
+  var title = (document.getElementById('preparerTitleInput') || {value:''}).value.trim();
+  var lines = ['MEDDPICC DEAL QUALIFIER — ' + client, '='.repeat(44)];
+  if (prep) lines.push('Prepared by: ' + prep + (title ? ' (' + title + ')' : '') + ' — Myriad360');
+  lines.push('Date: ' + new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }));
+  lines.push('');
+  var total = 0;
+  MEDDPICC_PILLARS.forEach(function(p) {
+    var e = state[p.key] || { score: 0, notes: '' };
+    total += e.score;
+    lines.push('[' + p.letter + '] ' + p.name + ' — ' + MEDDPICC_SCORE_LABELS[e.score] + ' (' + e.score + '/3)');
+    if (e.notes) lines.push('    ' + e.notes.split('\n').join('\n    '));
+  });
+  lines.push('');
+  lines.push('TOTAL: ' + total + '/24');
+  var verdict = total <= 8 ? 'NOT QUALIFIED — more discovery needed' :
+                total <= 16 ? 'QUALIFYING — invest selectively' :
+                              'QUALIFIED — advance the deal';
+  lines.push('VERDICT: ' + verdict);
+  var out = lines.join('\n');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(out).then(function() {
+      alert('MEDDPICC summary copied to clipboard.');
+    }, function() { prompt('Copy this summary:', out); });
+  } else {
+    prompt('Copy this summary:', out);
+  }
+}
+
+// Pull weak layers from the assessment and use them as a starter for the
+// "Identify Pain" pillar — the fastest way to link coverage gaps to deal pain.
+function autoFillMeddpiccFromAssessment() {
+  var weakLayers = [];
+  try {
+    if (typeof layersData !== 'undefined' && Array.isArray(layersData)) {
+      layersData.forEach(function(layer) {
+        if (!layer || !layer.tools) return;
+        var scores = [];
+        layer.tools.forEach(function(tool, idx) {
+          var key = layer.id + '_' + idx;
+          var v = (typeof assessmentState !== 'undefined' && assessmentState[key] != null) ? assessmentState[key] : null;
+          if (v != null) scores.push(v);
+        });
+        if (scores.length) {
+          var avg = scores.reduce(function(a,b){return a+b;},0) / scores.length;
+          if (avg < 2) weakLayers.push({ name: layer.name || layer.id, avg: avg });
+        }
+      });
+    }
+  } catch (e) { /* best effort */ }
+
+  var state = meddpiccLoad();
+  var existing = (state.identifyPain && state.identifyPain.notes) || '';
+  var prefix = 'Coverage gaps surfaced in the assessment:\n';
+  var bullets = weakLayers.length
+    ? weakLayers.slice(0, 5).map(function(l) { return '  - ' + l.name + ' (avg maturity ' + l.avg.toFixed(1) + '/3)'; }).join('\n')
+    : '  (Run the assessment first to auto-populate weak domains here.)';
+  var newNotes = (existing ? existing + '\n\n' : '') + prefix + bullets;
+  state.identifyPain = { score: (state.identifyPain && state.identifyPain.score) || 0, notes: newNotes };
+  meddpiccSave(state);
+  window._meddpiccRendered = false;
+  renderMeddpicc();
+}
+
 function generateClientReport() {
   generateRoadmap();
   document.body.classList.add('print-mode');
@@ -5784,9 +6922,50 @@ function startInterview() {
   var summaryPanel = document.getElementById('interviewSummaryPanel');
   var existingCanvas = document.getElementById('radarCanvasInterview');
   if (!existingCanvas) {
-    summaryPanel.innerHTML = '<h3 id="interviewSummaryTitle">Live Coverage Map</h3><canvas id="radarCanvasInterview" width="400" height="320"></canvas><div class="maturity-score-summary" style="margin-top:12px;">Maturity: <strong id="interviewMaturityPct">0%</strong></div><div class="interview-complete-banner" id="interviewCompleteBanner"><h4>✅ Assessment Complete</h4><p>All questions answered. Your maturity score has been calculated.</p><button class="interview-gen-report-btn" onclick="generateExecReport()">📄 Generate Executive Report</button></div>';
+    summaryPanel.innerHTML =
+      '<h3 id="interviewSummaryTitle">Live Coverage Map</h3>' +
+      '<div class="interview-radar-wrap"><canvas id="radarCanvasInterview" width="460" height="360"></canvas></div>' +
+      '<div class="interview-maturity-total">Overall Maturity <strong id="interviewMaturityPct">0%</strong></div>' +
+      '<div class="interview-layer-bars" id="interviewLayerBars"></div>' +
+      '<div class="interview-complete-banner" id="interviewCompleteBanner"><h4>\u2705 Assessment Complete</h4><p>All questions answered. Your maturity score has been calculated.</p><button class="interview-gen-report-btn" onclick="generateExecReport()">\ud83d\udcc4 Generate Executive Report</button></div>';
   }
   drawRadarOnCanvas('radarCanvasInterview');
+  renderInterviewLayerBars();
+  updateInterviewMaturityTotal();
+}
+
+// Renders the per-layer maturity bars in the Live Coverage Map panel. Highlights
+// the current layer being asked so the demo audience can track progress in real time.
+function renderInterviewLayerBars() {
+  var wrap = document.getElementById('interviewLayerBars');
+  if (!wrap || typeof layersData === 'undefined') return;
+  var currentLayerId = null;
+  if (interviewFlat.length && interviewCursor < interviewFlat.length) {
+    currentLayerId = interviewFlat[interviewCursor].layerId;
+  }
+  var html = '';
+  layersData.forEach(function(l) {
+    var s = getLayerScore(l.id);
+    var pct = s.pct || 0;
+    var color = pct >= 67 ? '#22c55e' : pct >= 34 ? '#f59e0b' : pct > 0 ? '#ef4444' : '#e2e8f0';
+    var rowClass = 'ilb-row' + (l.id === currentLayerId ? ' current' : '');
+    var valClass = 'ilb-value' + (pct === 0 ? ' zero' : '');
+    var name = (l.name || l.id).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    html += '<div class="' + rowClass + '">' +
+              '<div class="ilb-label" title="' + name + '">' + name + '</div>' +
+              '<div class="ilb-bar-track"><div class="ilb-bar-fill" style="width:' + pct + '%;background:' + color + ';"></div></div>' +
+              '<div class="' + valClass + '">' + pct + '%</div>' +
+            '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function updateInterviewMaturityTotal() {
+  var pctEl = document.getElementById('interviewMaturityPct');
+  if (!pctEl || typeof layersData === 'undefined') return;
+  var totalScore = 0, totalMax = 0;
+  layersData.forEach(function(l){ var r = getLayerScore(l.id); totalScore += r.score; totalMax += r.max; });
+  pctEl.textContent = (totalMax > 0 ? Math.round(totalScore/totalMax*100) : 0) + '%';
 }
 
 function renderInterviewQuestion() {
@@ -5853,12 +7032,8 @@ function setInterviewAnswer(layerId, qi, answerKey, score) {
 
   updateAllLayerScores();
   drawRadarOnCanvas('radarCanvasInterview');
-  var pct = document.getElementById('interviewMaturityPct');
-  if (pct) {
-    var totalScore = 0, totalMax = 0;
-    layersData.forEach(function(l){ var r = getLayerScore(l.id); totalScore += r.score; totalMax += r.max; });
-    pct.textContent = (totalMax > 0 ? Math.round(totalScore/totalMax*100) : 0) + '%';
-  }
+  updateInterviewMaturityTotal();
+  renderInterviewLayerBars();
 
   setTimeout(function(){ interviewNav(1); }, 600);
 }
@@ -5866,10 +7041,14 @@ function setInterviewAnswer(layerId, qi, answerKey, score) {
 function interviewNav(dir) {
   interviewCursor = Math.max(0, Math.min(interviewFlat.length, interviewCursor + dir));
   renderInterviewQuestion();
+  // Move the "current layer" highlight on the bars panel as the cursor moves.
+  renderInterviewLayerBars();
 }
 
 // ===== CANVAS RADAR RENDERER =====
-function drawRadarOnCanvas(canvasId) {
+// Optional: pass a layer id in `highlightLayerId` to emphasize that axis (for
+// the live interview view, the layer being asked right now glows).
+function drawRadarOnCanvas(canvasId, highlightLayerId) {
   var canvas = document.getElementById(canvasId);
   if (!canvas || !window.layersData) return;
   var ctx = canvas.getContext('2d');
@@ -5877,23 +7056,66 @@ function drawRadarOnCanvas(canvasId) {
   var cx = W/2, cy = H/2, R = Math.min(W,H)*0.36, N = layersData.length;
   ctx.clearRect(0,0,W,H);
   var scores = layersData.map(function(l){ return getLayerScore(l.id).pct/100; });
+  // Infer highlight from the live interview cursor if not explicitly given.
+  if (highlightLayerId == null && canvasId === 'radarCanvasInterview' &&
+      typeof interviewFlat !== 'undefined' && interviewFlat.length &&
+      typeof interviewCursor !== 'undefined' && interviewCursor < interviewFlat.length) {
+    highlightLayerId = interviewFlat[interviewCursor].layerId;
+  }
+  var highlightIdx = highlightLayerId ? layersData.findIndex(function(l){ return l.id === highlightLayerId; }) : -1;
+
+  // Concentric rings
   for (var r=1;r<=5;r++){
     var rr=R*r/5;
     ctx.beginPath();
     for(var i=0;i<=N;i++){var a=(Math.PI*2*i/N)-Math.PI/2;if(i===0)ctx.moveTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a));else ctx.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a));}
     ctx.closePath();ctx.strokeStyle='rgba(13,27,42,0.08)';ctx.lineWidth=1;ctx.stroke();
   }
-  for(var i=0;i<N;i++){var a=(Math.PI*2*i/N)-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));ctx.strokeStyle='rgba(13,27,42,0.12)';ctx.lineWidth=1;ctx.stroke();}
+  // Axis lines (highlighted axis slightly stronger)
+  for(var i=0;i<N;i++){
+    var a=(Math.PI*2*i/N)-Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));
+    ctx.strokeStyle = (i === highlightIdx) ? 'rgba(79,195,247,0.9)' : 'rgba(13,27,42,0.12)';
+    ctx.lineWidth = (i === highlightIdx) ? 2 : 1;
+    ctx.stroke();
+  }
+  // Filled polygon
   ctx.beginPath();
   for(var i=0;i<N;i++){var a=(Math.PI*2*i/N)-Math.PI/2;var v=scores[i]*R;if(i===0)ctx.moveTo(cx+v*Math.cos(a),cy+v*Math.sin(a));else ctx.lineTo(cx+v*Math.cos(a),cy+v*Math.sin(a));}
   ctx.closePath();ctx.fillStyle='rgba(0,180,216,0.15)';ctx.fill();ctx.strokeStyle='rgba(0,180,216,0.8)';ctx.lineWidth=2;ctx.stroke();
-  for(var i=0;i<N;i++){var a=(Math.PI*2*i/N)-Math.PI/2;var v=scores[i]*R;ctx.beginPath();ctx.arc(cx+v*Math.cos(a),cy+v*Math.sin(a),4,0,Math.PI*2);ctx.fillStyle=scores[i]>=0.67?'#22c55e':scores[i]>=0.34?'#f59e0b':'#ef4444';ctx.fill();}
-  var lr=R+24;ctx.font='10px Inter,sans-serif';
+  // Vertex dots (highlighted vertex gets a halo)
+  for(var i=0;i<N;i++){
+    var a=(Math.PI*2*i/N)-Math.PI/2;
+    var v=scores[i]*R;
+    var px = cx+v*Math.cos(a), py = cy+v*Math.sin(a);
+    if (i === highlightIdx) {
+      ctx.beginPath();
+      ctx.arc(px, py, 9, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(79,195,247,0.25)';
+      ctx.fill();
+    }
+    ctx.beginPath();
+    ctx.arc(px, py, (i === highlightIdx ? 5 : 4), 0, Math.PI*2);
+    ctx.fillStyle = scores[i]>=0.67?'#22c55e':scores[i]>=0.34?'#f59e0b':scores[i]>0?'#ef4444':'#94a3b8';
+    ctx.fill();
+    if (i === highlightIdx) {
+      ctx.strokeStyle = '#0369a1';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+  }
+  // Axis labels (highlighted label bolder)
+  var lr=R+24;
   for(var i=0;i<N;i++){
     var a=(Math.PI*2*i/N)-Math.PI/2;
     var lx=cx+lr*Math.cos(a),ly=cy+lr*Math.sin(a);
-    var lbl=layersData[i].name.length>12?layersData[i].name.substring(0,11)+'…':layersData[i].name;
-    ctx.fillStyle='#0D1B2A';ctx.textAlign=lx<cx-5?'right':lx>cx+5?'left':'center';ctx.fillText(lbl,lx,ly+4);
+    var lbl=layersData[i].name.length>14?layersData[i].name.substring(0,13)+'\u2026':layersData[i].name;
+    ctx.font = (i === highlightIdx ? 'bold 11px Inter,sans-serif' : '10px Inter,sans-serif');
+    ctx.fillStyle = (i === highlightIdx ? '#0369a1' : '#0D1B2A');
+    ctx.textAlign = lx<cx-5?'right':lx>cx+5?'left':'center';
+    ctx.fillText(lbl,lx,ly+4);
   }
 }
 
