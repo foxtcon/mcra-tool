@@ -2481,7 +2481,12 @@ body.interview-mode .search-section { display: none; }
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto 10px;
+  margin: 0 auto 14px;
+  min-height: 320px;
+  background: #fafcff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px;
 }
 .interview-radar-wrap canvas {
   max-width: 100%;
@@ -2602,6 +2607,76 @@ body.interview-mode .search-section { display: none; }
 .interview-story-log span.isl-partial { color: #b45309; }
 .interview-story-log span.isl-no { color: #b91c1c; }
 
+/* ===== ACTION BAR (client name + load sample + start new) ===== */
+.interview-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 14px 18px;
+  background: #0D1B2A;
+  color: #fff;
+  border-radius: 12px 12px 0 0;
+  margin: -28px -28px 0;
+}
+.iab-left { flex: 1 1 260px; }
+.iab-right { display: flex; gap: 10px; flex-wrap: wrap; }
+.iab-client-label {
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #FFB800;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+.iab-client-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  transition: all 0.2s;
+}
+.iab-client-input::placeholder { color: rgba(255,255,255,0.45); font-weight: 400; }
+.iab-client-input:focus { border-color: #4fc3f7; background: rgba(79,195,247,0.1); box-shadow: 0 0 0 3px rgba(79,195,247,0.2); }
+.iab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.iab-btn:hover { background: rgba(255,255,255,0.16); transform: translateY(-1px); }
+.iab-btn-sample {
+  background: #FFB800;
+  color: #0D1B2A;
+  border-color: #FFB800;
+}
+.iab-btn-sample:hover { background: #ffd54a; border-color: #ffd54a; }
+.iab-btn-ico { font-size: 14px; line-height: 1; }
+@media (max-width: 760px) {
+  .interview-action-bar { flex-direction: column; align-items: stretch; }
+  .iab-right { justify-content: stretch; }
+  .iab-btn { flex: 1; justify-content: center; }
+}
+
 /* ===== WIZARD STEP INDICATOR (top of interview panel) ===== */
 .wizard-steps {
   display: flex;
@@ -2609,9 +2684,8 @@ body.interview-mode .search-section { display: none; }
   gap: 10px;
   padding: 16px 20px;
   background: linear-gradient(135deg, #f8fafc 0%, #eff6fb 100%);
-  border-radius: 12px 12px 0 0;
   border-bottom: 1px solid #dbeafe;
-  margin: -20px -20px 18px;
+  margin: 0 -28px 18px;
 }
 .wizard-step {
   display: flex;
@@ -3789,6 +3863,26 @@ body.interview-mode .search-section { display: none; }
 <!-- INTERVIEW PANEL — wrapped in a clear 4-step wizard -->
 <div class="interview-panel" id="interviewPanel">
   <div class="interview-wizard">
+    <!-- ACTION BAR — clear "start new" + "load sample" buttons above everything else -->
+    <div class="interview-action-bar" aria-label="Client interview actions">
+      <div class="iab-left">
+        <div class="iab-client-field">
+          <label for="clientNameInputIV" class="iab-client-label">Client name</label>
+          <input type="text" id="clientNameInputIV" class="iab-client-input" placeholder="e.g. Meridian Health Services" oninput="syncClientNameIV(this.value)" aria-label="Client organization name">
+        </div>
+      </div>
+      <div class="iab-right">
+        <button type="button" class="iab-btn iab-btn-sample" onclick="loadSampleAssessment()" title="Load a fully completed example assessment so execs can see the finished output">
+          <span class="iab-btn-ico">&#9654;</span>
+          <span class="iab-btn-label">Load sample (Meridian)</span>
+        </button>
+        <button type="button" class="iab-btn iab-btn-new" onclick="startNewClient()" title="Clear all answers and start fresh">
+          <span class="iab-btn-ico">&#8634;</span>
+          <span class="iab-btn-label">Start new client</span>
+        </button>
+      </div>
+    </div>
+
     <!-- WIZARD STEP INDICATOR — always visible, tells the viewer where they are -->
     <div class="wizard-steps" aria-label="Coverage review steps">
       <div class="wizard-step" data-step="1" id="wizStep1">
@@ -7272,6 +7366,193 @@ function startInterview() {
   updateInterviewStory();
   updateInterviewProgress();
   updateWizardStep();
+
+  // Double-redraw the radar in the next frame so it paints even if the panel
+  // was just made visible (canvas can sometimes measure 0 during first paint).
+  if (typeof requestAnimationFrame === 'function') {
+    requestAnimationFrame(function(){ drawRadarOnCanvas('radarCanvasInterview'); });
+  }
+}
+
+// ===== SAMPLE ASSESSMENT + START NEW CLIENT =====
+// A realistic, fully completed mid-market healthcare profile (Meridian Health
+// Services) so execs can see the finished output without clicking through 27
+// questions. Strong on identity/email basics, exposed on OT/IoT (medical
+// devices), Shadow AI, and DLP — a believable healthcare story.
+var sampleAssessmentMeridian = {
+  clientName: 'Meridian Health Services',
+  preparerName: 'VJ Barot',
+  preparerTitle: 'Microsoft Security Architect',
+  industry: 'healthcare',
+  answers: {
+    // key = layerId + '_q' + qi,  value = { answerKey, score }
+    identity_q0:    { answerKey: 'yes',     score: 3 }, // MFA fully deployed
+    identity_q1:    { answerKey: 'partial', score: 1 }, // PIM partial
+    identity_q2:    { answerKey: 'yes',     score: 3 }, // Offboarding automated
+    endpoints_q0:   { answerKey: 'yes',     score: 3 }, // EDR deployed
+    endpoints_q1:   { answerKey: 'partial', score: 1 }, // ASR partial
+    endpoints_q2:   { answerKey: 'partial', score: 2 }, // MDM partial
+    email_q0:       { answerKey: 'yes',     score: 3 }, // MDO active
+    email_q1:       { answerKey: 'partial', score: 2 }, // Phishing sims partial
+    cloudapps_q0:   { answerKey: 'partial', score: 1 }, // Shadow IT discovery partial
+    cloudapps_q1:   { answerKey: 'no',      score: 0 }, // No DLP on cloud apps
+    data_q0:        { answerKey: 'partial', score: 2 }, // PHI labeling partial
+    data_q1:        { answerKey: 'no',      score: 0 }, // DLP not deployed
+    secops_q0:      { answerKey: 'partial', score: 2 }, // Partial SIEM
+    secops_q1:      { answerKey: 'partial', score: 2 }, // Partial XDR
+    secops_q2:      { answerKey: 'no',      score: 0 }, // No Copilot
+    network_q0:     { answerKey: 'no',      score: 0 }, // Traditional VPN only
+    network_q1:     { answerKey: 'partial', score: 2 }, // NGFW partial
+    cloudsec_q0:    { answerKey: 'partial', score: 2 }, // CSPM partial
+    cloudsec_q1:    { answerKey: 'partial', score: 1 }, // Workload protection partial
+    vuln_q0:        { answerKey: 'partial', score: 1 }, // Scanning partial
+    vuln_q1:        { answerKey: 'no',      score: 0 }, // Patching lag
+    otiot_q0:       { answerKey: 'yes_unsecured', score: 0 }, // Medical devices, unsecured
+    otiot_q1:       { answerKey: 'no',      score: 0 }, // No dedicated OT tooling
+    api_q0:         { answerKey: 'yes_protected', score: 3 }, // Patient portal APIs protected
+    api_q1:         { answerKey: 'partial', score: 2 }, // API security partial
+    shadowai_q0:    { answerKey: 'no',      score: 0 }, // No AI visibility
+    shadowai_q1:    { answerKey: 'no',      score: 0 }  // No AI policy
+  }
+};
+
+function loadSampleAssessment() {
+  var sample = sampleAssessmentMeridian;
+
+  // Reset any prior state so the sample lands cleanly.
+  interviewAnswers = {};
+  assessmentState = {};
+  _interviewAnswerLog = [];
+
+  // Populate client + preparer fields wherever they live in the DOM.
+  var setIfExists = function(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.value = val;
+  };
+  setIfExists('clientNameInputIV', sample.clientName);
+  setIfExists('clientNameInput', sample.clientName);
+  setIfExists('clientNameInputAlt', sample.clientName);
+  setIfExists('preparerNameInput', sample.preparerName);
+  setIfExists('preparerTitleInput', sample.preparerTitle);
+  if (typeof currentIndustry !== 'undefined') currentIndustry = sample.industry;
+  if (typeof updateRadarTitle === 'function') updateRadarTitle();
+
+  // Walk every preloaded answer and apply it through the same pipeline a real
+  // click would use — writes to interviewAnswers, assessmentState[_iv keys],
+  // and best-effort tool-name match for the Assessment grid.
+  Object.keys(sample.answers).forEach(function(key) {
+    // key format: "layerId_qN" — extract layerId and qi
+    var parts = key.split('_q');
+    if (parts.length !== 2) return;
+    var layerId = parts[0];
+    var qi = parseInt(parts[1], 10);
+    if (isNaN(qi)) return;
+
+    var ans = sample.answers[key];
+    interviewAnswers[layerId + '_q' + qi] = ans.answerKey;
+    assessmentState[layerId + '_iv' + qi] = ans.score;
+
+    // Best-effort sync to tool index
+    var layer = layersData.find(function(l){ return l.id === layerId; });
+    if (layer && interviewQuestions[layerId] && interviewQuestions[layerId][qi]) {
+      var toolName = interviewQuestions[layerId][qi].tool;
+      var toolIdx = layer.microsoft.findIndex(function(t){ return t.name === toolName; });
+      if (toolIdx < 0) {
+        var tokens = toolName.split(/[\s\/]+/).filter(function(t) {
+          var low = (t || '').toLowerCase();
+          return low && low !== 'microsoft' && low.length > 2;
+        });
+        for (var ti = 0; ti < tokens.length && toolIdx < 0; ti++) {
+          var tok = tokens[ti].toLowerCase();
+          toolIdx = layer.microsoft.findIndex(function(t) {
+            return (t.name || '').toLowerCase().indexOf(tok) >= 0;
+          });
+        }
+      }
+      if (toolIdx >= 0) {
+        assessmentState[layerId + '_' + toolIdx] = ans.score;
+      }
+    }
+  });
+
+  // Jump cursor to the end so the "Assessment Complete" state shows.
+  if (typeof buildInterviewFlat === 'function') buildInterviewFlat();
+  interviewCursor = interviewFlat.length;
+
+  // Refresh every visible surface.
+  if (typeof updateAllLayerScores === 'function') updateAllLayerScores();
+  if (typeof renderInterviewQuestion === 'function') renderInterviewQuestion();
+  if (typeof renderInterviewLayerBars === 'function') renderInterviewLayerBars();
+  if (typeof updateInterviewMaturityTotal === 'function') updateInterviewMaturityTotal();
+  if (typeof updateInterviewProgress === 'function') updateInterviewProgress();
+  if (typeof updateInterviewStory === 'function') updateInterviewStory();
+  drawRadarOnCanvas('radarCanvasInterview');
+  if (typeof updateWizardStep === 'function') updateWizardStep(3);
+
+  // Reveal the completion banner.
+  var banner = document.getElementById('interviewCompleteBanner');
+  if (banner) banner.style.display = 'block';
+
+  // Friendly toast
+  if (typeof showToast === 'function') {
+    showToast('\u2705 Loaded sample assessment for ' + sample.clientName + '. Scroll to the Live Coverage Map to see the finished output.');
+  }
+}
+
+function startNewClient() {
+  // Wipe state
+  interviewAnswers = {};
+  assessmentState = {};
+  _interviewAnswerLog = [];
+  interviewCursor = 0;
+  if (typeof currentIndustry !== 'undefined') currentIndustry = '';
+
+  // Clear inputs
+  ['clientNameInputIV','clientNameInput','clientNameInputAlt'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  // Hide completion banner
+  var banner = document.getElementById('interviewCompleteBanner');
+  if (banner) banner.style.display = 'none';
+
+  // Re-render everything to a clean baseline
+  if (typeof buildInterviewFlat === 'function') buildInterviewFlat();
+  if (typeof renderInterviewQuestion === 'function') renderInterviewQuestion();
+  if (typeof renderInterviewLayerBars === 'function') renderInterviewLayerBars();
+  if (typeof updateInterviewMaturityTotal === 'function') updateInterviewMaturityTotal();
+  if (typeof updateInterviewProgress === 'function') updateInterviewProgress();
+  if (typeof updateInterviewStory === 'function') updateInterviewStory();
+  if (typeof updateAllLayerScores === 'function') updateAllLayerScores();
+  drawRadarOnCanvas('radarCanvasInterview');
+  if (typeof updateRadarTitle === 'function') updateRadarTitle();
+  if (typeof updateWizardStep === 'function') updateWizardStep(1);
+
+  // Focus the interview-bar client input so the user knows where to start.
+  var focusEl = document.getElementById('clientNameInputIV') ||
+                document.getElementById('clientNameInput');
+  if (focusEl) {
+    focusEl.focus();
+    focusEl.classList.remove('input-pulse');
+    void focusEl.offsetWidth;
+    focusEl.classList.add('input-pulse');
+  }
+
+  if (typeof showToast === 'function') {
+    showToast('\ud83d\udd04 Starting fresh. Enter a client name, then answer the 27 questions \u2014 the Live Coverage Map updates live.');
+  }
+}
+
+// Keep all client name inputs in sync when the Interview-bar input is used.
+function syncClientNameIV(val) {
+  var targets = ['clientNameInput', 'clientNameInputAlt'];
+  targets.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.value !== val) el.value = val;
+  });
+  if (typeof updateRadarTitle === 'function') updateRadarTitle();
+  if (typeof updateWizardStep === 'function') updateWizardStep();
 }
 
 // Wizard step indicator — lights up 1 of 4 steps based on current state:
@@ -7286,7 +7567,7 @@ function updateWizardStep(forceStep) {
   if (typeof forceStep === 'number') {
     activeIdx = forceStep - 1;
   } else {
-    var clientNameEl = document.getElementById('clientNameInput') || document.getElementById('clientNameInputAlt');
+    var clientNameEl = document.getElementById('clientNameInputIV') || document.getElementById('clientNameInput') || document.getElementById('clientNameInputAlt');
     var clientName = (clientNameEl && clientNameEl.value || '').trim();
     var answered = Object.keys((typeof interviewAnswers !== 'undefined' && interviewAnswers) || {}).length;
     var total = (typeof interviewFlat !== 'undefined' && interviewFlat.length) || 0;
