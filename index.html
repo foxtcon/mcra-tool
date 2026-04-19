@@ -2462,6 +2462,47 @@ body.interview-mode .search-section { display: none; }
   color: var(--navy);
   margin-left: 4px;
 }
+.iv-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 4px 0 16px;
+}
+.iv-metric {
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6fb 100%);
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  padding: 14px 10px;
+  text-align: center;
+}
+.iv-metric:last-child {
+  border-left: 4px solid var(--myriad-accent);
+}
+.iv-metric:first-child {
+  border-left: 4px solid var(--gold);
+}
+.iv-metric-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1;
+  transition: color 0.3s;
+}
+.iv-metric-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+.iv-metric-sub {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
 .interview-story {
   background: linear-gradient(135deg, #f8fafc 0%, #eff6fb 100%);
   border: 1px solid #dbeafe;
@@ -3274,6 +3315,46 @@ body.interview-mode .search-section { display: none; }
 }
 .week1-signature a:hover { border-bottom-color: var(--gold); }
 
+/* ===== DEEP DIVE DIVIDER ===== */
+.deep-dive-divider {
+  max-width: 1100px;
+  margin: 8px auto 28px;
+  padding: 0 16px;
+  text-align: center;
+}
+.deep-dive-divider-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 28px;
+  background: #fff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 999px;
+  color: var(--text-light);
+  font-size: 13px;
+  font-weight: 600;
+}
+.deep-dive-divider-inner strong {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.deep-dive-divider-inner .ddd-hint {
+  color: var(--text-light);
+  font-size: 12px;
+  font-weight: 500;
+}
+.deep-dive-divider::before,
+.deep-dive-divider::after {
+  content: none;
+}
+@media (max-width: 700px) {
+  .deep-dive-divider-inner { flex-direction: column; padding: 12px 20px; gap: 4px; }
+}
+
 </style>
 </head>
 
@@ -3577,6 +3658,15 @@ body.interview-mode .search-section { display: none; }
     </div>
   </div>
 </section>
+
+<!-- DEEP DIVE DIVIDER — signals to viewers that the strategic story is above and
+     everything below is reference/reading material. Reduces perceived page density. -->
+<div class="deep-dive-divider" role="separator" aria-label="Deep dive section begins">
+  <div class="deep-dive-divider-inner">
+    <strong>Deep dive below</strong>
+    <span class="ddd-hint">Everything above is the story. Scroll on if you want the 12-domain coverage map, MEDDPICC qualifier, E5 calculator, and methodology.</span>
+  </div>
+</div>
 
 <!-- HOW IT WORKS — 3-step strip (prospect view, kept because self-guided readers need it) -->
 <div class="how-it-works" id="how-it-works-section">
@@ -6062,6 +6152,12 @@ function setToolScore(layerId, toolIdx, score) {
     if (parseInt(opt.dataset.score) === score) opt.classList.add('selected-' + score);
   });
   updateLayerScore(layerId);
+  // CRITICAL: refresh the overall maturity everywhere on screen after any click.
+  // Without this, the sticky-bar Maturity % stays at 0% no matter what you select.
+  updateAllLayerScores();
+  // Keep the live Interview-mode Coverage Map in sync too, if it's rendered.
+  if (typeof renderInterviewLayerBars === 'function') renderInterviewLayerBars();
+  if (typeof updateInterviewMaturityTotal === 'function') updateInterviewMaturityTotal();
   drawRadar();
   generateRoadmap();
   saveStateToHash();
@@ -6073,9 +6169,9 @@ function setToolScore(layerId, toolIdx, score) {
 }
 
 function getLayerScore(layerId) {
-  if (!window.layersData) return { score: 0, max: 0 };
+  if (!window.layersData) return { score: 0, max: 0, pct: 0 };
   var layer = layersData.find(function(l){ return l.id === layerId; });
-  if (!layer || !layer.microsoft) return { score: 0, max: 0 };
+  if (!layer || !layer.microsoft) return { score: 0, max: 0, pct: 0 };
   var score = 0, max = 0;
   // Part 1: tool-matrix scores (assessment grid), keyed `<layerId>_<toolIdx>`
   layer.microsoft.forEach(function(tool, idx) {
@@ -6949,12 +7045,24 @@ function startInterview() {
   if (!existingCanvas) {
     summaryPanel.innerHTML =
       '<h3 id="interviewSummaryTitle">Live Coverage Map</h3>' +
+      // Dual-metric header: Progress (always moves) + Maturity (depends on answers)
+      '<div class="iv-metrics">' +
+        '<div class="iv-metric">' +
+          '<div class="iv-metric-num" id="ivProgressPct">0%</div>' +
+          '<div class="iv-metric-label">Progress</div>' +
+          '<div class="iv-metric-sub"><span id="ivProgressCount">0 of ' + interviewFlat.length + '</span> answered</div>' +
+        '</div>' +
+        '<div class="iv-metric">' +
+          '<div class="iv-metric-num" id="interviewMaturityPct">0%</div>' +
+          '<div class="iv-metric-label">Maturity</div>' +
+          '<div class="iv-metric-sub">Overall security posture</div>' +
+        '</div>' +
+      '</div>' +
       '<div class="interview-radar-wrap"><canvas id="radarCanvasInterview" width="460" height="360"></canvas></div>' +
-      '<div class="interview-maturity-total">Overall Maturity <strong id="interviewMaturityPct">0%</strong></div>' +
       '<div class="interview-story" id="interviewStory">' +
         '<div class="interview-story-head">' +
           '<span class="interview-story-title">Story so far</span>' +
-          '<span class="interview-story-progress" id="interviewStoryProgress">0 of 0</span>' +
+          '<span class="interview-story-progress" id="interviewStoryProgress">0 of ' + interviewFlat.length + '</span>' +
         '</div>' +
         '<div class="interview-story-body" id="interviewStoryBody">' +
           '<div class="interview-story-line"><span class="stl-value">Answer the first question to start the story.</span></div>' +
@@ -6968,6 +7076,18 @@ function startInterview() {
   renderInterviewLayerBars();
   updateInterviewMaturityTotal();
   updateInterviewStory();
+  updateInterviewProgress();
+}
+
+// Progress metric: how many questions answered, regardless of score. Always moves.
+function updateInterviewProgress() {
+  var total = (typeof interviewFlat !== 'undefined' && interviewFlat.length) || 0;
+  var answered = Object.keys((typeof interviewAnswers !== 'undefined' && interviewAnswers) || {}).length;
+  var pct = total > 0 ? Math.round(answered / total * 100) : 0;
+  var pctEl = document.getElementById('ivProgressPct');
+  var cntEl = document.getElementById('ivProgressCount');
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (cntEl) cntEl.textContent = answered + ' of ' + total;
 }
 
 // Running narrative caption for the Live Coverage Map. Updates every answer
@@ -6999,7 +7119,16 @@ function updateInterviewStory(lastAnswer) {
   });
 
   if (scored.length === 0) {
-    storyBody.innerHTML = '<div class="interview-story-line"><span class="stl-value">Answer the first question to start the story.</span></div>';
+    // Smarter empty-state: if questions have been answered but all scored 0 (all "No"),
+    // still surface the story instead of looking blank.
+    var answered = Object.keys(interviewAnswers || {}).length;
+    if (answered > 0) {
+      storyBody.innerHTML = '<div class="interview-story-line"><span class="stl-value weak">Significant exposure across answered domains.</span></div>' +
+        '<div class="interview-story-line"><span class="stl-label">Answered:</span> <span class="stl-value">' + answered + ' of ' + total + ' questions</span></div>' +
+        '<div class="interview-story-line" style="margin-top:6px;"><span class="stl-value" style="font-style:italic;color:#475569;">Multiple SOW opportunities surfacing. Keep going \u2014 the picture is building.</span></div>';
+    } else {
+      storyBody.innerHTML = '<div class="interview-story-line"><span class="stl-value">Answer the first question to start the story.</span></div>';
+    }
   } else {
     scored.sort(function(a,b){ return b.pct - a.pct; });
     var strongest = scored[0];
@@ -7178,6 +7307,7 @@ function setInterviewAnswer(layerId, qi, answerKey, score) {
     answerLabel: answerLabel,
     score: score
   });
+  if (typeof updateInterviewProgress === 'function') updateInterviewProgress();
 
   setTimeout(function(){ interviewNav(1); }, 600);
 }
@@ -7189,6 +7319,7 @@ function interviewNav(dir) {
   renderInterviewLayerBars();
   // Refresh the narrative's progress counter and current-layer framing.
   updateInterviewStory();
+  if (typeof updateInterviewProgress === 'function') updateInterviewProgress();
 }
 
 // ===== CANVAS RADAR RENDERER =====
@@ -7210,20 +7341,23 @@ function drawRadarOnCanvas(canvasId, highlightLayerId) {
   }
   var highlightIdx = highlightLayerId ? layersData.findIndex(function(l){ return l.id === highlightLayerId; }) : -1;
 
-  // Concentric rings
+  // Concentric rings — darker so the radar is always visibly present, even at 0% scores
   for (var r=1;r<=5;r++){
     var rr=R*r/5;
     ctx.beginPath();
     for(var i=0;i<=N;i++){var a=(Math.PI*2*i/N)-Math.PI/2;if(i===0)ctx.moveTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a));else ctx.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a));}
-    ctx.closePath();ctx.strokeStyle='rgba(13,27,42,0.08)';ctx.lineWidth=1;ctx.stroke();
+    ctx.closePath();
+    ctx.strokeStyle = (r === 5) ? 'rgba(13,27,42,0.35)' : 'rgba(13,27,42,0.18)';
+    ctx.lineWidth = (r === 5) ? 1.5 : 1;
+    ctx.stroke();
   }
-  // Axis lines (highlighted axis slightly stronger)
+  // Axis lines (highlighted axis stronger)
   for(var i=0;i<N;i++){
     var a=(Math.PI*2*i/N)-Math.PI/2;
     ctx.beginPath();
     ctx.moveTo(cx,cy);
     ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));
-    ctx.strokeStyle = (i === highlightIdx) ? 'rgba(79,195,247,0.9)' : 'rgba(13,27,42,0.12)';
+    ctx.strokeStyle = (i === highlightIdx) ? 'rgba(79,195,247,0.9)' : 'rgba(13,27,42,0.25)';
     ctx.lineWidth = (i === highlightIdx) ? 2 : 1;
     ctx.stroke();
   }
