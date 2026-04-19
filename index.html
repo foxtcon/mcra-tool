@@ -241,6 +241,19 @@ textarea:focus-visible,
   z-index: 2;
 }
 .hero-credit a { color: var(--myriad-accent); text-decoration: none; }
+.hero-credibility {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  margin: 18px auto 22px;
+  max-width: 760px;
+  position: relative;
+  z-index: 2;
+  line-height: 1.7;
+}
 
 /* ---- LEGEND ---- */
 .legend-bar {
@@ -3203,6 +3216,62 @@ body.interview-mode .search-section { display: none; }
 }
 .journey-modules strong { color: var(--navy); font-weight: 700; }
 
+/* ===== PROCESS DIAGRAM (replaces the old journey cards) ===== */
+.process-section {
+  max-width: 1100px;
+  margin: 0 auto 32px;
+  padding: 0 16px;
+  text-align: center;
+}
+.process-heading {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.process-subheading {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 18px;
+}
+.process-diagram-wrap {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 24px 16px 12px;
+  box-shadow: 0 2px 8px rgba(13,27,42,0.04);
+}
+.process-diagram {
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  display: block;
+}
+.process-stage circle { transition: transform 0.2s, filter 0.2s; transform-origin: center; transform-box: fill-box; }
+.process-stage:hover circle {
+  transform: scale(1.08);
+  filter: drop-shadow(0 4px 8px rgba(0,180,216,0.25));
+}
+.process-stage-details {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 14px;
+  padding: 14px 8px 4px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 12px;
+  color: var(--text-light);
+}
+.process-stage-details strong { color: var(--navy); font-weight: 700; }
+@media (max-width: 700px) {
+  .process-diagram { max-height: none; }
+  .process-stage-details { justify-content: flex-start; flex-direction: column; text-align: left; }
+}
+
 /* ===== WEEK 1 AT MYRIAD360 ===== */
 .week1-section {
   max-width: 1100px;
@@ -3353,6 +3422,125 @@ body.interview-mode .search-section { display: none; }
 }
 @media (max-width: 700px) {
   .deep-dive-divider-inner { flex-direction: column; padding: 12px 20px; gap: 4px; }
+}
+
+/* ===== CONTACT BLOCK ===== */
+.contact-block {
+  max-width: 1100px;
+  margin: 0 auto 28px;
+  padding: 0 16px;
+}
+.contact-wrap {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-top: 4px solid var(--gold);
+  border-radius: 14px;
+  padding: 28px 24px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(13,27,42,0.06);
+}
+.contact-heading {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.contact-line {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 18px;
+}
+.contact-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.contact-btn {
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.contact-btn.primary {
+  background: var(--navy);
+  color: #fff;
+}
+.contact-btn.secondary {
+  background: #fff;
+  color: var(--navy);
+  border: 1.5px solid #cbd5e1;
+}
+.contact-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(13,27,42,0.15);
+}
+.contact-note {
+  font-size: 11px;
+  color: var(--text-light);
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+/* ===== EXPLORE THE TOOLKIT ===== */
+.toolkit-wrap {
+  max-width: 1100px;
+  margin: 8px auto 20px;
+  padding: 0 16px;
+}
+.toolkit-toggle {
+  width: 100%;
+  background: linear-gradient(135deg, #0D1B2A 0%, #1e3a5f 100%);
+  border: none;
+  color: #fff;
+  padding: 18px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: 'Inter', sans-serif;
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-align: left;
+}
+.toolkit-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(13,27,42,0.25);
+}
+.toolkit-toggle-icon {
+  font-size: 18px;
+  color: var(--gold);
+  transition: transform 0.2s;
+  flex: none;
+  width: 18px;
+}
+.toolkit-toggle.open .toolkit-toggle-icon { transform: rotate(90deg); }
+.toolkit-toggle-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  color: var(--gold);
+  flex: none;
+}
+.toolkit-toggle-hint {
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  font-weight: 500;
+  flex: 1;
+  line-height: 1.5;
+}
+@media (max-width: 700px) {
+  .toolkit-toggle { flex-wrap: wrap; gap: 8px; }
+  .toolkit-toggle-hint { flex-basis: 100%; margin-left: 32px; }
 }
 
 </style>
@@ -3534,7 +3722,11 @@ body.interview-mode .search-section { display: none; }
   </div>
   <h1>Where are the gaps in your <em>security stack?</em></h1>
   <div class="hero-subtitle">
-    Most enterprise security stacks have coverage gaps across identity, data, network, and threat detection that go undetected for months. We map your exposure in 20 minutes across 12 domains, surface the tools you already own and are not using, and hand you a 90-day plan your exec team can present.
+    A sales-cycle tool for Myriad360 Solution Architects and Account Executives. Turn a discovery call into a scored assessment, a qualified deal, and an executive-ready roadmap in 20 minutes.
+  </div>
+
+  <div class="hero-credibility">
+    700+ Microsoft security engagements &middot; MCRA, NIST CSF 2.0, Zero Trust, MITRE ATT&amp;CK &middot; 18 years of enterprise security practice
   </div>
 
   <a href="#assessment-start" class="hero-primary-cta" onclick="startAssessmentFromHero(event)">
@@ -3542,7 +3734,7 @@ body.interview-mode .search-section { display: none; }
   </a>
 
   <div class="hero-credit">
-    Vendor-neutral coverage map. 700+ Myriad360 partner technologies evaluated against MCRA, NIST CSF 2.0, Zero Trust, and MITRE ATT&amp;CK.
+    Vendor-neutral. Microsoft-led where Microsoft wins, partner-led when the customer decides otherwise.
     <a class="hero-advanced-toggle" onclick="toggleAdvancedModes(event)" href="#">Advanced modes ▾</a>
   </div>
 </div>
@@ -3558,62 +3750,70 @@ body.interview-mode .search-section { display: none; }
   </button>
 </div>
 
-<!-- SALES-CYCLE JOURNEY MAP — the strategic thesis made visible -->
-<section class="journey-section" aria-labelledby="journey-heading">
-  <div class="journey-header">
-    <h2 id="journey-heading">How Myriad360 runs a deal with this tool</h2>
-    <p>Click a stage to jump to the module that powers it. Each stage has a named seller role and a concrete output the AE can paste into CRM.</p>
+<!-- SALES-CYCLE PROCESS DIAGRAM — one clean visual that carries the strategic thesis -->
+<section class="process-section" id="thesis" aria-labelledby="process-heading">
+  <h2 id="process-heading" class="process-heading">The sales cycle, start to finish</h2>
+  <p class="process-subheading">One workflow for the SA + AE pair. Click any stage for detail.</p>
+
+  <div class="process-diagram-wrap">
+    <svg class="process-diagram" viewBox="0 0 1100 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five-stage sales cycle: Discovery, Qualify, Scope, Propose, Close">
+      <!-- Connecting line -->
+      <line x1="110" y1="80" x2="990" y2="80" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6 4"/>
+
+      <!-- Stage 1: Discovery (AE) -->
+      <g class="process-stage" data-section="how-it-works-section" data-stage="Discovery" style="cursor:pointer;">
+        <circle cx="110" cy="80" r="38" fill="#fff" stroke="#00B4D8" stroke-width="3"/>
+        <text x="110" y="88" text-anchor="middle" font-family="Oswald, sans-serif" font-size="22" font-weight="700" fill="#0D1B2A">1</text>
+        <text x="110" y="142" text-anchor="middle" font-family="Oswald, sans-serif" font-size="13" font-weight="700" fill="#0D1B2A" letter-spacing="1">DISCOVERY</text>
+        <text x="110" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#d97706" letter-spacing="1.2">AE-LED</text>
+      </g>
+
+      <!-- Stage 2: Qualify (AE+SA) -->
+      <g class="process-stage" data-section="meddpicc-section" data-stage="Qualify" style="cursor:pointer;">
+        <circle cx="330" cy="80" r="38" fill="#fff" stroke="#00B4D8" stroke-width="3"/>
+        <text x="330" y="88" text-anchor="middle" font-family="Oswald, sans-serif" font-size="22" font-weight="700" fill="#0D1B2A">2</text>
+        <text x="330" y="142" text-anchor="middle" font-family="Oswald, sans-serif" font-size="13" font-weight="700" fill="#0D1B2A" letter-spacing="1">QUALIFY</text>
+        <text x="330" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#7c3aed" letter-spacing="1.2">AE + SA</text>
+      </g>
+
+      <!-- Stage 3: Scope (SA) -->
+      <g class="process-stage" data-section="layers" data-stage="Scope" style="cursor:pointer;">
+        <circle cx="550" cy="80" r="42" fill="#FFC300" stroke="#0D1B2A" stroke-width="3"/>
+        <text x="550" y="88" text-anchor="middle" font-family="Oswald, sans-serif" font-size="24" font-weight="700" fill="#0D1B2A">3</text>
+        <text x="550" y="146" text-anchor="middle" font-family="Oswald, sans-serif" font-size="14" font-weight="700" fill="#0D1B2A" letter-spacing="1">SCOPE</text>
+        <text x="550" y="164" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#0369a1" letter-spacing="1.2">SA-LED</text>
+      </g>
+
+      <!-- Stage 4: Propose (AE+SA) -->
+      <g class="process-stage" data-section="e5-section" data-stage="Propose" style="cursor:pointer;">
+        <circle cx="770" cy="80" r="38" fill="#fff" stroke="#00B4D8" stroke-width="3"/>
+        <text x="770" y="88" text-anchor="middle" font-family="Oswald, sans-serif" font-size="22" font-weight="700" fill="#0D1B2A">4</text>
+        <text x="770" y="142" text-anchor="middle" font-family="Oswald, sans-serif" font-size="13" font-weight="700" fill="#0D1B2A" letter-spacing="1">PROPOSE</text>
+        <text x="770" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#7c3aed" letter-spacing="1.2">AE + SA</text>
+      </g>
+
+      <!-- Stage 5: Close (AE) -->
+      <g class="process-stage" data-section="assessmentHeaderSection" data-stage="Close" style="cursor:pointer;">
+        <circle cx="990" cy="80" r="38" fill="#fff" stroke="#00B4D8" stroke-width="3"/>
+        <text x="990" y="88" text-anchor="middle" font-family="Oswald, sans-serif" font-size="22" font-weight="700" fill="#0D1B2A">5</text>
+        <text x="990" y="142" text-anchor="middle" font-family="Oswald, sans-serif" font-size="13" font-weight="700" fill="#0D1B2A" letter-spacing="1">CLOSE</text>
+        <text x="990" y="160" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#d97706" letter-spacing="1.2">AE-LED</text>
+      </g>
+
+      <!-- Arrow heads at each transition (subtle) -->
+      <polygon points="218,76 228,80 218,84" fill="#cbd5e1"/>
+      <polygon points="438,76 448,80 438,84" fill="#cbd5e1"/>
+      <polygon points="658,76 668,80 658,84" fill="#cbd5e1"/>
+      <polygon points="878,76 888,80 878,84" fill="#cbd5e1"/>
+    </svg>
   </div>
-  <div class="journey-strip">
-    <button class="journey-stage" onclick="jumpToSection('how-it-works-section', 'Discovery')" aria-label="Jump to the Discovery stage">
-      <div class="journey-stage-top">
-        <span class="journey-stage-num">01</span>
-        <span class="journey-stage-name">Discovery</span>
-      </div>
-      <div class="journey-role"><span class="role-ae">AE-LED</span></div>
-      <div class="journey-desc">Open the conversation. Surface pain by domain without yet pitching a product. Earn the follow-on call.</div>
-      <div class="journey-modules"><strong>Modules:</strong> Client Interview mode · shareable link generator · industry templates</div>
-    </button>
 
-    <button class="journey-stage" onclick="jumpToSection('meddpicc-section', 'Qualify')" aria-label="Jump to the Qualify stage">
-      <div class="journey-stage-top">
-        <span class="journey-stage-num">02</span>
-        <span class="journey-stage-name">Qualify</span>
-      </div>
-      <div class="journey-role"><span class="role-both">AE + SA</span></div>
-      <div class="journey-desc">Score the opportunity on eight pillars before burning SA hours. Gate the investment with MEDDPICC.</div>
-      <div class="journey-modules"><strong>Modules:</strong> MEDDPICC Deal Qualifier · pain auto-fill from assessment</div>
-    </button>
-
-    <button class="journey-stage" onclick="jumpToSection('layers', 'Scope')" aria-label="Jump to the Scope stage">
-      <div class="journey-stage-top">
-        <span class="journey-stage-num">03</span>
-        <span class="journey-stage-name">Scope</span>
-      </div>
-      <div class="journey-role"><span class="role-sa">SA-LED</span></div>
-      <div class="journey-desc">Technical deep-dive across 12 domains. Microsoft-led where it wins, partner-led where customers push back.</div>
-      <div class="journey-modules"><strong>Modules:</strong> 12-domain coverage map · maturity radar · E5 waste calc · Sentinel cost calc</div>
-    </button>
-
-    <button class="journey-stage" onclick="jumpToSection('e5-section', 'Propose')" aria-label="Jump to the Propose stage">
-      <div class="journey-stage-top">
-        <span class="journey-stage-num">04</span>
-        <span class="journey-stage-name">Propose</span>
-      </div>
-      <div class="journey-role"><span class="role-both">AE + SA</span></div>
-      <div class="journey-desc">Translate the assessment into numbers and a phased roadmap the customer and procurement can act on.</div>
-      <div class="journey-modules"><strong>Modules:</strong> 90-day roadmap · deal-size estimator · E5 waste + Sentinel cost outputs · <em>SOW builder — next iteration</em></div>
-    </button>
-
-    <button class="journey-stage" onclick="jumpToSection('assessmentHeaderSection', 'Close')" aria-label="Jump to the Close stage">
-      <div class="journey-stage-top">
-        <span class="journey-stage-num">05</span>
-        <span class="journey-stage-name">Close</span>
-      </div>
-      <div class="journey-role"><span class="role-ae">AE-LED</span></div>
-      <div class="journey-desc">Executive-ready readout with the four Myriad360 service lines (advisory, implementation, global, managed) priced.</div>
-      <div class="journey-modules"><strong>Modules:</strong> Executive Report · Client Report (print/PDF) · shareable result link</div>
-    </button>
+  <div class="process-stage-details">
+    <span><strong>Discovery:</strong> Client Interview</span>
+    <span><strong>Qualify:</strong> MEDDPICC scorecard</span>
+    <span><strong>Scope:</strong> 12-domain map + radar</span>
+    <span><strong>Propose:</strong> E5 waste + roadmap</span>
+    <span><strong>Close:</strong> Exec report</span>
   </div>
 </section>
 
@@ -3659,41 +3859,30 @@ body.interview-mode .search-section { display: none; }
   </div>
 </section>
 
-<!-- DEEP DIVE DIVIDER — signals to viewers that the strategic story is above and
-     everything below is reference/reading material. Reduces perceived page density. -->
-<div class="deep-dive-divider" role="separator" aria-label="Deep dive section begins">
-  <div class="deep-dive-divider-inner">
-    <strong>Deep dive below</strong>
-    <span class="ddd-hint">Everything above is the story. Scroll on if you want the 12-domain coverage map, MEDDPICC qualifier, E5 calculator, and methodology.</span>
+<!-- CONTACT BLOCK — clean next-step for C-suite viewers -->
+<section class="contact-block" id="contact" aria-labelledby="contact-heading">
+  <div class="contact-wrap">
+    <h2 id="contact-heading" class="contact-heading">Ready to talk?</h2>
+    <p class="contact-line">VJ Barot &middot; Senior Microsoft Security Architect, candidate at Myriad360</p>
+    <div class="contact-actions">
+      <a class="contact-btn primary" href="mailto:vj@foxtcon.com?subject=Myriad360%20MCRA%20Coverage%20Tool">📧 vj@foxtcon.com</a>
+      <a class="contact-btn secondary" href="https://www.linkedin.com/in/vjbarot" target="_blank" rel="noopener">in LinkedIn</a>
+    </div>
+    <p class="contact-note">Built on Foxtcon infrastructure &middot; Portable to Myriad360 on hire &middot; 700+ Microsoft security engagements</p>
   </div>
-</div>
+</section>
 
-<!-- HOW IT WORKS — 3-step strip (prospect view, kept because self-guided readers need it) -->
-<div class="how-it-works" id="how-it-works-section">
-  <div class="hiw-step">
-    <div class="hiw-num">1</div>
-    <div class="hiw-body">
-      <div class="hiw-title">Frame the exposure</div>
-      <div class="hiw-desc">Tell us your industry, size, and what is already deployed in your stack.</div>
-    </div>
-  </div>
-  <div class="hiw-arrow">→</div>
-  <div class="hiw-step">
-    <div class="hiw-num">2</div>
-    <div class="hiw-body">
-      <div class="hiw-title">Map the gaps</div>
-      <div class="hiw-desc">Walk through 12 security domains. Where your incumbent leads, where you decide, and where you are exposed across the 700+ partner ecosystem.</div>
-    </div>
-  </div>
-  <div class="hiw-arrow">→</div>
-  <div class="hiw-step">
-    <div class="hiw-num">3</div>
-    <div class="hiw-body">
-      <div class="hiw-title">Get the plan</div>
-      <div class="hiw-desc">An exec one-pager your CISO shares up the chain, plus a full technical report for the follow-on call.</div>
-    </div>
-  </div>
+<!-- EXPLORE THE TOOLKIT — single collapsible wrapper hiding all deep-dive content
+     (legend, filters, search, 12-domain map, methodology, E5, Sentinel, RSAC)
+     so the first impression is clean. Click to expand. -->
+<div class="toolkit-wrap">
+  <button type="button" class="toolkit-toggle" id="toolkitToggleBtn" onclick="toggleToolkit()" aria-expanded="false" aria-controls="toolkitBody">
+    <span class="toolkit-toggle-icon">▸</span>
+    <span class="toolkit-toggle-label">Explore the toolkit</span>
+    <span class="toolkit-toggle-hint">12-domain coverage map · MEDDPICC · E5 waste calc · Sentinel cost · Methodology · RSAC tracker</span>
+  </button>
 </div>
+<div class="toolkit-body" id="toolkitBody" style="display:none;">
 
 <!-- LEGEND — compressed; appears right before the layer list so color meaning is
      introduced in context, not as landing-page preamble. -->
@@ -3717,136 +3906,6 @@ body.interview-mode .search-section { display: none; }
 </div>
 
 <!-- HOW TO READ -->
-<div class="how-to-read">
-  <div class="how-to-read-toggle" id="how-to-read-section">
-    <div class="how-to-read-header" onclick="document.getElementById('how-to-read-section').classList.toggle('open')">
-      <h3>📖 How to Use This Map</h3>
-      <span class="how-to-read-arrow">▼</span>
-    </div>
-    <div class="how-to-read-body">
-      <div style="padding-top:16px;">
-        <!-- Tab bar -->
-        <div style="display:flex;border-bottom:2px solid #e2e8f0;margin-bottom:20px;gap:0;">
-          <div class="htu-tab active" id="htu-tab-ae" onclick="switchHTUTab('ae')" style="padding:12px 24px;font-size:13px;font-weight:600;color:#94a3b8;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.5px;user-select:none;">🤝 Account Executive</div>
-          <div class="htu-tab" id="htu-tab-se" onclick="switchHTUTab('se')" style="padding:12px 24px;font-size:13px;font-weight:600;color:#94a3b8;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.5px;user-select:none;">🔧 Solution Engineer</div>
-          <div class="htu-tab" id="htu-tab-overview" onclick="switchHTUTab('overview')" style="padding:12px 24px;font-size:13px;font-weight:600;color:#94a3b8;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.5px;user-select:none;">📖 Map Overview</div>
-        </div>
-
-        <!-- AE Tab -->
-        <div id="htu-panel-ae" class="htu-panel">
-          <div style="background:linear-gradient(135deg,rgba(255,195,0,0.08),rgba(0,180,216,0.04));border:1px solid rgba(255,195,0,0.2);border-radius:12px;padding:20px;margin-bottom:20px;">
-            <div style="font-family:Oswald,sans-serif;font-size:16px;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">🎯 AE Workflow: Discovery Call → Report Same Day</div>
-            <div style="font-size:13px;color:var(--text-light);line-height:1.7;">Use the <strong style="color:var(--navy);">Client Interview Mode</strong> to run a structured 20-minute assessment with any IT leader. No security knowledge required. The plain-English questions map to MCRA scores automatically.</div>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;">
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
-              <div style="font-size:20px;margin-bottom:8px;">1️⃣</div>
-              <div style="font-weight:700;color:var(--navy);margin-bottom:6px;font-size:13px;">Before the Call</div>
-              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">Enter the client name. Select their industry from the <strong>Load Industry Template</strong> dropdown to pre-fill a realistic baseline. The radar chart shows a typical starting point for that vertical.</div>
-            </div>
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
-              <div style="font-size:20px;margin-bottom:8px;">2️⃣</div>
-              <div style="font-weight:700;color:var(--navy);margin-bottom:6px;font-size:13px;">During the Call</div>
-              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">Click <strong>🎯 Client Interview</strong> mode. Walk through the plain-English questions with the client on a shared screen. The radar chart updates live as you answer. Takes 15-25 minutes.</div>
-            </div>
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
-              <div style="font-size:20px;margin-bottom:8px;">3️⃣</div>
-              <div style="font-weight:700;color:var(--navy);margin-bottom:6px;font-size:13px;">During the Call</div>
-              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">When you see a gap, check the <strong>E5 Waste Calculator</strong>. If the tool is in E5 and not deployed, the dollar waste tells the story. "You're paying for this and not using it" is a powerful opening.</div>
-            </div>
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
-              <div style="font-size:20px;margin-bottom:8px;">4️⃣</div>
-              <div style="font-weight:700;color:var(--navy);margin-bottom:6px;font-size:13px;">After the Call</div>
-              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">Click <strong>📄 Executive Report</strong> for a clean one-pager with maturity score, top gaps, E5 waste estimate, and Myriad360 recommendation narrative. Or <strong>📥 Download PDF</strong> for a full multi-page report.</div>
-            </div>
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
-              <div style="font-size:20px;margin-bottom:8px;">5️⃣</div>
-              <div style="font-weight:700;color:var(--navy);margin-bottom:6px;font-size:13px;">Follow Up</div>
-              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">Click <strong>🔗 Save & Share</strong> to get a URL with the entire assessment encoded. Share it with your SE for technical depth review, or save it to resume with the client next meeting.</div>
-            </div>
-            <div style="background:linear-gradient(135deg,var(--navy),#1e3a5f);border-radius:10px;padding:16px;color:#fff;">
-              <div style="font-size:20px;margin-bottom:8px;">💬</div>
-              <div style="font-weight:700;color:var(--gold);margin-bottom:6px;font-size:13px;">AE Talk Track</div>
-              <div style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6;">"I want to show you where your security investment sits against best practice. Takes 20 minutes. At the end you'll have a score and a dollar estimate of what you're leaving on the table."</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- SE Tab -->
-        <div id="htu-panel-se" class="htu-panel" style="display:none;">
-          <div style="background:linear-gradient(135deg,rgba(0,180,216,0.08),rgba(13,27,42,0.04));border:1px solid rgba(0,180,216,0.2);border-radius:12px;padding:20px;margin-bottom:20px;">
-            <div style="font-family:Oswald,sans-serif;font-size:16px;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">🔧 SE Workflow: Deep Technical Assessment → Scoped SOW</div>
-            <div style="font-size:13px;color:var(--text-light);line-height:1.7;">Use <strong style="color:var(--navy);">Assessment Mode</strong> for full technical depth. The checkbox system maps to MCRA deployment maturity. Deep Dive tabs show Decision Framework, Integration Architecture, and Compliance mapping for every layer.</div>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;">
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
-              <div style="font-size:20px;margin-bottom:8px;">🔬</div>
-              <div style="font-weight:700;color:var(--navy);margin-bottom:6px;font-size:13px;">Assessment Mode</div>
-              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">Switch to Assessment Mode. Score each Microsoft tool: Not Deployed (0), Default Config (1), Customized (2), Fully Optimized (3). <strong>⚠ Critical</strong> badges indicate tools with 2x weight in the maturity score.</div>
-            </div>
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
-              <div style="font-size:20px;margin-bottom:8px;">📑</div>
-              <div style="font-weight:700;color:var(--navy);margin-bottom:6px;font-size:13px;">Deep Dive Tabs</div>
-              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">Every layer has Decision Framework, Integration Architecture, and Compliance mapping tabs. Use the Decision Framework to build the "Microsoft vs. Partner" recommendation. Compliance map directly maps to SOW scope.</div>
-            </div>
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
-              <div style="font-size:20px;margin-bottom:8px;">📡</div>
-              <div style="font-weight:700;color:var(--navy);margin-bottom:6px;font-size:13px;">Sentinel Cost Calc</div>
-              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">Toggle on partner tools in the Sentinel Ingestion Cost Calculator. Shows daily GB, monthly and annual costs at PAYG vs. Commitment tier. Use this to right-size the Sentinel workspace in the SOW.</div>
-            </div>
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
-              <div style="font-size:20px;margin-bottom:8px;">🗺️</div>
-              <div style="font-weight:700;color:var(--navy);margin-bottom:6px;font-size:13px;">Roadmap Generator</div>
-              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">The 3-phase roadmap auto-generates from assessment scores. Phase 1 = critical gaps (SOW immediate scope). Phase 2 = foundation (90-day follow-on). Phase 3 = optimization (ongoing managed services upsell).</div>
-            </div>
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;">
-              <div style="font-size:20px;margin-bottom:8px;">💡</div>
-              <div style="font-weight:700;color:var(--navy);margin-bottom:6px;font-size:13px;">Displacement Flags</div>
-              <div style="font-size:12px;color:var(--text-light);line-height:1.6;">When you mark a Microsoft tool as "Deployed," the tool auto-detects potential competing tools (CrowdStrike vs. MDE, Splunk vs. Sentinel) and surfaces the consolidation conversation and estimated savings.</div>
-            </div>
-            <div style="background:linear-gradient(135deg,var(--navy),#1e3a5f);border-radius:10px;padding:16px;color:#fff;">
-              <div style="font-size:20px;margin-bottom:8px;">🔗</div>
-              <div style="font-weight:700;color:var(--gold);margin-bottom:6px;font-size:13px;">Save & Share</div>
-              <div style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6;">Use <strong>Save & Share</strong> to encode the full assessment state in the URL. Share with the AE before QBR, or save between sessions. The URL contains all scores, client name, and industry filter.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Map Overview Tab -->
-        <div id="htu-panel-overview" class="htu-panel" style="display:none;">
-          <div style="font-size:13px;color:var(--text-light);line-height:1.7;margin-bottom:16px;">This is an interactive assessment tool built on the <strong style="color:var(--navy);">Microsoft Cybersecurity Reference Architecture (MCRA)</strong>, the definitive best-practice framework for enterprise Microsoft security deployments.</div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;">
-            <div style="background:#f1f5f9;border-radius:8px;padding:14px;border-left:3px solid var(--cyan);">
-              <strong style="color:var(--navy);">🎨 Color System</strong>
-              <div style="margin-top:8px;font-size:12px;color:var(--text-light);line-height:1.7;"><span style="color:var(--green);font-weight:700;">Green</span>: Microsoft leads, no partner outperforms it. <span style="color:var(--amber);font-weight:700;">Amber</span>: Customer decides based on existing investments. <span style="color:var(--red);font-weight:700;">Red</span>: Specialist partner outperforms Microsoft at this layer.</div>
-            </div>
-            <div style="background:#f1f5f9;border-radius:8px;padding:14px;border-left:3px solid var(--gold);">
-              <strong style="color:var(--navy);">🔍 Search by Tool</strong>
-              <div style="font-size:12px;color:var(--text-light);margin-top:6px;line-height:1.6;">Type any tool name (CrowdStrike, Axonius, Palo Alto) in the search bar below to instantly filter all layers where that tool appears.</div>
-            </div>
-            <div style="background:#f1f5f9;border-radius:8px;padding:14px;border-left:3px solid var(--green);">
-              <strong style="color:var(--navy);">🏭 Industry Filters</strong>
-              <div style="font-size:12px;color:var(--text-light);margin-top:6px;line-height:1.6;">Click any industry button to see deployment-specific guidance for every layer: what worked, what did not work, and what matters most in that vertical.</div>
-            </div>
-            <div style="background:#f1f5f9;border-radius:8px;padding:14px;border-left:3px solid var(--cyan);">
-              <strong style="color:var(--navy);">📑 Deep Dive Tabs</strong>
-              <div style="font-size:12px;color:var(--text-light);margin-top:6px;line-height:1.6;">All 12 layers have Decision Framework, Integration Architecture, and Compliance Map tabs. Click any layer to expand, then use the tab bar inside.</div>
-            </div>
-            <div style="background:#f1f5f9;border-radius:8px;padding:14px;border-left:3px solid var(--gold);">
-              <strong style="color:var(--navy);">📡 Sentinel Connectors</strong>
-              <div style="font-size:12px;color:var(--text-light);margin-top:6px;line-height:1.6;">Every partner tool shows connector type (native/API/CEF), ingestion tier, and daily GB estimate for Sentinel cost planning.</div>
-            </div>
-            <div style="background:#f1f5f9;border-radius:8px;padding:14px;border-left:3px solid var(--green);">
-              <strong style="color:var(--navy);">🗺️ Migration Pathways</strong>
-              <div style="font-size:12px;color:var(--text-light);margin-top:6px;line-height:1.6;">Red-rated layers show 3-phase migration plans: activate what you own in E5, deploy partner alongside, then optimize and integrate into Sentinel.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 <!-- SEARCH BY TOOL -->
 <div class="search-section">
@@ -4069,6 +4128,8 @@ body.interview-mode .search-section { display: none; }
   </div>
   <div class="roadmap-phases" id="roadmapPhases"></div>
 </div>
+
+</div><!-- /toolkit-body -->
 
 <!-- CTA -->
 <div class="cta-section">
@@ -6721,6 +6782,49 @@ function copyE5WasteSummary() {
 }
 
 /* ============================================================================
+   Explore the Toolkit — single toggle that hides/shows all deep-dive content.
+   Also used by jumpToSection so clicking any process-diagram stage auto-opens
+   the toolkit before scrolling.
+   ============================================================================ */
+function toggleToolkit(forceOpen) {
+  var body = document.getElementById('toolkitBody');
+  var btn  = document.getElementById('toolkitToggleBtn');
+  if (!body || !btn) return;
+  var shouldOpen = (typeof forceOpen === 'boolean') ? forceOpen : (body.style.display === 'none');
+  body.style.display = shouldOpen ? 'block' : 'none';
+  btn.classList.toggle('open', shouldOpen);
+  btn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+  var label = btn.querySelector('.toolkit-toggle-label');
+  if (label) label.textContent = shouldOpen ? 'Hide the toolkit' : 'Explore the toolkit';
+}
+
+/* ============================================================================
+   Process diagram click wiring — attach click handlers to each <g class="process-stage">
+   via a single delegated listener after DOM is ready.
+   ============================================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+  var stages = document.querySelectorAll('.process-stage');
+  stages.forEach(function(stage) {
+    stage.addEventListener('click', function() {
+      var targetId = stage.getAttribute('data-section');
+      var stageName = stage.getAttribute('data-stage');
+      if (typeof jumpToSection === 'function' && targetId) {
+        jumpToSection(targetId, stageName);
+      }
+    });
+    // Keyboard accessibility
+    stage.setAttribute('tabindex', '0');
+    stage.setAttribute('role', 'button');
+    stage.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        stage.click();
+      }
+    });
+  });
+});
+
+/* ============================================================================
    One-click demo launcher
    Loads a healthcare scenario (Meridian Health Services), enters Client
    Interview mode, and scrolls to the first question. Used by the CTA in the
@@ -6785,7 +6889,12 @@ function launchDemoScenario(opts) {
 function jumpToSection(targetId, stageName) {
   var el = document.getElementById(targetId);
   if (!el) return;
-  // If the target is a collapsible toggle, open it
+  // If the target sits inside the Explore Toolkit wrapper, open the wrapper first.
+  var toolkitBody = document.getElementById('toolkitBody');
+  if (toolkitBody && toolkitBody.contains(el) && typeof toggleToolkit === 'function') {
+    toggleToolkit(true);
+  }
+  // If the target is itself a collapsible toggle, open it
   var togglable = el.closest ? el.closest('.meddpicc-toggle, .e5-toggle, .methodology-toggle, .sentinel-calc-toggle, .rsac-toggle, .how-to-read-toggle') : null;
   if (togglable && !togglable.classList.contains('open')) {
     togglable.classList.add('open');
