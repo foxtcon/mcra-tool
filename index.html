@@ -1774,26 +1774,53 @@ body::before {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   border-bottom: 2px solid var(--gold);
+  position: sticky;
+  top: 0;
+  z-index: 950;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  flex-wrap: wrap;
+}
+.mode-toggle-bar::before {
+  content: 'Navigate:';
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-right: 4px;
 }
 .mode-toggle-btn {
-  padding: 8px 24px;
+  padding: 7px 18px;
   border-radius: 24px;
   font-family: 'Inter', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
   border: 2px solid rgba(255,255,255,0.2);
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.75);
   background: transparent;
-  transition: all 0.3s;
-  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+.mode-toggle-btn:hover {
+  color: #fff;
+  border-color: rgba(255,195,0,0.5);
 }
 .mode-toggle-btn.active {
   background: var(--gold);
   color: var(--navy);
   border-color: var(--gold);
+}
+/* Offset the sticky client bar so it stacks below the mode toggle cleanly */
+body.assessment-mode .sticky-client-bar,
+body.interview-mode .sticky-client-bar { top: 48px; }
+@media (max-width: 700px) {
+  .mode-toggle-bar { padding: 8px 12px; gap: 6px; }
+  .mode-toggle-bar::before { display: none; }
+  .mode-toggle-btn { padding: 6px 12px; font-size: 11px; }
 }
 /* ── Sticky Client Profile Bar ── */
 .sticky-client-bar {
@@ -2574,6 +2601,84 @@ body.interview-mode .search-section { display: none; }
 .interview-story-log span.isl-yes { color: #047857; }
 .interview-story-log span.isl-partial { color: #b45309; }
 .interview-story-log span.isl-no { color: #b91c1c; }
+
+/* ===== WIZARD STEP INDICATOR (top of interview panel) ===== */
+.wizard-steps {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6fb 100%);
+  border-radius: 12px 12px 0 0;
+  border-bottom: 1px solid #dbeafe;
+  margin: -20px -20px 18px;
+}
+.wizard-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+.wizard-step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #cbd5e1;
+  color: #94a3b8;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  flex: none;
+}
+.wizard-step-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.wizard-step.active .wizard-step-dot {
+  background: var(--myriad-accent);
+  border-color: var(--myriad-accent);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(79,195,247,0.15);
+}
+.wizard-step.active .wizard-step-label {
+  color: var(--navy);
+  font-weight: 700;
+}
+.wizard-step.complete .wizard-step-dot {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+.wizard-step.complete .wizard-step-dot::before {
+  content: '✓';
+  font-size: 14px;
+}
+.wizard-step.complete .wizard-step-dot-num { display: none; }
+.wizard-step.complete .wizard-step-label {
+  color: #047857;
+}
+.wizard-step-line {
+  flex: 1;
+  height: 2px;
+  background: #e2e8f0;
+  min-width: 10px;
+  max-width: 60px;
+}
+@media (max-width: 900px) {
+  .wizard-steps { flex-wrap: wrap; gap: 8px; padding: 12px; }
+  .wizard-step-label { display: none; }
+  .wizard-step.active .wizard-step-label { display: inline; }
+  .wizard-step-line { display: none; }
+}
 .interview-layer-bars {
   display: grid;
   grid-template-columns: 1fr;
@@ -3625,9 +3730,9 @@ body.interview-mode .search-section { display: none; }
      aren't forced to pick a mode before they know what the tool does. Reveals
      automatically when the user picks a non-default mode, or when the seller
      clicks "Advanced modes" in the hero-credit line. -->
-<div class="mode-toggle-bar" id="modeToggleBar" style="display:none;">
-  <button class="mode-toggle-btn active" id="researchModeBtn" onclick="setMode('research')">🔬 Research Mode</button>
-  <button class="mode-toggle-btn" id="assessmentModeBtn" onclick="setMode('assessment')">📊 Assessment Mode</button>
+<div class="mode-toggle-bar" id="modeToggleBar">
+  <button class="mode-toggle-btn active" id="researchModeBtn" onclick="setMode('research')">🔬 Research</button>
+  <button class="mode-toggle-btn" id="assessmentModeBtn" onclick="setMode('assessment')">📊 Assessment</button>
   <button class="mode-toggle-btn" id="interviewModeBtn" onclick="setMode('interview')">🎯 Client Interview</button>
 </div>
 
@@ -3681,9 +3786,32 @@ body.interview-mode .search-section { display: none; }
   </div>
 </div>
 
-<!-- INTERVIEW PANEL -->
+<!-- INTERVIEW PANEL — wrapped in a clear 4-step wizard -->
 <div class="interview-panel" id="interviewPanel">
   <div class="interview-wizard">
+    <!-- WIZARD STEP INDICATOR — always visible, tells the viewer where they are -->
+    <div class="wizard-steps" aria-label="Coverage review steps">
+      <div class="wizard-step" data-step="1" id="wizStep1">
+        <div class="wizard-step-dot">1</div>
+        <div class="wizard-step-label">Set context</div>
+      </div>
+      <div class="wizard-step-line"></div>
+      <div class="wizard-step active" data-step="2" id="wizStep2">
+        <div class="wizard-step-dot">2</div>
+        <div class="wizard-step-label">Answer questions</div>
+      </div>
+      <div class="wizard-step-line"></div>
+      <div class="wizard-step" data-step="3" id="wizStep3">
+        <div class="wizard-step-dot">3</div>
+        <div class="wizard-step-label">Review</div>
+      </div>
+      <div class="wizard-step-line"></div>
+      <div class="wizard-step" data-step="4" id="wizStep4">
+        <div class="wizard-step-dot">4</div>
+        <div class="wizard-step-label">Summary</div>
+      </div>
+    </div>
+
     <div class="interview-header">
       <h3 id="interviewLayerTitle">Security Assessment Interview</h3>
       <div class="interview-progress-bar-wrap">
@@ -3720,40 +3848,35 @@ body.interview-mode .search-section { display: none; }
     <div style="width:1px;height:32px;background:rgba(255,255,255,0.15);"></div>
     <div style="text-align:center;"><div style="font-family:Oswald,sans-serif;font-size:22px;font-weight:700;color:#FFC300;">CRN SP500</div><div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;">13 Consecutive Years</div></div>
   </div>
-  <h1>Where are the gaps in your <em>security stack?</em></h1>
+  <h1>A research exploration of <em>security coverage</em></h1>
   <div class="hero-subtitle">
-    A sales-cycle tool for Myriad360 Solution Architects and Account Executives. Turn a discovery call into a scored assessment, a qualified deal, and an executive-ready roadmap in 20 minutes.
-  </div>
-
-  <div class="hero-credibility">
-    700+ Microsoft security engagements &middot; MCRA, NIST CSF 2.0, Zero Trust, MITRE ATT&amp;CK &middot; 18 years of enterprise security practice
+    A small study of how a Microsoft security architect might support Myriad360's consultative approach. Built to learn, not to replace anything your team already does well.
   </div>
 
   <a href="#assessment-start" class="hero-primary-cta" onclick="startAssessmentFromHero(event)">
-    Find My Gaps →
+    Start a coverage review →
   </a>
 
   <div class="hero-credit">
-    Vendor-neutral. Microsoft-led where Microsoft wins, partner-led when the customer decides otherwise.
-    <a class="hero-advanced-toggle" onclick="toggleAdvancedModes(event)" href="#">Advanced modes ▾</a>
+    Vendor-neutral by design. MCRA used as one reference framework among many.
   </div>
 </div>
 
-<!-- AUDIENCE POSITIONING BAND — removes ambiguity about who this tool is for -->
-<div class="audience-band" role="note" aria-label="Who this tool is for">
-  <span class="audience-band-badge">Built for Myriad360</span>
+<!-- RESEARCH FRAMING BAND — sets a humble, learning-oriented posture -->
+<div class="audience-band" role="note" aria-label="About this project">
+  <span class="audience-band-badge">Research Project</span>
   <div class="audience-band-copy">
-    <strong>A sales-cycle tool for Solution Architects and Account Executives</strong> — not a prospect survey. Every module below maps onto a stage of a live deal, from first discovery call through executive sign-off. Microsoft-led where Microsoft is the right answer, partner-led when it is not.
+    <strong>This is an exploration, not a product.</strong> Myriad360's teams already run a proven process across 700+ partner technologies. I built this while researching the space, to understand the work and see where a Microsoft-focused perspective might genuinely help. Curious to learn how your team actually runs this today.
   </div>
-  <button type="button" class="audience-band-cta" onclick="launchDemoScenario()" aria-label="Start a live 2-minute demo with a healthcare scenario preloaded">
-    ▶ Try the 2-minute demo
+  <button type="button" class="audience-band-cta" onclick="launchDemoScenario()" aria-label="Start a sample coverage review with a healthcare scenario preloaded">
+    ▶ Try a sample review
   </button>
 </div>
 
-<!-- SALES-CYCLE PROCESS DIAGRAM — one clean visual that carries the strategic thesis -->
+<!-- HOW I WAS THINKING ABOUT THE PROBLEM — learner's framing, not a thesis -->
 <section class="process-section" id="thesis" aria-labelledby="process-heading">
-  <h2 id="process-heading" class="process-heading">The sales cycle, start to finish</h2>
-  <p class="process-subheading">One workflow for the SA + AE pair. Click any stage for detail.</p>
+  <h2 id="process-heading" class="process-heading">How I was thinking about the problem</h2>
+  <p class="process-subheading">A rough map based on public research into Myriad360's approach. There's a lot I don't know yet. Click any stage to see the module I built to explore it.</p>
 
   <div class="process-diagram-wrap">
     <svg class="process-diagram" viewBox="0 0 1100 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five-stage sales cycle: Discovery, Qualify, Scope, Propose, Close">
@@ -3817,58 +3940,18 @@ body.interview-mode .search-section { display: none; }
   </div>
 </section>
 
-<!-- WEEK 1 AT MYRIAD360 — personal commitment from VJ Barot to the hiring team -->
-<section class="week1-section" aria-labelledby="week1-heading">
-  <div class="week1-wrap">
-    <div class="week1-eyebrow">Hiring Commitment</div>
-    <h2 id="week1-heading" class="week1-title">My first <em>five days</em> at Myriad360</h2>
-    <p class="week1-subtitle">This tool is not a portfolio piece. It is the shape of the work I will ship in Week 1 if you hire me. Delivered, not promised. Below is the specific commitment by day, pairing with the SA-AE revenue engine that makes Myriad360 run.</p>
 
-    <div class="week1-grid">
-      <div class="week1-day">
-        <div class="week1-day-num">Day 1 · Monday</div>
-        <div class="week1-day-theme">Pair with the AEs</div>
-        <div class="week1-day-detail">15-minute syncs with each of the top five AEs. What are the open deals. Who is the economic buyer. Where is Microsoft friction real and where is it perception. Build the pairing map.</div>
-      </div>
-      <div class="week1-day">
-        <div class="week1-day-num">Day 2 · Tuesday</div>
-        <div class="week1-day-theme">Shadow live calls</div>
-        <div class="week1-day-detail">Sit in on two live discovery calls from the top two AE pipelines. Listen, do not speak. Write the same-day technical summary as a gift for the AE\u2019s warm follow-up email.</div>
-      </div>
-      <div class="week1-day">
-        <div class="week1-day-num">Day 3 · Wednesday</div>
-        <div class="week1-day-theme">Rebalance the map</div>
-        <div class="week1-day-detail">Update the 12-domain coverage map to reflect the real Myriad360 700+ partner portfolio. Start with Identity, Endpoint, Network. Pair with PJ and Russell on the technical depth.</div>
-      </div>
-      <div class="week1-day">
-        <div class="week1-day-num">Day 4 · Thursday</div>
-        <div class="week1-day-theme">Ship battlecards</div>
-        <div class="week1-day-detail">Multi-vendor battlecards for the three domains above. When Microsoft wins, when a partner wins, when the customer decides. Readable by any AE in under two minutes.</div>
-      </div>
-      <div class="week1-day">
-        <div class="week1-day-num">Day 5 · Friday</div>
-        <div class="week1-day-theme">Demo + commit</div>
-        <div class="week1-day-detail">Walk the updated tool through Neeraj and the top-AE cohort. End the week with one scoped real-deal commitment in pipeline, paired with an AE, and a Week 2 plan on the whiteboard.</div>
-      </div>
-    </div>
-
-    <div class="week1-signature">
-      <div>Prepared by <strong>VJ Barot</strong> &middot; Candidate, Senior Microsoft Security Solution Architect &middot; <a href="mailto:vj@foxtcon.com">vj@foxtcon.com</a></div>
-      <div>Built on Foxtcon infrastructure. Portable to Myriad360 on hire.</div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT BLOCK — clean next-step for C-suite viewers -->
+<!-- CONTACT BLOCK — humble, learner-oriented, no "candidate" language -->
 <section class="contact-block" id="contact" aria-labelledby="contact-heading">
   <div class="contact-wrap">
-    <h2 id="contact-heading" class="contact-heading">Ready to talk?</h2>
-    <p class="contact-line">VJ Barot &middot; Senior Microsoft Security Architect, candidate at Myriad360</p>
+    <h2 id="contact-heading" class="contact-heading">Happy to connect</h2>
+    <p class="contact-line">VJ Barot &middot; Microsoft Security Architect</p>
+    <p class="contact-line" style="font-size:13px;color:var(--text-light);margin-top:2px;">I'd welcome the chance to learn how your SA and AE teams actually run this today. Always more to learn than to teach.</p>
     <div class="contact-actions">
-      <a class="contact-btn primary" href="mailto:vj@foxtcon.com?subject=Myriad360%20MCRA%20Coverage%20Tool">📧 vj@foxtcon.com</a>
-      <a class="contact-btn secondary" href="https://www.linkedin.com/in/vjbarot" target="_blank" rel="noopener">in LinkedIn</a>
+      <a class="contact-btn primary" href="mailto:vj@foxtcon.com?subject=Myriad360%20Coverage%20Research">vj@foxtcon.com</a>
+      <a class="contact-btn secondary" href="https://www.linkedin.com/in/vjbarot" target="_blank" rel="noopener">LinkedIn</a>
     </div>
-    <p class="contact-note">Built on Foxtcon infrastructure &middot; Portable to Myriad360 on hire &middot; 700+ Microsoft security engagements</p>
+    <p class="contact-note">A personal research project &middot; Built on Foxtcon infrastructure</p>
   </div>
 </section>
 
@@ -6313,11 +6396,13 @@ function syncClientName() {
   if (alt) alt.value = val;
   updateRadarTitle();
   saveToLocalStorage();
+  if (typeof updateWizardStep === 'function') updateWizardStep();
 }
 function syncClientNameAlt() {
   var val = document.getElementById('clientNameInputAlt').value;
   document.getElementById('clientNameInput').value = val;
   updateRadarTitle();
+  if (typeof updateWizardStep === 'function') updateWizardStep();
 }
 
 /* ── Update sticky maturity pill ── */
@@ -6835,7 +6920,7 @@ function launchDemoScenario(opts) {
   var company  = opts.company  || 'Meridian Health Services';
   var industry = opts.industry || 'healthcare';
   var rep      = opts.rep      || 'VJ Barot';
-  var repTitle = opts.repTitle || 'Senior Microsoft Security Solution Architect';
+  var repTitle = opts.repTitle || 'Microsoft Security Architect';
 
   // Fill client name fields (both sticky bar and assessment header)
   ['clientNameInput', 'clientNameInputAlt'].forEach(function(id) {
@@ -7186,6 +7271,38 @@ function startInterview() {
   updateInterviewMaturityTotal();
   updateInterviewStory();
   updateInterviewProgress();
+  updateWizardStep();
+}
+
+// Wizard step indicator — lights up 1 of 4 steps based on current state:
+//   1 = Set context (no client name yet)
+//   2 = Answer questions (actively answering)
+//   3 = Review (all questions answered, not yet exported)
+//   4 = Summary (executive report has been triggered)
+function updateWizardStep(forceStep) {
+  var steps = ['wizStep1','wizStep2','wizStep3','wizStep4'];
+  var activeIdx = 1; // default to step 2 (questions)
+
+  if (typeof forceStep === 'number') {
+    activeIdx = forceStep - 1;
+  } else {
+    var clientNameEl = document.getElementById('clientNameInput') || document.getElementById('clientNameInputAlt');
+    var clientName = (clientNameEl && clientNameEl.value || '').trim();
+    var answered = Object.keys((typeof interviewAnswers !== 'undefined' && interviewAnswers) || {}).length;
+    var total = (typeof interviewFlat !== 'undefined' && interviewFlat.length) || 0;
+
+    if (!clientName && answered === 0) activeIdx = 0;       // Step 1: no context yet
+    else if (total > 0 && answered < total) activeIdx = 1;  // Step 2: answering
+    else if (total > 0 && answered >= total) activeIdx = 2; // Step 3: all answered
+  }
+
+  steps.forEach(function(id, i) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('active', 'complete');
+    if (i < activeIdx) el.classList.add('complete');
+    else if (i === activeIdx) el.classList.add('active');
+  });
 }
 
 // Progress metric: how many questions answered, regardless of score. Always moves.
@@ -7417,6 +7534,7 @@ function setInterviewAnswer(layerId, qi, answerKey, score) {
     score: score
   });
   if (typeof updateInterviewProgress === 'function') updateInterviewProgress();
+  if (typeof updateWizardStep === 'function') updateWizardStep();
 
   setTimeout(function(){ interviewNav(1); }, 600);
 }
@@ -7429,6 +7547,7 @@ function interviewNav(dir) {
   // Refresh the narrative's progress counter and current-layer framing.
   updateInterviewStory();
   if (typeof updateInterviewProgress === 'function') updateInterviewProgress();
+  if (typeof updateWizardStep === 'function') updateWizardStep();
 }
 
 // ===== CANVAS RADAR RENDERER =====
@@ -7597,6 +7716,8 @@ function getPreparerInfo() {
 }
 
 function generateExecReport() {
+  // Advance the wizard to Step 4 (Summary) when the exec report is generated.
+  if (typeof updateWizardStep === 'function') updateWizardStep(4);
   var clientName = (document.getElementById('clientNameInput')||{value:''}).value.trim() || 'Client Organization';
   var preparer = getPreparerInfo();
   var totalScore = 0, totalMax = 0;
