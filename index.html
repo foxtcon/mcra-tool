@@ -3772,6 +3772,156 @@ body:not(.assessment-mode) .roadmap-section {
   margin: 0;
 }
 
+/* ===== SOURCES & METHODOLOGY ===== */
+.sources-block { max-width: 1100px; margin: 32px auto 0; padding: 0 16px; }
+.sources-wrap {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-top: 4px solid var(--navy);
+  border-radius: 14px;
+  padding: 28px 28px 22px;
+  box-shadow: 0 2px 12px rgba(13,27,42,0.06);
+}
+.sources-heading {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.sources-lede {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 18px;
+  max-width: 780px;
+  line-height: 1.5;
+}
+.sources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.source-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid var(--gold);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.source-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--gold);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.source-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+.source-note {
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+.sources-note {
+  font-size: 11px;
+  color: var(--text-light);
+  font-style: italic;
+  margin: 6px 0 0;
+  line-height: 1.5;
+}
+
+/* ===== QUESTIONS I'D ASK ON DAY ONE ===== */
+.day-one-block { max-width: 1100px; margin: 20px auto 0; padding: 0 16px; }
+.day-one-wrap {
+  background: linear-gradient(135deg, #0D1B2A 0%, #1e3a5f 100%);
+  border-radius: 14px;
+  padding: 28px;
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(13,27,42,0.1);
+}
+.day-one-heading {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.day-one-lede {
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 18px;
+  max-width: 780px;
+  line-height: 1.5;
+}
+.day-one-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.day-one-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+}
+.doq-num {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+}
+.doq-text {
+  font-size: 13px;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.55;
+}
+.doq-text strong { color: #fff; }
+
+/* ===== MEDDPICC "from assessment" badge ===== */
+.md-auto-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 2px 8px;
+  margin-left: 8px;
+  border-radius: 10px;
+  background: rgba(0, 180, 216, 0.12);
+  color: #0284c7;
+  border: 1px solid rgba(0, 180, 216, 0.3);
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
 /* ===== EXPLORE THE TOOLKIT ===== */
 .toolkit-wrap {
   max-width: 1100px;
@@ -4139,12 +4289,69 @@ body:not(.assessment-mode) .roadmap-section {
 </section>
 
 
+<!-- SOURCES & METHODOLOGY — transparent statement of what this is built on,
+     so the first question anyone asks has a visible, honest answer. -->
+<section class="sources-block" id="sources" aria-labelledby="sources-heading">
+  <div class="sources-wrap">
+    <h2 id="sources-heading" class="sources-heading">Where this came from</h2>
+    <p class="sources-lede">Everything in this tool is built from publicly available frameworks plus hands-on Microsoft security experience. No insider access to Myriad360, no real client data.</p>
+    <div class="sources-grid">
+      <div class="source-card">
+        <div class="source-label">Technical framework</div>
+        <div class="source-title">Microsoft Cybersecurity Reference Architecture (MCRA)</div>
+        <div class="source-note">Microsoft&rsquo;s published reference architecture on Microsoft Learn. 12 security layers, vendor-neutral.</div>
+      </div>
+      <div class="source-card">
+        <div class="source-label">Sales qualification</div>
+        <div class="source-title">MEDDPICC (Force Management)</div>
+        <div class="source-note">Industry-standard eight-pillar deal qualification framework used widely in B2B enterprise security sales.</div>
+      </div>
+      <div class="source-card">
+        <div class="source-label">Tool ratings</div>
+        <div class="source-title">18+ years of Microsoft security deployments</div>
+        <div class="source-note">Green/amber/red layer ratings drawn from 700+ enterprise deployments spanning 500 to 50,000+ endpoints.</div>
+      </div>
+      <div class="source-card">
+        <div class="source-label">Myriad360 context</div>
+        <div class="source-title">Public positioning &amp; case studies</div>
+        <div class="source-note">Consultative, vendor-neutral, 700+ partner portfolio. Sourced from myriad360.com, LinkedIn, and published materials.</div>
+      </div>
+      <div class="source-card">
+        <div class="source-label">Industry incumbents</div>
+        <div class="source-title">Widely known competitive landscape</div>
+        <div class="source-note">Okta, CrowdStrike, Claroty, Dragos, Proofpoint, CyberArk and similar &mdash; common in the industries shown.</div>
+      </div>
+      <div class="source-card">
+        <div class="source-label">Compliance anchors</div>
+        <div class="source-title">Public regulations</div>
+        <div class="source-note">HIPAA/HITECH, NERC CIP, CMMC, FedRAMP, NIST 800-53, PCI-DSS, GLBA, FERPA &mdash; public standards.</div>
+      </div>
+    </div>
+    <p class="sources-note">Sample data (&ldquo;Meridian Health Services&rdquo;) is synthetic &mdash; a hypothetical midmarket healthcare org built to demonstrate what a completed assessment looks like. It is not a real client.</p>
+  </div>
+</section>
+
+<!-- QUESTIONS I'D ASK ON DAY ONE — explicit humble curiosity -->
+<section class="day-one-block" id="day-one" aria-labelledby="day-one-heading">
+  <div class="day-one-wrap">
+    <h2 id="day-one-heading" class="day-one-heading">Questions I&rsquo;d ask on day one</h2>
+    <p class="day-one-lede">Things I can&rsquo;t know from the outside. The honest gap between what this tool shows and what would make it real.</p>
+    <ul class="day-one-list">
+      <li><span class="doq-num">1</span><span class="doq-text"><strong>What qualification framework do your AEs actually use?</strong> MEDDPICC is my default here; the real answer might be MEDDIC, BANT, Command of the Message, or something internal.</span></li>
+      <li><span class="doq-num">2</span><span class="doq-text"><strong>Which engagement model does most revenue come through?</strong> Fixed-fee scopes, retainers, T&amp;M, value-based? That shapes how a tool like this should recommend next steps.</span></li>
+      <li><span class="doq-num">3</span><span class="doq-text"><strong>Where exactly does the SA-to-AE handoff happen?</strong> On what signal, with what artifacts, and how are gaps between Discovery and Qualify caught?</span></li>
+      <li><span class="doq-num">4</span><span class="doq-text"><strong>Which layers in this map do you see most often lose to a best-of-breed competitor?</strong> That&rsquo;s where the amber ratings should probably be red, and vice-versa.</span></li>
+      <li><span class="doq-num">5</span><span class="doq-text"><strong>What does a really good SA deliverable look like at Myriad360?</strong> I want to calibrate against your standard, not mine.</span></li>
+    </ul>
+  </div>
+</section>
+
 <!-- CONTACT BLOCK — humble, learner-oriented, no "candidate" language -->
 <section class="contact-block" id="contact" aria-labelledby="contact-heading">
   <div class="contact-wrap">
     <h2 id="contact-heading" class="contact-heading">Happy to connect</h2>
     <p class="contact-line">VJ Barot &middot; Microsoft Security Architect</p>
-    <p class="contact-line" style="font-size:13px;color:var(--text-light);margin-top:2px;">I'd welcome the chance to learn how your SA and AE teams actually run this today. Always more to learn than to teach.</p>
+    <p class="contact-line" style="font-size:13px;color:var(--text-light);margin-top:2px;">I&rsquo;d welcome the chance to learn how your SA and AE teams actually run this today. Always more to learn than to teach.</p>
     <div class="contact-actions">
       <a class="contact-btn primary" href="mailto:vj@foxtcon.com?subject=Myriad360%20Coverage%20Research">vj@foxtcon.com</a>
       <a class="contact-btn secondary" href="https://www.linkedin.com/in/vj-barot-0674b513/" target="_blank" rel="noopener">LinkedIn</a>
@@ -4400,23 +4607,6 @@ body:not(.assessment-mode) .roadmap-section {
         <div class="sentinel-savings-banner" id="sentinelSavingsBanner"></div>
       </div>
       <p class="sentinel-note" id="sentinelNote"></p>
-    </div>
-  </div>
-</div>
-
-<!-- RSAC 2026 IMPACT TRACKER -->
-<div class="rsac-section">
-  <div class="rsac-toggle" id="rsac-section">
-    <div class="rsac-header" onclick="document.getElementById('rsac-section').classList.toggle('open')">
-      <div class="rsac-header-content">
-        <h3>📢 RSAC 2026 Impact Tracker</h3>
-        <p>How recent Microsoft announcements change the coverage ratings</p>
-      </div>
-      <span class="rsac-arrow">▼</span>
-    </div>
-    <div class="rsac-body">
-      <div class="announcement-grid" id="rsac-grid">
-      </div>
     </div>
   </div>
 </div>
@@ -7327,6 +7517,16 @@ function renderMeddpicc() {
     name.textContent = p.name;
     head.appendChild(letter);
     head.appendChild(name);
+    // Auto-populated badge when notes contain the assessment marker — the
+    // SA/AE can see at a glance which pillars are machine-seeded and still
+    // need human validation with the buyer.
+    if (entry.notes && entry.notes.indexOf(MEDDPICC_AUTO_MARKER) >= 0) {
+      var badge = document.createElement('span');
+      badge.className = 'md-auto-badge';
+      badge.textContent = '\ud83d\udd17 from assessment';
+      badge.title = 'This pillar was auto-populated from the MCRA assessment. Validate with the buyer before scoring it Validated.';
+      head.appendChild(badge);
+    }
     card.appendChild(head);
 
     // Prompt
