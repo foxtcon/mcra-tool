@@ -3193,6 +3193,72 @@ body:not(.assessment-mode) .roadmap-section {
 .meddpicc-score-btn[data-score="2"].active { background: var(--amber); }
 .meddpicc-score-btn[data-score="3"].active { background: var(--green); }
 
+/* ===== UNIFIED SCORECARD (Technical Maturity + Deal Readiness) ===== */
+.unified-scorecard {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 14px;
+  padding: 18px;
+  background: linear-gradient(135deg, #0D1B2A 0%, #1e3a5f 100%);
+  border-radius: 14px;
+  margin-bottom: 18px;
+  color: #fff;
+}
+.unified-card { display: flex; flex-direction: column; justify-content: center; }
+.unified-card.action { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.unified-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 195, 0, 0.9);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.unified-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+}
+.unified-denom {
+  font-size: 22px;
+  color: rgba(255,255,255,0.55);
+  margin-left: 4px;
+  font-weight: 500;
+}
+.unified-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 6px;
+  font-weight: 500;
+}
+.unified-sync-btn, .unified-export-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255,195,0,0.45);
+  border-radius: 8px;
+  background: rgba(255,195,0,0.12);
+  color: #FFC300;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.unified-sync-btn:hover, .unified-export-btn:hover { background: rgba(255,195,0,0.22); transform: translateY(-1px); }
+.unified-export-btn { background: #FFC300; color: #0D1B2A; border-color: #FFC300; }
+.unified-export-btn:hover { background: #ffd54a; }
+@media (max-width: 760px) {
+  .unified-scorecard { grid-template-columns: 1fr 1fr; }
+  .unified-card.action { grid-column: 1 / -1; flex-direction: row; }
+}
+
 .meddpicc-summary {
   margin-top: 20px;
   background: linear-gradient(135deg, #0D1B2A 0%, #1e3a5f 100%);
@@ -4263,6 +4329,30 @@ body:not(.assessment-mode) .roadmap-section {
       <span class="meddpicc-arrow">▼</span>
     </div>
     <div class="meddpicc-body">
+      <!-- UNIFIED SCORECARD — technical and commercial health side by side.
+           Updates live whenever the assessment OR MEDDPICC state changes. -->
+      <div class="unified-scorecard" id="unifiedScorecard" role="status" aria-live="polite">
+        <div class="unified-card tech">
+          <div class="unified-label">Technical Maturity</div>
+          <div class="unified-num"><span id="unifiedMaturityPct">—</span></div>
+          <div class="unified-sub" id="unifiedMaturitySub">Awaiting assessment</div>
+        </div>
+        <div class="unified-card deal">
+          <div class="unified-label">Deal Readiness</div>
+          <div class="unified-num"><span id="unifiedDealScore">0</span><span class="unified-denom">/24</span></div>
+          <div class="unified-sub" id="unifiedDealSub">0 of 8 pillars validated</div>
+        </div>
+        <div class="unified-card action">
+          <button class="unified-sync-btn" onclick="syncMeddpiccFromAssessment(false)" title="Pull weak layers, maturity %, and industry incumbents into MEDDPICC">
+            <span class="unified-sync-ico">\u{1F517}</span>
+            <span>Sync from assessment</span>
+          </button>
+          <button class="unified-export-btn" onclick="generateExecReport()" title="Open an executive summary with everything combined, ready to print or save as PDF">
+            <span>\u{1F4C4} Executive report</span>
+          </button>
+        </div>
+      </div>
+
       <div class="meddpicc-grid" id="meddpiccGrid"></div>
 
       <div class="meddpicc-summary" role="status" aria-live="polite">
@@ -4273,7 +4363,6 @@ body:not(.assessment-mode) .roadmap-section {
         <div class="meddpicc-verdict red" id="meddpiccVerdict">Not Qualified</div>
         <div class="meddpicc-actions">
           <button class="meddpicc-btn primary" onclick="copyMeddpiccSummary()" aria-label="Copy MEDDPICC summary to clipboard">📋 Copy Summary</button>
-          <button class="meddpicc-btn secondary" onclick="autoFillMeddpiccFromAssessment()" aria-label="Prefill identified pain from the assessment scores">✨ Suggest Pain from Assessment</button>
           <button class="meddpicc-btn secondary" onclick="resetMeddpicc()" aria-label="Reset MEDDPICC scores">↺ Reset</button>
         </div>
       </div>
@@ -7302,9 +7391,11 @@ function renderMeddpicc() {
 
 function updateMeddpiccSummary() {
   var state = meddpiccLoad();
-  var total = 0;
+  var total = 0, validated = 0;
   MEDDPICC_PILLARS.forEach(function(p) {
-    total += (state[p.key] && state[p.key].score) || 0;
+    var s = (state[p.key] && state[p.key].score) || 0;
+    total += s;
+    if (s >= 3) validated++;
   });
   var scoreEl = document.getElementById('meddpiccScore');
   var verdictEl = document.getElementById('meddpiccVerdict');
@@ -7315,6 +7406,21 @@ function updateMeddpiccSummary() {
     else if (total <= 16) { verdictEl.classList.add('amber'); verdictEl.textContent = 'Qualifying — Invest Selectively'; }
     else                  { verdictEl.classList.add('green'); verdictEl.textContent = 'Qualified — Advance the Deal'; }
   }
+
+  // Unified scorecard — combines MCRA maturity + MEDDPICC score in one view.
+  var sum = (typeof getAssessmentSummary === 'function') ? getAssessmentSummary() : null;
+  var umEl = document.getElementById('unifiedMaturityPct');
+  var umSub = document.getElementById('unifiedMaturitySub');
+  var udEl = document.getElementById('unifiedDealScore');
+  var udSub = document.getElementById('unifiedDealSub');
+  if (umEl && sum) {
+    umEl.textContent = sum.honest ? (sum.overallPct + '%') : '\u2014';
+    if (umSub) umSub.textContent = sum.honest
+      ? (sum.maturityLabel + ' \u00b7 ' + sum.inScopeLayers + ' of 12 in scope')
+      : ('Needs ' + (3 - sum.inScopeLayers) + ' more layer' + (sum.inScopeLayers === 2 ? '' : 's') + ' answered');
+  }
+  if (udEl) udEl.textContent = String(total);
+  if (udSub) udSub.textContent = validated + ' of ' + MEDDPICC_PILLARS.length + ' pillars validated';
 }
 
 function resetMeddpicc() {
@@ -7357,39 +7463,170 @@ function copyMeddpiccSummary() {
   }
 }
 
-// Pull weak layers from the assessment and use them as a starter for the
-// "Identify Pain" pillar — the fastest way to link coverage gaps to deal pain.
-function autoFillMeddpiccFromAssessment() {
-  var weakLayers = [];
-  try {
-    if (typeof layersData !== 'undefined' && Array.isArray(layersData)) {
-      layersData.forEach(function(layer) {
-        if (!layer || !layer.tools) return;
-        var scores = [];
-        layer.tools.forEach(function(tool, idx) {
-          var key = layer.id + '_' + idx;
-          var v = (typeof assessmentState !== 'undefined' && assessmentState[key] != null) ? assessmentState[key] : null;
-          if (v != null) scores.push(v);
-        });
-        if (scores.length) {
-          var avg = scores.reduce(function(a,b){return a+b;},0) / scores.length;
-          if (avg < 2) weakLayers.push({ name: layer.name || layer.id, avg: avg });
-        }
-      });
-    }
-  } catch (e) { /* best effort */ }
+// ==========================================================================
+// MEDDPICC ↔ MCRA INTEGRATION
+// Auto-populate 4 of the 8 pillars directly from the technical assessment:
+//   - Identify Pain   <= weak layers + compliance framework
+//   - Metrics         <= current maturity % and realistic 90-day target
+//   - Decision Criteria <= MCRA's four-criteria framework (framework-level)
+//   - Competition     <= industry-typical incumbents (investigation prompt)
+// The other 4 (Economic Buyer, Decision Process, Paper Process, Champion) are
+// purely commercial — a human has to fill them. We leave those untouched.
+// AE's existing notes are preserved; auto-content is appended with a clear
+// marker so it's obvious what was machine-generated and what the AE added.
+// ==========================================================================
 
+var MEDDPICC_AUTO_MARKER = '--- auto-populated from assessment ---';
+var INDUSTRY_INCUMBENTS = {
+  healthcare:    ['Okta', 'CrowdStrike', 'Duo', 'Mimecast', 'Medigate (medical-device)'],
+  finance:       ['Okta', 'CrowdStrike', 'Palo Alto Networks', 'Proofpoint', 'IBM QRadar'],
+  government:    ['CyberArk', 'CrowdStrike', 'Tenable', 'Splunk', 'Palo Alto Networks'],
+  manufacturing: ['CrowdStrike', 'Claroty (OT)', 'Dragos (ICS)', 'Cisco', 'Tenable.ot'],
+  energy:        ['CrowdStrike', 'Nozomi Networks (OT)', 'Dragos', 'Splunk', 'Palo Alto Networks'],
+  education:     ['Okta', 'CrowdStrike', 'Proofpoint', 'Duo', 'Cisco Umbrella']
+};
+
+// Returns a clean summary of the current assessment state — the single source
+// of truth that MEDDPICC auto-fill AND the exec report both consume.
+function getAssessmentSummary() {
+  var clientEl = document.getElementById('clientNameInput') || document.getElementById('clientNameInputAlt') || document.getElementById('clientNameInputIV');
+  var clientName = (clientEl && clientEl.value || '').trim() || 'Client Organization';
+  var preparer = (typeof getPreparerInfo === 'function') ? getPreparerInfo() : { name: 'VJ Barot', title: 'Microsoft Security Architect', byline: 'VJ Barot, Microsoft Security Architect | Myriad360' };
+  var industry = (typeof currentIndustry !== 'undefined' && currentIndustry) || '';
+  var cf = (typeof complianceFrameworks !== 'undefined') ? complianceFrameworks[industry] : null;
+
+  var layerScores = [];
+  var totalScore = 0, totalMax = 0, inScopeLayers = 0, outOfScope = [];
+  if (typeof layersData !== 'undefined' && Array.isArray(layersData)) {
+    layersData.forEach(function(l) {
+      var r = getLayerScore(l.id);
+      layerScores.push({ id: l.id, name: l.name || l.id, icon: l.icon, pct: r.pct, score: r.score, max: r.max, na: r.na, inScope: r.max > 0 });
+      totalScore += r.score;
+      totalMax += r.max;
+      if (r.max > 0) inScopeLayers++;
+      if (r.max === 0 && r.na > 0) outOfScope.push(l.name || l.id);
+    });
+  }
+  var overallPct = totalMax > 0 ? Math.round(totalScore / totalMax * 100) : 0;
+  var honest = inScopeLayers >= (typeof MATURITY_MIN_LAYERS !== 'undefined' ? MATURITY_MIN_LAYERS : 3);
+  var maturityLabel = overallPct >= 70 ? 'Advanced' : overallPct >= 45 ? 'Developing' : 'Foundational';
+
+  var weak = layerScores.filter(function(l) { return l.inScope && l.pct < 50; }).sort(function(a,b){ return a.pct - b.pct; });
+  var strong = layerScores.filter(function(l) { return l.inScope && l.pct >= 67; }).sort(function(a,b){ return b.pct - a.pct; });
+
+  return {
+    clientName: clientName,
+    preparer: preparer,
+    industry: industry,
+    compliance: cf,
+    layerScores: layerScores,
+    totalScore: totalScore,
+    totalMax: totalMax,
+    overallPct: overallPct,
+    maturityLabel: maturityLabel,
+    inScopeLayers: inScopeLayers,
+    outOfScope: outOfScope,
+    weakLayers: weak,
+    strongLayers: strong,
+    honest: honest                // false until MATURITY_MIN_LAYERS in-scope
+  };
+}
+
+// Renamed + rewritten. Old name kept as alias so existing "Suggest Pain"
+// button still works.
+function syncMeddpiccFromAssessment(silent) {
+  var sum = getAssessmentSummary();
+  if (sum.inScopeLayers === 0) {
+    if (!silent) alert('Answer a few interview questions first — that gives the assessment enough evidence to seed the deal qualifier.');
+    return;
+  }
   var state = meddpiccLoad();
-  var existing = (state.identifyPain && state.identifyPain.notes) || '';
-  var prefix = 'Coverage gaps surfaced in the assessment:\n';
-  var bullets = weakLayers.length
-    ? weakLayers.slice(0, 5).map(function(l) { return '  - ' + l.name + ' (avg maturity ' + l.avg.toFixed(1) + '/3)'; }).join('\n')
-    : '  (Run the assessment first to auto-populate weak domains here.)';
-  var newNotes = (existing ? existing + '\n\n' : '') + prefix + bullets;
-  state.identifyPain = { score: (state.identifyPain && state.identifyPain.score) || 0, notes: newNotes };
+
+  // Utility: replace any previously auto-populated block (between the marker
+  // and end-of-string) so re-running the sync doesn't stack duplicates.
+  function mergeAutoNotes(existingNotes, autoBody) {
+    var notes = existingNotes || '';
+    var idx = notes.indexOf(MEDDPICC_AUTO_MARKER);
+    if (idx >= 0) notes = notes.substring(0, idx).replace(/\s+$/, '');
+    return (notes ? notes + '\n\n' : '') + MEDDPICC_AUTO_MARKER + '\n' + autoBody;
+  }
+  function setPillar(key, autoBody, defaultScore) {
+    var cur = state[key] || { score: 0, notes: '' };
+    state[key] = {
+      // Preserve AE's manually-set score; only bump to defaultScore if still 0
+      score: (cur.score && cur.score > 0) ? cur.score : defaultScore,
+      notes: mergeAutoNotes(cur.notes, autoBody)
+    };
+  }
+
+  // PILLAR 1: Identify Pain — weak layers + compliance hook
+  var painLines = ['Coverage gaps from the assessment (lower = more exposed):'];
+  if (sum.weakLayers.length === 0) {
+    painLines.push('  - No layers below 50% maturity. Primary pain is likely operational (MTTR, alert fatigue, vendor sprawl) rather than coverage.');
+  } else {
+    sum.weakLayers.slice(0, 6).forEach(function(l) {
+      painLines.push('  - ' + l.name + ' ' + l.pct + '% (' + l.score + '/' + l.max + ')');
+    });
+  }
+  if (sum.compliance) {
+    painLines.push('');
+    painLines.push('Compliance exposure: ' + sum.compliance.framework + ' — ' + sum.compliance.note);
+  }
+  setPillar('identifyPain', painLines.join('\n'), 2);
+
+  // PILLAR 2: Metrics — maturity % + target + strongest domain
+  var target90 = Math.min(70, sum.overallPct + 25);  // realistic 90-day stretch, capped at 70%
+  var metricsLines = [
+    'Current MCRA maturity: ' + sum.overallPct + '% (' + sum.maturityLabel + ')',
+    'Target at 90 days: ' + target90 + '% (focus on the 2 weakest in-scope layers)',
+    'Coverage in scope: ' + sum.inScopeLayers + ' of 12 MCRA layers' + (sum.outOfScope.length ? ' (N/A: ' + sum.outOfScope.join(', ') + ')' : '')
+  ];
+  if (sum.strongLayers.length > 0) {
+    metricsLines.push('Strongest anchor: ' + sum.strongLayers[0].name + ' (' + sum.strongLayers[0].pct + '%) — preserve and build from here');
+  }
+  setPillar('metrics', metricsLines.join('\n'), 2);
+
+  // PILLAR 3: Decision Criteria — MCRA framework as the evaluation rubric
+  var criteriaLines = [
+    'Suggest evaluating any vendor against the four MCRA criteria:',
+    '  1. Configuration Depth    — policy granularity, edge-case handling',
+    '  2. Integration Maturity   — Sentinel, Entra, Defender XDR, Intune connectors',
+    '  3. Compliance Coverage    — ' + (sum.compliance ? sum.compliance.framework + ' alignment' : 'NIST CSF / HIPAA / PCI / CMMC native'),
+    '  4. Detection & Response   — real-world MTTD/MTTR, not lab benchmarks',
+    '',
+    'Ask the buyer: which of these are in their RFP? If none are, shape them.'
+  ];
+  setPillar('decisionCriteria', criteriaLines.join('\n'), 2);
+
+  // PILLAR 4: Competition — industry-typical incumbents to investigate
+  var incumbents = INDUSTRY_INCUMBENTS[sum.industry];
+  var compLines;
+  if (incumbents) {
+    compLines = [
+      'Incumbents common in ' + (sum.compliance ? sum.compliance.label : sum.industry) + ' to investigate:',
+      '  - ' + incumbents.join('\n  - '),
+      '',
+      'Discovery: ask the buyer which of these they already own, and whether renewal is inside 12 months.'
+    ];
+  } else {
+    compLines = [
+      'Set the industry filter on the coverage map to populate typical incumbents.',
+      'Otherwise, discover: "What security tools are you already under contract for, and what are the next two renewals?"'
+    ];
+  }
+  setPillar('competition', compLines.join('\n'), 1);   // Competition starts at Weak — needs buyer validation
+
   meddpiccSave(state);
   window._meddpiccRendered = false;
   renderMeddpicc();
+  if (!silent && typeof showToast === 'function') {
+    showToast('\ud83d\udd17 MEDDPICC synced from assessment \u2014 4 of 8 pillars seeded. Fill the 4 commercial pillars manually.');
+  }
+}
+
+// Legacy alias — the old button still calls this name.
+function autoFillMeddpiccFromAssessment() {
+  return syncMeddpiccFromAssessment(false);
 }
 
 function generateClientReport() {
@@ -7562,9 +7799,16 @@ function loadSampleAssessment() {
   var banner = document.getElementById('interviewCompleteBanner');
   if (banner) banner.style.display = 'block';
 
+  // Auto-sync MEDDPICC so the deal view is pre-seeded with technical findings.
+  // Silent = no extra toast, since we're about to show our own.
+  if (typeof syncMeddpiccFromAssessment === 'function') {
+    try { syncMeddpiccFromAssessment(true); } catch (e) { /* best effort */ }
+  }
+  if (typeof updateMeddpiccSummary === 'function') updateMeddpiccSummary();
+
   // Friendly toast
   if (typeof showToast === 'function') {
-    showToast('\u2705 Loaded sample assessment for ' + sample.clientName + '. Scroll to the Live Coverage Map to see the finished output.');
+    showToast('\u2705 Loaded sample for ' + sample.clientName + '. Maturity + Deal Readiness are in the Live Coverage Map and under the Qualify stage.');
   }
 }
 
@@ -8121,158 +8365,271 @@ function getPreparerInfo() {
 function generateExecReport() {
   // Advance the wizard to Step 4 (Summary) when the exec report is generated.
   if (typeof updateWizardStep === 'function') updateWizardStep(4);
-  var clientName = (document.getElementById('clientNameInput')||{value:''}).value.trim() || 'Client Organization';
-  var preparer = getPreparerInfo();
-  var totalScore = 0, totalMax = 0;
-  var topGaps = [];
-  layersData.forEach(function(l){
-    var r = getLayerScore(l.id);
-    totalScore += r.score; totalMax += r.max;
-    if (r.pct < 50) {
-      topGaps.push({ layer: l.name, pct: r.pct, icon: l.icon });
-    }
+
+  // Pull MEDDPICC fresh from the latest assessment before we print.
+  if (typeof syncMeddpiccFromAssessment === 'function') {
+    try { syncMeddpiccFromAssessment(true); } catch (e) {}
+  }
+
+  var sum = getAssessmentSummary();
+  var md = (typeof meddpiccLoad === 'function') ? meddpiccLoad() : {};
+
+  if (sum.totalMax === 0) {
+    alert('No assessment answers yet. Answer some interview questions or score tools in Assessment mode, then try again.');
+    return;
+  }
+
+  var maturityColor = sum.overallPct >= 70 ? '#22c55e' : sum.overallPct >= 45 ? '#f59e0b' : '#ef4444';
+  var narrative = generateAENarrative(sum);
+
+  // MEDDPICC totals
+  var mdTotal = 0, mdValidated = 0;
+  MEDDPICC_PILLARS.forEach(function(p) {
+    var s = (md[p.key] && md[p.key].score) || 0;
+    mdTotal += s;
+    if (s >= 3) mdValidated++;
   });
-  topGaps.sort(function(a,b){ return a.pct - b.pct; });
-  var overallPct = totalMax > 0 ? Math.round(totalScore/totalMax*100) : 0;
-  var maturityLabel = overallPct >= 70 ? 'Advanced' : overallPct >= 45 ? 'Developing' : 'Foundational';
-  var maturityColor = overallPct >= 70 ? '#22c55e' : overallPct >= 45 ? '#f59e0b' : '#ef4444';
+  var mdVerdict = mdTotal <= 8 ? { label: 'Not Qualified \u2014 Discovery Needed', color: '#ef4444' }
+                  : mdTotal <= 16 ? { label: 'Qualifying \u2014 Invest Selectively', color: '#f59e0b' }
+                  :                  { label: 'Qualified \u2014 Advance the Deal', color: '#22c55e' };
 
-  var licenses = parseInt((document.getElementById('e5LicenseCount')||{value:1000}).value)||1000;
-  var monthlyCost = parseFloat((document.getElementById('e5MonthlyCost')||{value:57}).value)||57;
-  var totalWaste = e5WasteData.reduce(function(sum,item){
-    return sum + licenses * monthlyCost * (1-item.utilPct/100) * item.weight * 12;
-  }, 0);
+  var win = window.open('', '_blank', 'width=960,height=760');
+  if (!win) { alert('Popup blocked — please allow popups for this site and try again.'); return; }
 
-  var narrative = generateAENarrative(overallPct, topGaps, totalWaste, clientName);
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function w(s) { win.document.write(s); }
 
-  var win = window.open('', '_blank', 'width=900,height=700');
-  win.document.write('<!DOCTYPE html><html><head><title>Executive Security Summary: ' + clientName + '</title>');
-  win.document.write('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">');
-  win.document.write('<style>');
-  win.document.write('*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,sans-serif;background:#fff;color:#1a1a2e;line-height:1.6}');
-  win.document.write('.report-header{background:linear-gradient(135deg,#0D1B2A,#1e3a5f);padding:32px 40px;color:#fff}');
-  win.document.write('.report-header h1{font-family:Oswald,sans-serif;font-size:24px;text-transform:uppercase;letter-spacing:2px;color:#FFC300;margin-bottom:4px}');
-  win.document.write('.report-header p{font-size:14px;color:rgba(255,255,255,0.7)}');
-  win.document.write('.report-body{padding:32px 40px}');
-  win.document.write('.score-hero{text-align:center;background:#f8fafc;border-radius:16px;padding:32px;margin-bottom:24px;border:2px solid ' + maturityColor + '20}');
-  win.document.write('.score-hero .big-score{font-size:80px;font-weight:900;font-family:Oswald,sans-serif;color:' + maturityColor + ';line-height:1}');
-  win.document.write('.score-hero .maturity-label{font-size:18px;font-weight:700;color:#1a1a2e;margin-top:8px}');
-  win.document.write('.gap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}');
-  win.document.write('.gap-card{background:#fef2f2;border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:16px;text-align:center}');
-  win.document.write('.gap-card .icon{font-size:24px;margin-bottom:6px}');
-  win.document.write('.gap-card .layer{font-size:12px;font-weight:700;color:#1a1a2e}');
-  win.document.write('.gap-card .pct{font-size:20px;font-weight:800;color:#ef4444}');
-  win.document.write('.narrative-box{background:linear-gradient(135deg,#0D1B2A,#1e3a5f);color:#fff;border-radius:12px;padding:24px;margin-bottom:24px}');
-  win.document.write('.narrative-box h3{font-family:Oswald,sans-serif;font-size:16px;text-transform:uppercase;letter-spacing:1px;color:#FFC300;margin-bottom:12px}');
-  win.document.write('.narrative-box p{font-size:14px;line-height:1.7;color:rgba(255,255,255,0.9)}');
-  win.document.write('.waste-callout{border:2px solid rgba(239,68,68,0.3);border-radius:12px;padding:20px;text-align:center;background:linear-gradient(135deg,rgba(239,68,68,0.06),rgba(255,195,0,0.04))}');
-  win.document.write('.waste-callout .amount{font-size:42px;font-weight:900;font-family:Oswald,sans-serif;color:#FFC300}');
-  win.document.write('.footer{background:#f8fafc;padding:16px 40px;font-size:11px;color:#94a3b8;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between}');
-  win.document.write('@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}');
-  win.document.write('</style></head><body>');
-  var cf = complianceFrameworks[currentIndustry];
-  var industryLine = cf ? (' &nbsp;|&nbsp; ' + cf.label + ' (' + cf.framework + ')') : '';
-  win.document.write('<div class="report-header"><h1>Security Maturity Executive Summary</h1><p>' + clientName + industryLine + ' &nbsp;|&nbsp; Prepared by ' + preparer.byline + ' &nbsp;|&nbsp; ' + new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) + '</p></div>');
+  w('<!DOCTYPE html><html><head><title>Executive Security Summary: ' + esc(sum.clientName) + '</title>');
+  w('<meta charset="utf-8">');
+  w('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">');
+  w('<style>');
+  w('*{margin:0;padding:0;box-sizing:border-box}');
+  w('body{font-family:Inter,sans-serif;background:#fff;color:#1a1a2e;line-height:1.6;padding-bottom:80px}');
+  w('.report-header{background:linear-gradient(135deg,#0D1B2A,#1e3a5f);padding:32px 40px;color:#fff}');
+  w('.report-header h1{font-family:Oswald,sans-serif;font-size:24px;text-transform:uppercase;letter-spacing:2px;color:#FFC300;margin-bottom:4px}');
+  w('.report-header p{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px}');
+  w('.report-body{padding:32px 40px;max-width:960px;margin:0 auto}');
+  w('.section-title{font-family:Oswald,sans-serif;font-size:15px;text-transform:uppercase;letter-spacing:2px;color:#0D1B2A;margin:24px 0 12px;border-bottom:2px solid #FFC300;padding-bottom:6px}');
+
+  // Hero scorecard (two numbers side by side)
+  w('.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}');
+  w('.hero-card{background:#f8fafc;border-radius:14px;padding:24px;border:1px solid #e2e8f0}');
+  w('.hero-card .big{font-size:56px;font-weight:900;font-family:Oswald,sans-serif;line-height:1}');
+  w('.hero-card .label{font-family:Oswald,sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:2px;color:#64748b;margin-bottom:10px;font-weight:700}');
+  w('.hero-card .sub{font-size:12px;color:#64748b;margin-top:8px}');
+
+  // Gap / strength cards
+  w('.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}');
+  w('.mini-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px;text-align:center}');
+  w('.mini-card.weak{background:#fef2f2;border-color:rgba(239,68,68,0.3)}');
+  w('.mini-card.strong{background:#f0fdf4;border-color:rgba(34,197,94,0.3)}');
+  w('.mini-card .icon{font-size:22px;margin-bottom:4px}');
+  w('.mini-card .name{font-size:11px;font-weight:700;color:#1a1a2e}');
+  w('.mini-card .pct{font-size:18px;font-weight:800;font-family:Oswald,sans-serif}');
+  w('.mini-card.weak .pct{color:#ef4444}.mini-card.strong .pct{color:#22c55e}');
+
+  // Narrative block
+  w('.narrative{background:linear-gradient(135deg,#0D1B2A,#1e3a5f);color:#fff;border-radius:12px;padding:20px 24px;margin-bottom:20px}');
+  w('.narrative h3{font-family:Oswald,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:2px;color:#FFC300;margin-bottom:10px}');
+  w('.narrative p{font-size:13px;line-height:1.7;color:rgba(255,255,255,0.92)}');
+
+  // MEDDPICC block
+  w('.meddpicc-box{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px;margin-bottom:20px}');
+  w('.meddpicc-grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}');
+  w('.md-pillar{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;page-break-inside:avoid}');
+  w('.md-pillar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}');
+  w('.md-pillar-name{font-family:Oswald,sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#0D1B2A;font-weight:700}');
+  w('.md-pillar-score{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;background:#e2e8f0;color:#475569}');
+  w('.md-pillar-score.validated{background:rgba(34,197,94,0.15);color:#15803d}');
+  w('.md-pillar-score.partial{background:rgba(59,130,246,0.15);color:#1d4ed8}');
+  w('.md-pillar-score.weak{background:rgba(245,158,11,0.15);color:#b45309}');
+  w('.md-pillar-score.unknown{background:#e2e8f0;color:#64748b}');
+  w('.md-pillar-notes{font-size:11px;color:#475569;white-space:pre-wrap;line-height:1.55}');
+
+  // Next steps block
+  w('.steps-box{background:#fff;border:2px solid #0D1B2A;border-radius:12px;padding:18px}');
+  w('.step-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #e2e8f0}.step-row:last-child{border-bottom:none}');
+  w('.step-num{background:#FFC300;color:#0D1B2A;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:Oswald,sans-serif;flex:none}');
+  w('.step-text{font-size:13px;color:#334155;line-height:1.6}');
+  w('.step-text strong{color:#0D1B2A}');
+
+  // Footer + print bar
+  w('.footer{background:#f8fafc;padding:14px 40px;font-size:11px;color:#94a3b8;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between}');
+  w('.print-bar{position:fixed;bottom:0;left:0;right:0;background:#0D1B2A;padding:12px 40px;display:flex;gap:10px;justify-content:flex-end;box-shadow:0 -2px 8px rgba(0,0,0,0.12);z-index:100}');
+  w('.print-bar button{padding:10px 22px;border:none;border-radius:8px;font-family:Inter,sans-serif;font-weight:700;cursor:pointer;font-size:13px}');
+  w('.print-bar .primary{background:#FFC300;color:#0D1B2A}');
+  w('.print-bar .secondary{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.3)}');
+  w('@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;padding-bottom:0}.print-bar{display:none}.narrative,.hero-card,.meddpicc-box,.steps-box,.mini-card{page-break-inside:avoid}}');
+  w('</style></head><body>');
+
+  // Header
+  var cf = sum.compliance;
+  var industryLine = cf ? (' &nbsp;&middot;&nbsp; ' + esc(cf.label) + ' (' + esc(cf.framework) + ')') : '';
+  var dateStr = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+  w('<div class="report-header"><h1>Security Maturity Executive Summary</h1>');
+  w('<p><strong>' + esc(sum.clientName) + '</strong>' + industryLine + '</p>');
+  w('<p>Prepared by ' + esc(sum.preparer.byline) + ' &nbsp;&middot;&nbsp; ' + esc(dateStr) + '</p>');
+  w('</div>');
+
+  // Compliance framework callout
   if (cf) {
-    win.document.write('<div style="background:rgba(0,180,216,0.06);border-left:3px solid #0284c7;padding:10px 16px;margin:0 40px 20px;font-size:12px;color:#0369a1;border-radius:0 6px 6px 0;"><strong>Compliance Framework: ' + cf.framework + '</strong>: ' + cf.note + '</div>');
+    w('<div style="background:rgba(0,180,216,0.06);border-left:3px solid #0284c7;padding:10px 16px;margin:0 40px 20px;font-size:12px;color:#0369a1;border-radius:0 6px 6px 0;max-width:960px;margin-left:auto;margin-right:auto;">');
+    w('<strong>Compliance anchor &mdash; ' + esc(cf.framework) + ':</strong> ' + esc(cf.note));
+    w('</div>');
   }
-  win.document.write('<div class="report-body">');
-  win.document.write('<div class="score-hero"><div class="big-score">' + overallPct + '%</div><div class="maturity-label">' + maturityLabel + ' Security Posture</div><div style="font-size:13px;color:#64748b;margin-top:6px;">Based on Microsoft Cybersecurity Reference Architecture (MCRA), 12 Security Layers</div></div>');
-  if (topGaps.length > 0) {
-    win.document.write('<h3 style="font-family:Oswald,sans-serif;font-size:16px;text-transform:uppercase;letter-spacing:1px;color:#0D1B2A;margin-bottom:12px;">Top Security Gaps Identified</h3>');
-    win.document.write('<div class="gap-grid">');
-    topGaps.slice(0,6).forEach(function(g){ win.document.write('<div class="gap-card"><div class="icon">'+g.icon+'</div><div class="layer">'+g.layer+'</div><div class="pct">'+g.pct+'%</div></div>'); });
-    win.document.write('</div>');
+
+  w('<div class="report-body">');
+
+  // Hero scorecard
+  w('<div class="hero-grid">');
+  w('<div class="hero-card" style="border-color:' + maturityColor + '40">');
+  w('<div class="label">Technical Maturity</div>');
+  w('<div class="big" style="color:' + maturityColor + '">' + (sum.honest ? sum.overallPct + '%' : '\u2014') + '</div>');
+  w('<div class="sub">' + (sum.honest ? esc(sum.maturityLabel) + ' \u00b7 ' + sum.inScopeLayers + ' of 12 layers in scope' : 'Needs more evidence') + '</div>');
+  w('</div>');
+  w('<div class="hero-card" style="border-color:' + mdVerdict.color + '40">');
+  w('<div class="label">Deal Readiness</div>');
+  w('<div class="big" style="color:' + mdVerdict.color + '">' + mdTotal + '<span style="font-size:28px;color:#94a3b8;font-weight:500">/24</span></div>');
+  w('<div class="sub">' + esc(mdVerdict.label) + ' &nbsp;&middot;&nbsp; ' + mdValidated + ' of 8 pillars validated</div>');
+  w('</div>');
+  w('</div>');
+
+  // Top gaps
+  if (sum.weakLayers.length > 0) {
+    w('<div class="section-title">Weakest in-scope layers</div>');
+    w('<div class="card-grid">');
+    sum.weakLayers.slice(0, 6).forEach(function(g) {
+      w('<div class="mini-card weak"><div class="icon">' + (g.icon || '') + '</div><div class="name">' + esc(g.name) + '</div><div class="pct">' + g.pct + '%</div></div>');
+    });
+    w('</div>');
   }
-  win.document.write('<div class="narrative-box"><h3>📋 Assessment Summary</h3><p>' + narrative + '</p></div>');
-  win.document.write('<div class="waste-callout"><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#ef4444;margin-bottom:8px;">Estimated Annual E5 Value Not Activated</div><div class="amount">$' + Math.round(totalWaste).toLocaleString() + '</div><div style="font-size:13px;color:#64748b;margin-top:6px;">Based on ' + licenses.toLocaleString() + ' licenses at $' + monthlyCost + '/user/month</div></div>');
 
-  // Deal size estimator
-  var criticalGaps = topGaps.filter(function(g){ return g.pct < 50; }).length;
-  var dealLow  = criticalGaps * 15000;
-  var dealMid  = criticalGaps * 30000;
-  var dealHigh = criticalGaps * 48000;
-  win.document.write('<div style="margin-top:20px;background:#f8fafc;border:2px solid #0D1B2A;border-radius:12px;padding:20px;">');
-  win.document.write('<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#0D1B2A;margin-bottom:14px;">💼 Estimated Myriad360 Engagement Value</div>');
-  win.document.write('<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">');
-  win.document.write('<div style="text-align:center;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><div style="font-size:11px;color:#64748b;font-weight:600;margin-bottom:4px;">Conservative</div><div style="font-size:24px;font-weight:800;color:#1e3a5f;">$' + dealLow.toLocaleString() + '</div></div>');
-  win.document.write('<div style="text-align:center;background:linear-gradient(135deg,#0D1B2A,#1e3a5f);border-radius:8px;padding:14px;"><div style="font-size:11px;color:rgba(255,255,255,0.7);font-weight:600;margin-bottom:4px;">Recommended</div><div style="font-size:24px;font-weight:800;color:#FFC300;">$' + dealMid.toLocaleString() + '</div></div>');
-  win.document.write('<div style="text-align:center;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:14px;"><div style="font-size:11px;color:#64748b;font-weight:600;margin-bottom:4px;">Full Scope</div><div style="font-size:24px;font-weight:800;color:#1e3a5f;">$' + dealHigh.toLocaleString() + '</div></div>');
-  win.document.write('</div>');
-  win.document.write('<div style="font-size:11px;color:#94a3b8;">Based on ' + criticalGaps + ' critical gap' + (criticalGaps!==1?'s':'') + ' identified (layers below 50% maturity). Scope includes advisory, implementation, and 90-day hypercare. Managed services and ongoing optimization billed separately.</div>');
-  win.document.write('</div>');
+  // Strongest layers
+  if (sum.strongLayers.length > 0) {
+    w('<div class="section-title">Strongest anchors</div>');
+    w('<div class="card-grid">');
+    sum.strongLayers.slice(0, 3).forEach(function(g) {
+      w('<div class="mini-card strong"><div class="icon">' + (g.icon || '') + '</div><div class="name">' + esc(g.name) + '</div><div class="pct">' + g.pct + '%</div></div>');
+    });
+    w('</div>');
+  }
 
-  win.document.write('</div>');
-  win.document.write('<div class="footer"><span>Myriad360 Security Coverage Assessment | MCRA Framework | ' + preparerName + '</span><span>Confidential, Prepared for ' + clientName + '</span></div>');
-  win.document.write('<div style="padding:16px 40px;"><button onclick="window.print()" style="padding:10px 24px;background:#0D1B2A;color:#fff;border:none;border-radius:8px;font-family:Inter,sans-serif;font-weight:700;cursor:pointer;margin-right:8px;">🖨️ Print / Save PDF</button></div>');
-  win.document.write('</body></html>');
+  // Out-of-scope layers (N/A)
+  if (sum.outOfScope.length > 0) {
+    w('<div style="background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:10px 14px;margin-top:14px;font-size:12px;color:#64748b">');
+    w('<strong style="color:#475569">Not in scope:</strong> ' + esc(sum.outOfScope.join(', ')));
+    w(' &mdash; excluded from the maturity calculation.');
+    w('</div>');
+  }
+
+  // Narrative
+  w('<div class="narrative"><h3>\ud83d\udccb Assessment Summary</h3><p>' + esc(narrative) + '</p></div>');
+
+  // MEDDPICC
+  w('<div class="section-title">Deal Readiness &mdash; MEDDPICC</div>');
+  w('<div class="meddpicc-box">');
+  w('<div style="font-size:12px;color:#64748b;margin-bottom:4px;">Eight-pillar deal qualification. Auto-populated pillars are seeded from the assessment; commercial pillars require an AE/SA conversation.</div>');
+  w('<div class="meddpicc-grid2">');
+  MEDDPICC_PILLARS.forEach(function(p) {
+    var entry = md[p.key] || { score: 0, notes: '' };
+    var lbl = MEDDPICC_SCORE_LABELS[entry.score] || 'Unknown';
+    var cls = entry.score >= 3 ? 'validated' : entry.score === 2 ? 'partial' : entry.score === 1 ? 'weak' : 'unknown';
+    w('<div class="md-pillar">');
+    w('<div class="md-pillar-head"><span class="md-pillar-name">' + esc(p.letter) + ' &middot; ' + esc(p.name) + '</span><span class="md-pillar-score ' + cls + '">' + esc(lbl) + '</span></div>');
+    w('<div class="md-pillar-notes">' + (entry.notes ? esc(entry.notes) : '<em style="color:#94a3b8">(no notes)</em>') + '</div>');
+    w('</div>');
+  });
+  w('</div></div>');
+
+  // Recommended Next Steps — concrete, no fake dollar amounts
+  w('<div class="section-title">Recommended next steps</div>');
+  w('<div class="steps-box">');
+  var stepN = 1;
+  if (sum.weakLayers.length > 0) {
+    var top = sum.weakLayers.slice(0, 2).map(function(l){ return l.name; }).join(' and ');
+    w('<div class="step-row"><div class="step-num">' + (stepN++) + '</div><div class="step-text"><strong>Close the two weakest coverage gaps first.</strong> Focus a scoped engagement on ' + esc(top) + '. These are the highest-ROI risk-reduction targets and the clearest near-term scope.</div></div>');
+  }
+  w('<div class="step-row"><div class="step-num">' + (stepN++) + '</div><div class="step-text"><strong>Activate what is already licensed.</strong> Review E5 (or equivalent) entitlements before discussing net-new spend &mdash; often the fastest path to maturity without new procurement.</div></div>');
+  var unknownPillars = MEDDPICC_PILLARS.filter(function(p){ var e = md[p.key] || { score: 0 }; return e.score <= 1 && ['economicBuyer','decisionProcess','paperProcess','champion'].indexOf(p.key) >= 0; });
+  if (unknownPillars.length > 0) {
+    var plist = unknownPillars.map(function(p){ return p.name; }).join(', ');
+    w('<div class="step-row"><div class="step-num">' + (stepN++) + '</div><div class="step-text"><strong>Validate the commercial picture.</strong> Discovery still needed on: ' + esc(plist) + '. Without these, any proposal is premature.</div></div>');
+  }
+  if (sum.compliance) {
+    w('<div class="step-row"><div class="step-num">' + (stepN++) + '</div><div class="step-text"><strong>Anchor to ' + esc(sum.compliance.framework) + '.</strong> Map every remediation recommendation to a specific control to make the business case audit-ready.</div></div>');
+  }
+  w('<div class="step-row"><div class="step-num">' + (stepN++) + '</div><div class="step-text"><strong>Re-score at 30 and 90 days.</strong> Same framework, same questions &mdash; maturity delta is the metric that closes the loop on any engagement.</div></div>');
+  w('</div>');
+
+  w('</div>'); // /report-body
+
+  // Footer
+  w('<div class="footer">');
+  w('<span>MCRA Coverage Assessment &middot; Prepared by ' + esc(sum.preparer.name) + '</span>');
+  w('<span>Confidential &middot; For ' + esc(sum.clientName) + '</span>');
+  w('</div>');
+
+  // Print bar
+  w('<div class="print-bar">');
+  w('<button class="secondary" onclick="window.close()">Close</button>');
+  w('<button class="primary" onclick="window.print()">\ud83d\udda8\ufe0f Print or Save as PDF</button>');
+  w('</div>');
+
+  w('</body></html>');
   win.document.close();
 }
 
-function generateAENarrative(overallPct, topGaps, totalWaste, clientName) {
-  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-  var wasteStr = totalWaste > 0 ? '$' + Math.round(totalWaste).toLocaleString() : 'significant value';
-  var gapNames = topGaps.slice(0,3).map(function(g){ return g.layer; }).join(', ');
-  var topGap1 = topGaps[0] ? topGaps[0].layer : 'Identity';
-  var topGap2 = topGaps[1] ? topGaps[1].layer : 'Endpoint Security';
-
-  var openings = {
-    foundational: [
-      clientName + ' is at an early stage of security maturity, scoring ' + overallPct + '% across the 12 MCRA layers. Significant exposure across multiple domains.',
-      'Assessment results show ' + clientName + ' at ' + overallPct + '% MCRA maturity, indicating foundational security controls in place but critical gaps requiring immediate attention.',
-      clientName + '\'s security program is in the foundational stage (' + overallPct + '% MCRA coverage), with core protections deployed but key layers below minimum best-practice thresholds.'
-    ],
-    developing: [
-      clientName + ' has established a solid security foundation, scoring ' + overallPct + '% across the MCRA framework. Well positioned to accelerate with targeted investments.',
-      'With ' + overallPct + '% MCRA coverage, ' + clientName + ' has meaningful security controls in place but tangible gaps in key layers that represent both risk and opportunity.',
-      clientName + '\'s security posture scores ' + overallPct + '% against the MCRA best-practice framework. In the developing stage, with clear upside from focused remediation.'
-    ],
-    advanced: [
-      clientName + ' demonstrates an advanced security posture at ' + overallPct + '% MCRA coverage. Among the stronger environments assessed, with optimization as the primary focus.',
-      'Scoring ' + overallPct + '% across 12 MCRA security layers, ' + clientName + ' has a mature security program. Incremental gains come from fine-tuning tooling and closing niche gaps.',
-      clientName + '\'s ' + overallPct + '% MCRA score reflects an advanced, well-configured security environment. The priority now shifts from deployment to optimization and managed outcomes.'
-    ]
-  };
-
-  var maturityKey = overallPct >= 70 ? 'advanced' : overallPct >= 45 ? 'developing' : 'foundational';
-  var sentences = [ pick(openings[maturityKey]) ];
-
-  if (topGaps.length > 0) {
-    var gapSentences = [
-      'The assessment identifies ' + gapNames + ' as the primary areas below 50% maturity. These represent the highest-risk and highest-ROI remediation targets.',
-      'Key gaps are concentrated in ' + topGap1 + ' and ' + topGap2 + '. These layers fall below the 50% maturity threshold and represent the clearest near-term engagement scope.',
-      'Coverage gaps in ' + gapNames + ' stand out as immediate priorities. Each layer below 50% signals either undeployed tooling or default-only configuration that a targeted engagement can resolve quickly.'
-    ];
-    sentences.push(pick(gapSentences));
+// Narrative generator. Accepts either the new summary object OR the older
+// positional args for backwards compatibility with any legacy callers.
+function generateAENarrative(sumOrPct, topGaps, totalWaste, clientName) {
+  var sum;
+  if (sumOrPct && typeof sumOrPct === 'object' && 'overallPct' in sumOrPct) {
+    sum = sumOrPct;
+  } else {
+    sum = {
+      overallPct: sumOrPct || 0,
+      weakLayers: (topGaps || []).map(function(g){ return { name: g.layer, pct: g.pct }; }),
+      clientName: clientName || 'This organization',
+      maturityLabel: (sumOrPct || 0) >= 70 ? 'Advanced' : (sumOrPct || 0) >= 45 ? 'Developing' : 'Foundational',
+      inScopeLayers: 12,
+      compliance: null
+    };
   }
 
-  var wasteSentences = [
-    'Current E5 license analysis shows approximately ' + wasteStr + ' in security capability value paid for but not yet activated. This is a compelling internal funding story for any remediation program.',
-    'E5 utilization analysis estimates ' + wasteStr + ' in annual value left on the table. This represents a budget-neutral path to closing gaps: activate what you\'re already paying for.',
-    'The E5 waste analysis identifies ' + wasteStr + ' in underutilized annual license value. Often the most effective executive conversation-starter before discussing new spend.'
-  ];
-  sentences.push(pick(wasteSentences));
+  var overallPct = sum.overallPct;
+  var cn = sum.clientName;
+  var weak = sum.weakLayers || [];
+  var topGap1 = weak[0] ? weak[0].name : null;
+  var topGap2 = weak[1] ? weak[1].name : null;
+  var gapList = weak.slice(0,3).map(function(l){ return l.name; }).join(', ');
 
-  var recSentences = {
-    foundational: [
-      'Myriad360 recommends an immediate E5 Security Activation engagement. Close critical gaps using existing licensing before evaluating net-new tooling.',
-      'Given the foundational maturity level, Myriad360\'s recommended first move is a structured E5 activation program targeting the ' + topGap1 + ' and ' + topGap2 + ' layers for the fastest risk reduction.',
-      'The highest-ROI next step for ' + clientName + ' is an E5 activation and Zero Trust foundation engagement. Activating tools already licensed before layering in partner solutions.'
-    ],
-    developing: [
-      'Myriad360 recommends a targeted gap remediation engagement focused on ' + topGap1 + ' and ' + topGap2 + '. These are the two highest-impact layers for risk reduction and compliance alignment.',
-      'A scoped SOW targeting the ' + topGap1 + ' layer first delivers the fastest measurable risk reduction. Myriad360 can scope Phase 1 within the E5 entitlement, minimizing net-new spend.',
-      'Myriad360\'s recommended next step is a phased remediation program: Phase 1 closes the ' + topGap1 + ' and ' + topGap2 + ' gaps; Phase 2 optimizes the layers already deployed but at default configuration.'
-    ],
-    advanced: [
-      'With a strong posture already in place, Myriad360 recommends focusing on Advanced Hunting content, Security Copilot integration, and managed detection/response to convert tooling into measurable outcomes.',
-      'Myriad360\'s recommendation for ' + clientName + ' is an optimization engagement. Advanced Hunting rule library, custom analytics in Sentinel, and a managed services layer to maximize the existing investment.',
-      'Given ' + clientName + '\'s advanced maturity, the next value conversation is around AI-augmented operations (Security Copilot), advanced threat hunting, and building a proactive managed security service layer on top of the existing stack.'
-    ]
-  };
-  sentences.push(pick(recSentences[maturityKey]));
+  // Opening — state the number, don't editorialize
+  var opening = cn + ' scores ' + overallPct + '% across the ' + sum.inScopeLayers + ' in-scope MCRA security layers, placing the program in the ' + sum.maturityLabel.toLowerCase() + ' range.';
+  var parts = [opening];
 
-  return sentences.join(' ');
+  // Gaps — concrete and factual. No "highest-ROI target" sales language.
+  if (weak.length > 0) {
+    parts.push('The weakest in-scope layers are ' + gapList + '. These are the areas where a focused remediation pass returns the clearest near-term risk reduction.');
+  }
+
+  // Compliance framing when an industry template is active
+  if (sum.compliance) {
+    parts.push('Under ' + sum.compliance.framework + ', these gaps map directly to controls an audit would exercise.');
+  }
+
+  // Recommendation — measured, not promotional
+  if (overallPct < 45) {
+    parts.push('A common first move with this profile is to activate existing licensed capability (Defender, Purview, Entra features in E5) before considering net-new tools. It is usually the fastest maturity delta without new spend.');
+  } else if (overallPct < 70) {
+    parts.push('A phased approach works well here: Phase 1 closes the two weakest in-scope layers' + (topGap1 ? ' (' + topGap1 + (topGap2 ? ' and ' + topGap2 : '') + ')' : '') + '; Phase 2 optimizes layers deployed at default configuration.');
+  } else {
+    parts.push('With foundations in place, the next value is in optimization: advanced detections, AI-assisted operations (Security Copilot), and moving toward managed outcomes rather than just deployed tools.');
+  }
+
+  // Honesty closer
+  parts.push('Re-scoring the same questions at 30 and 90 days is the cleanest way to measure whether the program is actually moving.');
+
+  return parts.join(' ');
 }
 
 // ===== PDF REPORT GENERATOR =====
