@@ -3772,6 +3772,144 @@ body:not(.assessment-mode) .roadmap-section {
   margin: 0;
 }
 
+/* ===== HOW TO RUN THIS WITH A NEW CLIENT ===== */
+.howto-section { max-width: 1100px; margin: 24px auto 0; padding: 0 16px; }
+.howto-wrap {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(13,27,42,0.06);
+  overflow: hidden;
+}
+.howto-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 18px 24px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6fb 100%);
+  border: none;
+  border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.2s;
+}
+.howto-toggle:hover { background: linear-gradient(135deg, #eff6fb 0%, #dbeafe 100%); }
+.howto-toggle-ico {
+  font-size: 14px;
+  color: var(--navy);
+  transition: transform 0.25s;
+  flex: none;
+  width: 22px;
+  text-align: center;
+}
+.howto-section.collapsed .howto-toggle-ico { transform: rotate(-90deg); }
+.howto-toggle-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex: 1;
+}
+.howto-toggle-sub {
+  font-size: 12px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+.howto-body {
+  padding: 24px 28px 22px;
+}
+.howto-section.collapsed .howto-body { display: none; }
+.howto-steps {
+  display: grid;
+  gap: 14px;
+}
+.howto-step {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  background: #fafcff;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid var(--gold);
+  border-radius: 10px;
+}
+.howto-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--gold);
+  font-family: 'Oswald', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.howto-step-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+.howto-step-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.howto-step-time {
+  font-size: 11px;
+  color: var(--text-light);
+  font-style: italic;
+  font-weight: 500;
+}
+.howto-step-body {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.55;
+  margin: 4px 0 6px;
+}
+.howto-step-body strong { color: var(--navy); font-weight: 700; }
+.howto-step-tag {
+  display: inline-block;
+  font-size: 11px;
+  color: #0284c7;
+  background: rgba(0,180,216,0.08);
+  border: 1px solid rgba(0,180,216,0.25);
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.howto-footer {
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.55;
+}
+.howto-footer-label {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 11px;
+  margin-right: 6px;
+}
+
 /* ===== SOURCES & METHODOLOGY ===== */
 .sources-block { max-width: 1100px; margin: 32px auto 0; padding: 0 16px; }
 .sources-wrap {
@@ -4220,6 +4358,88 @@ body:not(.assessment-mode) .roadmap-section {
     ▶ Try a sample review
   </button>
 </div>
+
+<!-- HOW TO RUN THIS WITH A NEW CLIENT — 5-step walkthrough so any SA/AE
+     can self-serve the tool without needing a walkthrough. Collapsible
+     (open by default the first time), each step tied to a real UI location. -->
+<section class="howto-section" id="howto" aria-labelledby="howto-heading">
+  <div class="howto-wrap">
+    <button type="button" class="howto-toggle" id="howtoToggleBtn" onclick="toggleHowto()" aria-expanded="true" aria-controls="howtoBody">
+      <span class="howto-toggle-ico">\u25BE</span>
+      <span class="howto-toggle-title">How to run this with a new client</span>
+      <span class="howto-toggle-sub">5 steps &middot; about 30 minutes of actual client time</span>
+    </button>
+    <div class="howto-body" id="howtoBody">
+      <div class="howto-steps">
+
+        <div class="howto-step">
+          <div class="howto-step-num">1</div>
+          <div class="howto-step-content">
+            <div class="howto-step-head">
+              <span class="howto-step-title">Set context</span>
+              <span class="howto-step-time">30 seconds, pre-call</span>
+            </div>
+            <p class="howto-step-body">Click <strong>Client Interview</strong> in the top nav. Type the client&rsquo;s name in the action bar. Optional but recommended: pick their industry from the filter &mdash; it preloads the compliance framework (HIPAA, PCI, CMMC, etc.) so the report speaks the right language.</p>
+            <span class="howto-step-tag">&rarr; Top nav, then the action bar at the top of the Interview panel</span>
+          </div>
+        </div>
+
+        <div class="howto-step">
+          <div class="howto-step-num">2</div>
+          <div class="howto-step-content">
+            <div class="howto-step-head">
+              <span class="howto-step-title">Run the interview during the call</span>
+              <span class="howto-step-time">20&ndash;30 minutes, live with the client</span>
+            </div>
+            <p class="howto-step-body">Walk through the 27 questions conversationally &mdash; one per security domain. The Live Coverage Map on the right fills in as you talk, which makes it a shared artifact rather than a form you&rsquo;re filling out silently. If a domain doesn&rsquo;t apply (a SaaS firm has no OT/IoT), click <strong>Not applicable</strong>. It won&rsquo;t count against their maturity.</p>
+            <span class="howto-step-tag">&rarr; Client Interview mode, the 4-step wizard</span>
+          </div>
+        </div>
+
+        <div class="howto-step">
+          <div class="howto-step-num">3</div>
+          <div class="howto-step-content">
+            <div class="howto-step-head">
+              <span class="howto-step-title">Sync the deal qualifier</span>
+              <span class="howto-step-time">1 minute, right after the call</span>
+            </div>
+            <p class="howto-step-body">Scroll down to <strong>Deal Qualifier &mdash; MEDDPICC</strong> and expand it. Click <strong>Sync from assessment</strong>. Four of the eight pillars auto-populate from what you just learned &mdash; Pain, Metrics, Decision Criteria, Competition. Fill the other four (Economic Buyer, Decision Process, Paper Process, Champion) from your meeting notes. That&rsquo;s where your judgment lives.</p>
+            <span class="howto-step-tag">&rarr; Toolkit &rarr; Deal Qualifier &mdash; MEDDPICC panel</span>
+          </div>
+        </div>
+
+        <div class="howto-step">
+          <div class="howto-step-num">4</div>
+          <div class="howto-step-content">
+            <div class="howto-step-head">
+              <span class="howto-step-title">Export the executive report</span>
+              <span class="howto-step-time">Instant</span>
+            </div>
+            <p class="howto-step-body">Click <strong>Executive report</strong> in the unified scorecard. A one-page summary opens in a new window &mdash; Maturity and Deal Readiness side by side, weakest layers, strongest anchors, out-of-scope domains, the full MEDDPICC breakdown, and recommended next steps. Click <strong>Print or Save as PDF</strong> at the bottom to share internally or with the buyer.</p>
+            <span class="howto-step-tag">&rarr; MEDDPICC panel, top-right Executive report button</span>
+          </div>
+        </div>
+
+        <div class="howto-step">
+          <div class="howto-step-num">5</div>
+          <div class="howto-step-content">
+            <div class="howto-step-head">
+              <span class="howto-step-title">Re-score at 30 and 90 days</span>
+              <span class="howto-step-time">Same interview, later</span>
+            </div>
+            <p class="howto-step-body">Run the same questions again with the same client. The <em>delta</em> &mdash; Maturity moved from 44% to 63%, OT/IoT moved from 0% to 50% &mdash; is the actual deliverable value. It&rsquo;s also the easiest way to make the business case for a follow-on engagement: the work moved the number.</p>
+            <span class="howto-step-tag">&rarr; Click Start new client, enter the same name, and run again</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="howto-footer">
+        <span class="howto-footer-label">One more thing:</span>
+        <span class="howto-footer-text">Everything saves to the URL hash after each answer. Share the URL, and whoever opens it sees the same assessment state.</span>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- HOW I WAS THINKING ABOUT THE PROBLEM — learner's framing, not a thesis -->
 <section class="process-section" id="thesis" aria-labelledby="process-heading">
@@ -6352,6 +6572,30 @@ function toggleAdvancedModes(event) {
     bar.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
+
+// "How to run this with a new client" — collapsible walkthrough. Open by
+// default the first time someone visits; remembers the user's preference in
+// localStorage so repeat visitors don't keep seeing it if they closed it.
+function toggleHowto() {
+  var sec = document.getElementById('howto');
+  var btn = document.getElementById('howtoToggleBtn');
+  if (!sec || !btn) return;
+  var nowCollapsed = !sec.classList.contains('collapsed');
+  sec.classList.toggle('collapsed', nowCollapsed);
+  btn.setAttribute('aria-expanded', nowCollapsed ? 'false' : 'true');
+  try { localStorage.setItem('myriad360_howto_collapsed', nowCollapsed ? '1' : '0'); } catch (e) {}
+}
+// Restore prior collapsed state on load; default to open.
+(function() {
+  try {
+    if (localStorage.getItem('myriad360_howto_collapsed') === '1') {
+      var sec = document.getElementById('howto');
+      var btn = document.getElementById('howtoToggleBtn');
+      if (sec) sec.classList.add('collapsed');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+  } catch (e) {}
+})();
 
 // Init
 renderLayers();
