@@ -2362,6 +2362,13 @@ body.interview-mode .layers-container { display: none; }
 body.interview-mode .filter-bar { display: none; }
 body.interview-mode .search-section { display: none; }
 
+/* Mobile: stack the interview wizard on top, Live Coverage Map below. */
+@media (max-width: 880px) {
+  body.interview-mode .interview-panel { grid-template-columns: 1fr; gap: 16px; padding: 16px 12px; }
+  .interview-wizard { padding: 20px; }
+  .wizard-steps { margin: 0 -20px 14px; padding: 12px 14px; }
+}
+
 /* ===== RESEARCH-MODE TRIMMING =====
    Hide tools that need a real client (calculators, roadmap) unless the user
    is in Assessment mode. Keeps the landing view lean for the curious-learner
@@ -3794,15 +3801,18 @@ body:not(.assessment-mode) .roadmap-section {
   text-align: left;
   font-family: 'Inter', sans-serif;
   transition: background 0.2s;
+  flex-wrap: wrap;
 }
 .howto-toggle:hover { background: linear-gradient(135deg, #eff6fb 0%, #dbeafe 100%); }
 .howto-toggle-ico {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--navy);
   transition: transform 0.25s;
-  flex: none;
+  flex: 0 0 22px;
   width: 22px;
   text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .howto-section.collapsed .howto-toggle-ico { transform: rotate(-90deg); }
 .howto-toggle-title {
@@ -4058,6 +4068,141 @@ body:not(.assessment-mode) .roadmap-section {
   border: 1px solid rgba(0, 180, 216, 0.3);
   text-transform: uppercase;
   vertical-align: middle;
+}
+
+/* ============================================================================
+   MOBILE POLISH PASS — tightens everything for phones and small tablets.
+   Designed for the "Alec checks this on his phone over coffee" scenario.
+   ============================================================================ */
+@media (max-width: 760px) {
+  /* Horizontal safety — nothing should escape the viewport */
+  body { overflow-x: hidden; }
+
+  /* Navigate / mode-toggle bar — already has a 700px rule; add scroll fallback */
+  .mode-toggle-bar { flex-wrap: wrap; justify-content: center; }
+
+  /* Sticky client bar — stack fields; keep only the essentials visible */
+  .sticky-client-bar {
+    padding: 10px 12px;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .sticky-client-bar input {
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+    flex: 1 1 140px;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+  .sticky-client-bar .scb-divider { display: none; }
+  .sticky-client-bar #preparerNameInput,
+  .sticky-client-bar #preparerTitleInput { display: none; } /* Hide preparer on mobile; surfaces only on desktop */
+  .sticky-client-bar .scb-label { font-size: 10px; }
+  .scb-maturity-pill { font-size: 11px; padding: 4px 10px; flex: 0 0 auto; }
+
+  /* Hero — tighten spacing and scale the title */
+  .hero { padding: 32px 16px 40px; }
+  .hero h1 { font-size: clamp(26px, 7vw, 36px); line-height: 1.15; }
+  .hero-subtitle { font-size: 13px; padding: 0 6px; }
+  .hero-brands { gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .hero-primary-cta { padding: 14px 24px; font-size: 13px; width: 100%; max-width: 320px; }
+
+  /* Audience band — already had 640px column rule; tighten padding */
+  .audience-band { padding: 12px 14px; gap: 10px; margin: 12px auto 20px; }
+  .audience-band-copy { font-size: 12px; line-height: 1.5; }
+  .audience-band-cta { font-size: 12px; padding: 10px 14px; }
+
+  /* How-to walkthrough — tighten step layout, remove the right-side time label
+     from the flex row so content doesn't squish */
+  .howto-section { padding: 0 12px; }
+  .howto-toggle { padding: 14px 16px; gap: 10px; }
+  .howto-toggle-title { font-size: 15px; letter-spacing: 0.5px; }
+  .howto-toggle-sub { font-size: 11px; flex-basis: 100%; margin-left: 32px; }
+  .howto-body { padding: 16px 14px 14px; }
+  .howto-step { grid-template-columns: 36px 1fr; gap: 10px; padding: 12px; }
+  .howto-step-num { width: 28px; height: 28px; font-size: 14px; }
+  .howto-step-head { flex-direction: column; gap: 2px; align-items: flex-start; }
+  .howto-step-title { font-size: 13px; }
+  .howto-step-time { font-size: 10px; }
+  .howto-step-body { font-size: 12px; line-height: 1.5; }
+  .howto-step-tag { font-size: 10px; padding: 2px 8px; }
+
+  /* Process / Journey diagram — SVG can overflow on narrow screens */
+  .process-diagram-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .process-diagram { min-width: 640px; }
+
+  /* Sources grid — single column on phones so text has breathing room */
+  .sources-wrap { padding: 20px 18px 16px; }
+  .sources-heading { font-size: 17px; }
+  .sources-grid { grid-template-columns: 1fr; gap: 10px; }
+  .source-card { padding: 12px 14px; }
+
+  /* Day-One Questions — tighten padding and list spacing */
+  .day-one-wrap { padding: 22px 18px; }
+  .day-one-heading { font-size: 17px; }
+  .doq-text { font-size: 12px; line-height: 1.5; }
+
+  /* Contact block */
+  .contact-wrap { padding: 22px 18px; }
+  .contact-heading { font-size: 18px; }
+  .contact-line { font-size: 13px; }
+  .contact-btn { padding: 10px 18px; font-size: 12px; }
+
+  /* MEDDPICC unified scorecard — already handled at 760px; reinforce. Stack
+     buttons so they are tap-target sized (44px+) */
+  .unified-scorecard { padding: 14px; gap: 12px; }
+  .unified-num { font-size: 36px; }
+  .unified-sync-btn, .unified-export-btn { min-height: 44px; justify-content: center; }
+
+  /* Interview action bar — client name + load sample + start new */
+  .interview-action-bar { margin: -20px -20px 0; padding: 12px 14px; }
+  .iab-btn { min-height: 44px; }
+
+  /* Interview wizard step labels — hide labels on very narrow screens,
+     keep only the circle; active label is preserved via prior rule */
+  .wizard-step-dot { width: 28px; height: 28px; font-size: 13px; }
+
+  /* Coverage-map summary inside interview panel */
+  .iv-metric-num { font-size: 28px; }
+  .iv-metric-label { font-size: 10px; }
+  .iv-metrics { grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* Layer bars — trim label column so percentage is always visible */
+  .ilb-row { grid-template-columns: 90px 1fr 38px; gap: 8px; font-size: 10px; }
+  .ilb-label { font-size: 10px; }
+
+  /* Interview complete banner button */
+  .interview-complete-banner { padding: 14px; }
+  .interview-gen-report-btn { width: 100%; padding: 12px; }
+
+  /* Toolkit toggle */
+  .toolkit-toggle { padding: 14px; font-size: 14px; }
+
+  /* Layer cards in research mode */
+  .layer-header { flex-wrap: wrap; gap: 8px; padding: 14px; }
+  .layer-name { font-size: 14px; }
+  .layer-summary { font-size: 12px; }
+
+  /* Tap targets everywhere — no button smaller than 40px */
+  button, .contact-btn, .mode-toggle-btn, .iab-btn, .meddpicc-btn,
+  .unified-sync-btn, .unified-export-btn, .howto-toggle {
+    min-height: 40px;
+  }
+
+  /* Floating reset FAB — smaller on mobile so it doesn't cover content */
+  .floating-reset-fab { padding: 10px 14px; font-size: 12px; bottom: 16px; right: 16px; }
+}
+
+/* Extra-narrow phones (< 420px wide) — final tightening */
+@media (max-width: 420px) {
+  .hero h1 { font-size: 24px; }
+  .hero-subtitle { font-size: 12px; }
+  .howto-toggle-title { font-size: 14px; letter-spacing: 0.3px; }
+  .source-title { font-size: 12px; }
+  .source-note { font-size: 11px; }
+  .day-one-heading { font-size: 16px; }
+  .doq-num { width: 22px; height: 22px; font-size: 12px; }
 }
 
 /* ===== EXPLORE THE TOOLKIT ===== */
@@ -4365,7 +4510,7 @@ body:not(.assessment-mode) .roadmap-section {
 <section class="howto-section" id="howto" aria-labelledby="howto-heading">
   <div class="howto-wrap">
     <button type="button" class="howto-toggle" id="howtoToggleBtn" onclick="toggleHowto()" aria-expanded="true" aria-controls="howtoBody">
-      <span class="howto-toggle-ico">\u25BE</span>
+      <span class="howto-toggle-ico" aria-hidden="true">&#x25BE;</span>
       <span class="howto-toggle-title">How to run this with a new client</span>
       <span class="howto-toggle-sub">5 steps &middot; about 30 minutes of actual client time</span>
     </button>
