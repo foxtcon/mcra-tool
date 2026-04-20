@@ -2453,6 +2453,33 @@ body:not(.assessment-mode) .roadmap-section {
 .interview-answer-btn.selected { border-color: var(--cyan); background: rgba(0,180,216,0.08); color: #0284c7; font-weight: 700; }
 .interview-answer-btn.selected-high { border-color: var(--green); background: rgba(34,197,94,0.08); color: var(--green); }
 .interview-answer-btn.selected-low  { border-color: var(--red);   background: rgba(239,68,68,0.08);  color: var(--red); }
+/* Not Applicable — muted slate styling so it reads as "escape hatch," not a
+   primary answer. Sits apart at the bottom of the answer stack. */
+.interview-answer-btn.interview-answer-na {
+  margin-top: 10px;
+  border-style: dashed;
+  border-color: #cbd5e1;
+  color: #64748b;
+  font-weight: 500;
+  background: #f8fafc;
+}
+.interview-answer-btn.interview-answer-na:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+  color: #334155;
+}
+.interview-answer-btn.selected-na {
+  border-color: #64748b !important;
+  background: #e2e8f0 !important;
+  color: #334155 !important;
+  font-weight: 700;
+}
+/* Per-layer bar state when every question in a layer is N/A — soft slate so
+   it reads as "out of scope," not a red gap. */
+.layer-score-bar-fill.score-na,
+.ilb-bar-fill.score-na {
+  background: repeating-linear-gradient(45deg, #cbd5e1, #cbd5e1 6px, #e2e8f0 6px, #e2e8f0 12px);
+}
 .interview-nav {
   display: flex;
   justify-content: space-between;
@@ -2616,6 +2643,7 @@ body:not(.assessment-mode) .roadmap-section {
 .interview-story-log span.isl-yes { color: #047857; }
 .interview-story-log span.isl-partial { color: #b45309; }
 .interview-story-log span.isl-no { color: #b91c1c; }
+.interview-story-log span.isl-na { color: #64748b; }
 
 /* ===== ACTION BAR (client name + load sample + start new) ===== */
 .interview-action-bar {
@@ -6431,19 +6459,26 @@ function getLayerScore(layerId) {
   // INTERVIEW-AUTHORITATIVE: if the user answered interview questions for this
   // layer, those are the source of truth. No double-counting, no inflated max
   // from unscored tools. Keys look like `<layerId>_iv<qIdx>`.
+  // N/A answers store `null` — they're excluded from both score AND max so
+  // they're neutral to the maturity calculation (as opposed to "No" = 0).
   var ivKeys = Object.keys(assessmentState).filter(function(k) {
     return k.indexOf(layerId + '_iv') === 0;
   });
   if (ivKeys.length > 0) {
-    var ivScore = 0, ivMax = 0;
+    var ivScore = 0, ivMax = 0, naCount = 0;
     ivKeys.forEach(function(k) {
-      ivScore += (assessmentState[k] || 0);
+      var v = assessmentState[k];
+      if (v === null || v === undefined) { naCount++; return; }
+      ivScore += v;
       ivMax += 3;
     });
     return {
       score: ivScore,
       max: ivMax,
-      pct: ivMax > 0 ? Math.round(ivScore / ivMax * 100) : 0
+      pct: ivMax > 0 ? Math.round(ivScore / ivMax * 100) : 0,
+      na: naCount,               // how many questions in this layer are N/A
+      scoredCount: ivKeys.length - naCount,
+      inScope: ivMax > 0         // false when every iv-key for this layer is N/A
     };
   }
 
@@ -6468,6 +6503,14 @@ function updateLayerScore(layerId) {
   var bar  = document.querySelector('[data-score-layer="'+layerId+'"] .layer-score-bar-fill');
   var text = document.querySelector('[data-score-layer="'+layerId+'"] .layer-score-text');
   if (!bar || !text) return;
+  // When every question in a layer is N/A, the layer is out-of-scope — show
+  // a neutral "N/A" label instead of 0/0 (0%) which would look like a gap.
+  if (res.max === 0 && res.na > 0) {
+    bar.style.width = '100%';
+    bar.className = 'layer-score-bar-fill score-na';
+    text.textContent = 'Not in scope';
+    return;
+  }
   bar.style.width = res.pct + '%';
   bar.className = 'layer-score-bar-fill ' + (res.pct >= 67 ? 'score-green' : res.pct >= 34 ? 'score-amber' : 'score-red');
   text.textContent = res.score + ' / ' + res.max + ' (' + res.pct + '%)';
@@ -6476,14 +6519,19 @@ function updateLayerScore(layerId) {
 function updateAllLayerScores() {
   if (!window.layersData) return;
   layersData.forEach(function(l){ updateLayerScore(l.id); });
-  var totalScore = 0, totalMax = 0;
+  var totalScore = 0, totalMax = 0, inScopeLayers = 0;
   layersData.forEach(function(l){
     var r = getLayerScore(l.id);
     totalScore += r.score; totalMax += r.max;
+    if (r.max > 0) inScopeLayers++;
   });
-  var overallPct = totalMax > 0 ? Math.round(totalScore / totalMax * 100) : 0;
-  document.getElementById('overallMaturityPct').textContent = overallPct + '%';
-  document.getElementById('overallMaturityFraction').textContent = totalScore + ' / ' + totalMax;
+  // MINIMUM-HONESTY RULE — see updateInterviewMaturityTotal. Don't commit to
+  // a maturity % until we have evidence from at least 3 in-scope layers.
+  var honest = inScopeLayers >= (typeof MATURITY_MIN_LAYERS !== 'undefined' ? MATURITY_MIN_LAYERS : 3);
+  var pctEl = document.getElementById('overallMaturityPct');
+  var fracEl = document.getElementById('overallMaturityFraction');
+  if (pctEl) pctEl.textContent = honest ? (totalMax > 0 ? Math.round(totalScore/totalMax*100) : 0) + '%' : '\u2014';
+  if (fracEl) fracEl.textContent = honest ? (totalScore + ' / ' + totalMax) : ('Needs ' + (3 - inScopeLayers) + ' more layer' + (inScopeLayers === 2 ? '' : 's'));
   updateStickyMaturity();
 }
 
@@ -6534,18 +6582,27 @@ function syncClientNameAlt() {
 /* ── Update sticky maturity pill ── */
 function updateStickyMaturity() {
   if (!window.layersData) return;
-  var totalScore = 0, totalMax = 0;
+  var totalScore = 0, totalMax = 0, inScopeLayers = 0;
   layersData.forEach(function(l) {
     var s = getLayerScore(l.id);
     totalScore += s.score; totalMax += s.max;
+    if (s.max > 0) inScopeLayers++;
   });
   var pct = totalMax > 0 ? Math.round(totalScore / totalMax * 100) : 0;
+  var honest = inScopeLayers >= (typeof MATURITY_MIN_LAYERS !== 'undefined' ? MATURITY_MIN_LAYERS : 3);
   var el = document.getElementById('stickyMaturityPct');
-  if (el) el.textContent = pct + '%';
+  if (el) el.textContent = honest ? (pct + '%') : '\u2014';
   var pill = el ? el.closest('.scb-maturity-pill') : null;
   if (pill) {
-    pill.style.borderColor = pct >= 70 ? 'rgba(34,197,94,0.5)' : pct >= 40 ? 'rgba(234,179,8,0.5)' : 'rgba(239,68,68,0.5)';
-    pill.style.color = pct >= 70 ? '#86efac' : pct >= 40 ? '#fde047' : '#fca5a5';
+    if (!honest) {
+      pill.style.borderColor = 'rgba(148,163,184,0.4)';
+      pill.style.color = '#cbd5e1';
+      pill.title = 'Need ' + (3 - inScopeLayers) + ' more layer' + (inScopeLayers === 2 ? '' : 's') + ' before a maturity % is meaningful';
+    } else {
+      pill.title = '';
+      pill.style.borderColor = pct >= 70 ? 'rgba(34,197,94,0.5)' : pct >= 40 ? 'rgba(234,179,8,0.5)' : 'rgba(239,68,68,0.5)';
+      pill.style.color = pct >= 70 ? '#86efac' : pct >= 40 ? '#fde047' : '#fca5a5';
+    }
   }
 }
 
@@ -7599,14 +7656,23 @@ function updateWizardStep(forceStep) {
 }
 
 // Progress metric: how many questions answered, regardless of score. Always moves.
+// Counts N/A answers toward progress (they ARE answers), but surfaces the N/A
+// count separately so the math stays transparent.
 function updateInterviewProgress() {
   var total = (typeof interviewFlat !== 'undefined' && interviewFlat.length) || 0;
-  var answered = Object.keys((typeof interviewAnswers !== 'undefined' && interviewAnswers) || {}).length;
+  var answers = (typeof interviewAnswers !== 'undefined' && interviewAnswers) || {};
+  var answered = Object.keys(answers).length;
+  var naCount = 0;
+  Object.keys(answers).forEach(function(k) { if (answers[k] === 'na') naCount++; });
   var pct = total > 0 ? Math.round(answered / total * 100) : 0;
   var pctEl = document.getElementById('ivProgressPct');
   var cntEl = document.getElementById('ivProgressCount');
   if (pctEl) pctEl.textContent = pct + '%';
-  if (cntEl) cntEl.textContent = answered + ' of ' + total;
+  if (cntEl) {
+    cntEl.textContent = naCount > 0
+      ? answered + ' of ' + total + ' \u00b7 ' + naCount + ' N/A'
+      : answered + ' of ' + total;
+  }
 }
 
 // Running narrative caption for the Live Coverage Map. Updates every answer
@@ -7625,15 +7691,18 @@ function updateInterviewStory(lastAnswer) {
   var total = interviewFlat.length || 0;
   if (storyProg) storyProg.textContent = answered + ' of ' + total + ' answered';
 
-  // Collect scored layers
+  // Collect scored layers (and track N/A layers separately so we can show
+  // "Not in scope" as neutral context rather than a red gap in the story).
   var scored = [];
+  var naLayers = [];
   layersData.forEach(function(l) {
     var r = getLayerScore(l.id);
-    if (r.max > 0 && r.score >= 0) {
-      // Include only layers that have at least one answer contributing to assessmentState
-      // We detect by checking if any tool-key exists for this layer in assessmentState.
-      var hasAnswer = Object.keys(assessmentState || {}).some(function(k){ return k.indexOf(l.id + '_') === 0; });
-      if (hasAnswer) scored.push({ id: l.id, name: l.name || l.id, pct: r.pct });
+    var hasAnswer = Object.keys(assessmentState || {}).some(function(k){ return k.indexOf(l.id + '_') === 0; });
+    if (!hasAnswer) return;
+    if (r.max === 0 && r.na > 0) {
+      naLayers.push(l.name || l.id);
+    } else if (r.max > 0) {
+      scored.push({ id: l.id, name: l.name || l.id, pct: r.pct });
     }
   });
 
@@ -7660,12 +7729,17 @@ function updateInterviewStory(lastAnswer) {
       lines.push('<div class="interview-story-line"><span class="stl-label">Most exposed:</span> <span class="stl-value weak">' + weakest.name + ' (' + weakest.pct + '%)</span></div>');
     }
     lines.push('<div class="interview-story-line"><span class="stl-label">Layers in play:</span> <span class="stl-value">' + scored.length + ' of ' + layersData.length + ' (avg ' + avg + '%)</span></div>');
+    // Surface N/A layers so the viewer knows the average reflects only
+    // what's actually in scope — not an artificially low number.
+    if (naLayers.length > 0) {
+      lines.push('<div class="interview-story-line"><span class="stl-label">Not in scope:</span> <span class="stl-value" style="color:#64748b;">' + naLayers.join(', ') + '</span></div>');
+    }
 
     // Narrative verdict
     var verdict;
     if (avg >= 70) verdict = 'Mature posture forming. Focus the scope on the one weak domain.';
-    else if (avg >= 45) verdict = 'Mixed coverage. Clear upside to position Myriad360 service lines.';
-    else verdict = 'Significant exposure. Multiple SOW opportunities surfacing.';
+    else if (avg >= 45) verdict = 'Mixed coverage. A few clear areas to improve.';
+    else verdict = 'Significant exposure across the in-scope domains.';
     lines.push('<div class="interview-story-line" style="margin-top:6px;"><span class="stl-value" style="font-style:italic;color:#475569;">' + verdict + '</span></div>');
 
     storyBody.innerHTML = lines.join('');
@@ -7678,8 +7752,11 @@ function updateInterviewStory(lastAnswer) {
   }
   if (storyLog) {
     storyLog.innerHTML = _interviewAnswerLog.map(function(entry) {
-      var cls = entry.score >= 2 ? 'isl-yes' : entry.score === 0 ? 'isl-no' : 'isl-partial';
-      var sym = entry.score >= 2 ? '\u2713' : entry.score === 0 ? '\u2717' : '\u26A0';
+      var cls, sym;
+      if (entry.score === null || entry.score === undefined) { cls = 'isl-na'; sym = '\u2796'; }
+      else if (entry.score >= 2) { cls = 'isl-yes'; sym = '\u2713'; }
+      else if (entry.score === 0) { cls = 'isl-no'; sym = '\u2717'; }
+      else { cls = 'isl-partial'; sym = '\u26A0'; }
       return '<span class="' + cls + '">' + sym + ' ' + entry.layerName + ': ' + entry.answerLabel + '</span>';
     }).join('');
   }
@@ -7698,10 +7775,20 @@ function renderInterviewLayerBars() {
   layersData.forEach(function(l) {
     var s = getLayerScore(l.id);
     var pct = s.pct || 0;
-    var color = pct >= 67 ? '#22c55e' : pct >= 34 ? '#f59e0b' : pct > 0 ? '#ef4444' : '#e2e8f0';
-    var rowClass = 'ilb-row' + (l.id === currentLayerId ? ' current' : '');
-    var valClass = 'ilb-value' + (pct === 0 ? ' zero' : '');
     var name = (l.name || l.id).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    var rowClass = 'ilb-row' + (l.id === currentLayerId ? ' current' : '');
+    // Every question in the layer was marked N/A → show a soft "N/A" row
+    // instead of an empty red bar that reads as a critical gap.
+    if (s.max === 0 && s.na > 0) {
+      html += '<div class="' + rowClass + '">' +
+                '<div class="ilb-label" title="' + name + '">' + name + '</div>' +
+                '<div class="ilb-bar-track"><div class="ilb-bar-fill score-na" style="width:100%"></div></div>' +
+                '<div class="ilb-value na">N/A</div>' +
+              '</div>';
+      return;
+    }
+    var color = pct >= 67 ? '#22c55e' : pct >= 34 ? '#f59e0b' : pct > 0 ? '#ef4444' : '#e2e8f0';
+    var valClass = 'ilb-value' + (pct === 0 ? ' zero' : '');
     html += '<div class="' + rowClass + '">' +
               '<div class="ilb-label" title="' + name + '">' + name + '</div>' +
               '<div class="ilb-bar-track"><div class="ilb-bar-fill" style="width:' + pct + '%;background:' + color + ';"></div></div>' +
@@ -7711,12 +7798,29 @@ function renderInterviewLayerBars() {
   wrap.innerHTML = html;
 }
 
+// Overall Maturity % for the Interview panel.
+// MINIMUM-HONESTY RULE: hide the maturity number until at least 3 in-scope
+// layers have been scored. A single lucky answer flashing "100%" is worse
+// than useless — it's misleading. Below the threshold we show a dash so the
+// viewer knows the tool is waiting for more evidence before committing.
+var MATURITY_MIN_LAYERS = 3;
 function updateInterviewMaturityTotal() {
   var pctEl = document.getElementById('interviewMaturityPct');
   if (!pctEl || typeof layersData === 'undefined') return;
-  var totalScore = 0, totalMax = 0;
-  layersData.forEach(function(l){ var r = getLayerScore(l.id); totalScore += r.score; totalMax += r.max; });
-  pctEl.textContent = (totalMax > 0 ? Math.round(totalScore/totalMax*100) : 0) + '%';
+  var totalScore = 0, totalMax = 0, inScopeLayers = 0;
+  layersData.forEach(function(l) {
+    var r = getLayerScore(l.id);
+    totalScore += r.score;
+    totalMax += r.max;
+    if (r.max > 0) inScopeLayers++;
+  });
+  if (inScopeLayers < MATURITY_MIN_LAYERS) {
+    pctEl.textContent = '\u2014';
+    pctEl.setAttribute('title', 'Needs at least ' + MATURITY_MIN_LAYERS + ' answered layers before a maturity % is meaningful');
+  } else {
+    pctEl.textContent = (totalMax > 0 ? Math.round(totalScore/totalMax*100) : 0) + '%';
+    pctEl.removeAttribute('title');
+  }
 }
 
 function renderInterviewQuestion() {
@@ -7759,12 +7863,21 @@ function renderInterviewQuestion() {
     return '<button class="interview-answer-btn' + selectedClass + '" onclick="setInterviewAnswer(\'' + item.layerId + '\',' + item.qi + ',\'' + answerKey + '\',' + score + ')">' + label + '</button>';
   }).join('');
 
+  // Universal Not-Applicable escape hatch — excludes the question from both
+  // the score and the denominator. Use when a domain legitimately doesn't
+  // apply to the org (e.g. SaaS-only shop has no OT/IoT).
+  var naSelected = currentAnswer === 'na' ? ' selected selected-na' : '';
+  var naBtn = '<button class="interview-answer-btn interview-answer-na' + naSelected +
+    '" onclick="setInterviewAnswer(\'' + item.layerId + '\',' + item.qi + ',\'na\',null)" ' +
+    'title="Skip this question — it will be excluded from the maturity score">' +
+    '\u2796 Not applicable to this org</button>';
+
   document.getElementById('interviewLayerTitle').textContent = '🔐 ' + layerName;
   document.getElementById('interviewQuestionArea').innerHTML =
     '<div class="interview-question-card">' +
       '<div class="interview-layer-badge">' + layerName + '</div>' +
       '<div class="interview-question-text">' + item.q.q + '</div>' +
-      '<div class="interview-answer-options">' + optionsHtml + '</div>' +
+      '<div class="interview-answer-options">' + optionsHtml + naBtn + '</div>' +
     '</div>';
 }
 
@@ -7772,13 +7885,32 @@ function setInterviewAnswer(layerId, qi, answerKey, score) {
   var key = layerId + '_q' + qi;
   interviewAnswers[key] = answerKey;
 
-  // Interview answers are now authoritative in getLayerScore when any _iv keys
-  // exist for a layer. We only write to the _iv key here — no cross-write to
-  // the tool-index, which used to double-count (once via tool-name match, once
-  // via _iv) and produce wrong maturity percentages.
-  assessmentState[layerId + '_iv' + qi] = score;
+  // Interview answers are authoritative in getLayerScore when any _iv keys
+  // exist for a layer. Writes only to the _iv key — no cross-write to the
+  // tool-index. When score is null (Not Applicable), the value stays null in
+  // state; getLayerScore skips null entries so N/A questions don't count
+  // against the layer's score OR its denominator.
+  assessmentState[layerId + '_iv' + qi] = (score === null ? null : score);
 
   var layer = layersData.find(function(l){ return l.id === layerId; });
+
+  // CASCADE: when a gate question's answer means "the domain doesn't apply,"
+  // auto-mark every subsequent question in the same layer as N/A. This
+  // removes the frustrating "I just told you we have no OT/IoT, why are you
+  // asking about OT/IoT monitoring?" flow. Gate-questions are identified by
+  // having a 'no' answer worth full credit (score === 3).
+  if (qi === 0 && layer && typeof interviewQuestions !== 'undefined' && interviewQuestions[layerId]) {
+    var firstQ = interviewQuestions[layerId][0];
+    var noScore = firstQ && firstQ.scoreMap && firstQ.scoreMap.no;
+    // Only cascade when user picked the "no, we don't have this at all" path
+    // on a gate question (not when they picked "yes, unsecured" which scores 0).
+    if (noScore === 3 && answerKey === 'no') {
+      for (var j = 1; j < interviewQuestions[layerId].length; j++) {
+        interviewAnswers[layerId + '_q' + j] = 'na';
+        assessmentState[layerId + '_iv' + j] = null;
+      }
+    }
+  }
 
   updateAllLayerScores();
   drawRadarOnCanvas('radarCanvasInterview');
@@ -7794,7 +7926,8 @@ function setInterviewAnswer(layerId, qi, answerKey, score) {
     yes_secured: 'Secured and monitored',
     yes_unsecured: 'Yes, not secured',
     yes_protected: 'Protected',
-    yes_unprotected: 'Yes, unprotected'
+    yes_unprotected: 'Yes, unprotected',
+    na: 'Not applicable'
   };
   var toolName = (interviewQuestions[layerId] && interviewQuestions[layerId][qi] && interviewQuestions[layerId][qi].tool) || '';
   var answerLabel = answerLabelMap[answerKey] || answerKey;
