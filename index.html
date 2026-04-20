@@ -6417,22 +6417,37 @@ function getLayerScore(layerId) {
   if (!window.layersData) return { score: 0, max: 0, pct: 0 };
   var layer = layersData.find(function(l){ return l.id === layerId; });
   if (!layer || !layer.microsoft) return { score: 0, max: 0, pct: 0 };
+
+  // INTERVIEW-AUTHORITATIVE: if the user answered interview questions for this
+  // layer, those are the source of truth. No double-counting, no inflated max
+  // from unscored tools. Keys look like `<layerId>_iv<qIdx>`.
+  var ivKeys = Object.keys(assessmentState).filter(function(k) {
+    return k.indexOf(layerId + '_iv') === 0;
+  });
+  if (ivKeys.length > 0) {
+    var ivScore = 0, ivMax = 0;
+    ivKeys.forEach(function(k) {
+      ivScore += (assessmentState[k] || 0);
+      ivMax += 3;
+    });
+    return {
+      score: ivScore,
+      max: ivMax,
+      pct: ivMax > 0 ? Math.round(ivScore / ivMax * 100) : 0
+    };
+  }
+
+  // ASSESSMENT-GRID PATH: no interview answers — fall back to tool-matrix
+  // scoring. Only count tools that were actually scored so unscored tools
+  // don't drag the denominator down to make a single deployment look like
+  // 10%. Keys: `<layerId>_<toolIdx>`.
   var score = 0, max = 0;
-  // Part 1: tool-matrix scores (assessment grid), keyed `<layerId>_<toolIdx>`
   layer.microsoft.forEach(function(tool, idx) {
     var w = tool.assessmentWeight || 1;
     var key = layerId + '_' + idx;
-    var s = assessmentState[key] !== undefined ? assessmentState[key] : 0;
-    score += s * w;
-    max   += 3 * w;
-  });
-  // Part 2: interview answers, keyed `<layerId>_iv<qIdx>`. These are independent
-  // of the tool-matrix and DO NOT require tool-name matching. This fixes the
-  // long-standing interview scoring bug where answers silently dropped.
-  Object.keys(assessmentState).forEach(function(key) {
-    if (key.indexOf(layerId + '_iv') === 0) {
-      score += (assessmentState[key] || 0);
-      max += 3;
+    if (assessmentState[key] !== undefined) {
+      score += assessmentState[key] * w;
+      max   += 3 * w;
     }
   });
   return { score: score, max: max, pct: max > 0 ? Math.round(score / max * 100) : 0 };
@@ -7457,29 +7472,9 @@ function loadSampleAssessment() {
 
     var ans = sample.answers[key];
     interviewAnswers[layerId + '_q' + qi] = ans.answerKey;
+    // Only write _iv keys — getLayerScore is interview-authoritative when
+    // these exist. No tool-index cross-write (that caused double-counting).
     assessmentState[layerId + '_iv' + qi] = ans.score;
-
-    // Best-effort sync to tool index
-    var layer = layersData.find(function(l){ return l.id === layerId; });
-    if (layer && interviewQuestions[layerId] && interviewQuestions[layerId][qi]) {
-      var toolName = interviewQuestions[layerId][qi].tool;
-      var toolIdx = layer.microsoft.findIndex(function(t){ return t.name === toolName; });
-      if (toolIdx < 0) {
-        var tokens = toolName.split(/[\s\/]+/).filter(function(t) {
-          var low = (t || '').toLowerCase();
-          return low && low !== 'microsoft' && low.length > 2;
-        });
-        for (var ti = 0; ti < tokens.length && toolIdx < 0; ti++) {
-          var tok = tokens[ti].toLowerCase();
-          toolIdx = layer.microsoft.findIndex(function(t) {
-            return (t.name || '').toLowerCase().indexOf(tok) >= 0;
-          });
-        }
-      }
-      if (toolIdx >= 0) {
-        assessmentState[layerId + '_' + toolIdx] = ans.score;
-      }
-    }
   });
 
   // Jump cursor to the end so the "Assessment Complete" state shows.
@@ -7767,36 +7762,13 @@ function setInterviewAnswer(layerId, qi, answerKey, score) {
   var key = layerId + '_q' + qi;
   interviewAnswers[key] = answerKey;
 
-  // PRIMARY write: always land the score in assessmentState under a per-question
-  // key that doesn't depend on tool-name matching. This is what powers the live
-  // Coverage Map, maturity %, per-layer bars, radar, and Story narrative.
+  // Interview answers are now authoritative in getLayerScore when any _iv keys
+  // exist for a layer. We only write to the _iv key here — no cross-write to
+  // the tool-index, which used to double-count (once via tool-name match, once
+  // via _iv) and produce wrong maturity percentages.
   assessmentState[layerId + '_iv' + qi] = score;
 
-  // BONUS: best-effort sync to the assessment-grid tool index so the matching
-  // tool card also shows the score in Assessment mode. Safe to fail silently.
   var layer = layersData.find(function(l){ return l.id === layerId; });
-  if (layer && interviewQuestions[layerId] && interviewQuestions[layerId][qi]) {
-    var toolName = interviewQuestions[layerId][qi].tool;
-    var toolIdx = layer.microsoft.findIndex(function(t){ return t.name === toolName; });
-    if (toolIdx < 0) {
-      // Relaxed token match (e.g. "Microsoft Intune" -> "Intune MDM/MAM",
-      // "Entra Internet Access / GSA" -> "Entra Internet Access"). Try each
-      // meaningful token in order until one hits.
-      var tokens = toolName.split(/[\s\/]+/).filter(function(t) {
-        var low = (t || '').toLowerCase();
-        return low && low !== 'microsoft' && low.length > 2;
-      });
-      for (var ti = 0; ti < tokens.length && toolIdx < 0; ti++) {
-        var tok = tokens[ti].toLowerCase();
-        toolIdx = layer.microsoft.findIndex(function(t) {
-          return (t.name || '').toLowerCase().indexOf(tok) >= 0;
-        });
-      }
-    }
-    if (toolIdx >= 0) {
-      assessmentState[layerId + '_' + toolIdx] = score;
-    }
-  }
 
   updateAllLayerScores();
   drawRadarOnCanvas('radarCanvasInterview');
