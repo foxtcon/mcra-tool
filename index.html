@@ -5575,6 +5575,13 @@ const layersData = [
   }
 ];
 
+// CRITICAL: `const` bindings at the top level do NOT attach to `window`.
+// Every score function guards with `if (!window.layersData) return` — without
+// this explicit assignment, getLayerScore() always bails at 0/0/0%, which is
+// why clicking scores in Assessment mode appeared to do nothing. Registering
+// the other data arrays too so any future code that window-checks them works.
+window.layersData = layersData;
+
 // Render layers
 function renderLayers() {
   const container = document.getElementById('layers');
