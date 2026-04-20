@@ -6313,19 +6313,29 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize RSAC announcements
   renderRsacAnnouncements();
 });
-// Hero CTA: "Start the assessment →" scrolls the prospect to the assessment
-// header and switches to Client Interview mode so the guided flow kicks in.
+// Hero CTA: "Start a coverage review →" switches to Client Interview mode
+// and scrolls to the interview panel. Previously tried to scroll to the
+// Assessment-mode header, which is hidden in Interview mode — the button
+// appeared to do nothing. Now targets whatever's actually visible.
 function startAssessmentFromHero(event) {
   if (event) event.preventDefault();
-  // setMode is defined by the second script block (assessment engine).
   if (typeof setMode === 'function') setMode('interview');
-  var target = document.getElementById('assessmentHeaderSection');
-  if (target && target.scrollIntoView) {
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  } else {
-    // Fall back to a known anchor if the assessment section isn't mounted yet
-    window.scrollTo({ top: window.innerHeight * 0.9, behavior: 'smooth' });
-  }
+  // Give the mode switch a tick to apply display:grid to the interview panel,
+  // otherwise scrollIntoView targets a node that's still display:none.
+  setTimeout(function() {
+    var target = document.getElementById('interviewPanel') ||
+                 document.getElementById('clientNameInputIV');
+    if (target && target.scrollIntoView) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: window.innerHeight * 0.9, behavior: 'smooth' });
+    }
+    // Nudge focus into the client-name field so the user knows where to type.
+    var inp = document.getElementById('clientNameInputIV');
+    if (inp && typeof inp.focus === 'function') {
+      setTimeout(function() { inp.focus(); }, 450);
+    }
+  }, 30);
 }
 
 // Hero Advanced modes ▾" — reveals the 3-mode toggle bar for sellers who
