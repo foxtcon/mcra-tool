@@ -2361,6 +2361,16 @@ body.interview-mode .interview-panel { display: grid; }
 body.interview-mode .layers-container { display: none; }
 body.interview-mode .filter-bar { display: none; }
 body.interview-mode .search-section { display: none; }
+
+/* ===== RESEARCH-MODE TRIMMING =====
+   Hide tools that need a real client (calculators, roadmap) unless the user
+   is in Assessment mode. Keeps the landing view lean for the curious-learner
+   posture — fewer empty inputs screaming to be filled in. */
+body:not(.assessment-mode) .e5-utilization-section,
+body:not(.assessment-mode) .sentinel-calc-section,
+body:not(.assessment-mode) .roadmap-section {
+  display: none !important;
+}
 .interview-wizard {
   background: #fff;
   border: 1px solid #e2e8f0;
@@ -3960,7 +3970,7 @@ body.interview-mode .search-section { display: none; }
 <div class="audience-band" role="note" aria-label="About this project">
   <span class="audience-band-badge">Research Project</span>
   <div class="audience-band-copy">
-    <strong>This is an exploration, not a product.</strong> Myriad360's teams already run a proven process across 700+ partner technologies. I built this while researching the space, to understand the work and see where a Microsoft-focused perspective might genuinely help. Curious to learn how your team actually runs this today.
+    <strong>This is an exploration, not a product.</strong> I learned that Myriad360 runs a proven process across 700+ partner technologies. I built this while reading about the space, to understand the work and see whether a Microsoft-focused perspective might be useful. Curious to learn how your team actually runs this today.
   </div>
   <button type="button" class="audience-band-cta" onclick="launchDemoScenario()" aria-label="Start a sample coverage review with a healthcare scenario preloaded">
     ▶ Try a sample review
@@ -4107,10 +4117,10 @@ body.interview-mode .search-section { display: none; }
     </div>
     <div class="methodology-body">
       <p>
-        This coverage map is a <strong>vendor-agnostic decision framework</strong> built to support Myriad360's consultative, multi-vendor approach. It is built from hands-on deployment experience across enterprise environments ranging from 500 to 50,000+ endpoints. Ratings reflect what happens after the POC, after the initial deployment, and after the first year of production operations.
+        This is a <strong>vendor-agnostic decision framework</strong> I drafted while reading about Myriad360's multi-vendor approach. The ratings draw on hands-on Microsoft deployment experience across environments ranging from 500 to 50,000+ endpoints, and on what I understand about how the choice holds up after POC, after initial deployment, and after the first year in production.
       </p>
       <p>
-        Each MCRA layer is rated across four weighted criteria. <strong>Microsoft-Led (green)</strong> means Microsoft is the strongest choice for most customers and Myriad360 delivers the Microsoft implementation and managed services. <strong>Customer-Decision (amber)</strong> means multiple vendors in Myriad360's portfolio are equally viable - Microsoft, CrowdStrike, SentinelOne, Palo Alto, Cisco - and the winner depends on existing investments, contract cycles, and the customer's operating model. <strong>Best-of-Breed Partner (red)</strong> means a specialized vendor outperforms the generalist stack and Myriad360 delivers that partner's solution with integration back into the customer's SIEM. In every case, Myriad360 monetizes four service lines: advisory, implementation, global services, and managed services.
+        Each MCRA layer is rated across four weighted criteria. <strong>Microsoft-Led (green)</strong> means Microsoft is the strongest default for most customers. <strong>Customer-Decision (amber)</strong> means multiple portfolio vendors are equally viable — Microsoft, CrowdStrike, SentinelOne, Palo Alto, Cisco — and the winner depends on existing investments, contract cycles, and operating model. <strong>Best-of-Breed Partner (red)</strong> means a specialized vendor outperforms the generalist stack and gets integrated back into the customer's SIEM. Myriad360's services — advisory, implementation, global services, and managed services — wrap any of these outcomes.
       </p>
       <div class="criteria-grid">
         <div class="criteria-card">
