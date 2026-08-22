@@ -1,0 +1,40 @@
+Client: Momentous
+Date: 21 August 2026
+
+Working discovery notes — not a quote.
+
+What we heard
+- Remote workforce. Acquisition-heavy estate; identity and control planes grew by joining, not by design.
+- Copilot and Claude are already live. Conversation is visibility and egress, not whether AI will arrive.
+- Compliance: ISO, SOC 2, and PCI. Auditors will ask what is enforced, not what is licensed.
+- The problem is unenforced controls, not a missing product.
+
+Current environment
+- Identity: Hybrid Entra. Conditional Access built, not enforced.
+- Endpoints: Intune + MDE. ASR about 9 of 19.
+- Email: Microsoft Defender for Office. Mimecast retired.
+- Data: Purview partial. Netskope moving to Prisma. DLP warn-only.
+- Cloud: Wiz + Defender for Cloud. Upwind still open.
+- SOC: Red Canary 24/7. Sentinel licensed, unused.
+- AI: Copilot + Claude. Nudges only.
+
+Still to validate
+- SKUs and renewals (Entra, M365, Prisma, Wiz, Sentinel)
+- CA report-only vs draft vs assigned to a pilot
+- Purview coverage and warn-only DLP
+- Who owns Purview vs Prisma
+- Wiz renewal; whether Upwind is funded
+- Leadership funding for enforcement
+
+Two options discussed
+- Option 1: Operationalize what they own — CA pilot, ASR, MDO, selected DLP block, MDCA discovery. Keep Red Canary.
+- Option 2: Same, plus Prisma cutover as the enforcement moment and a written RACI (Purview = M365, Prisma = web/SSE/AI egress). One primary CNAPP.
+
+Proposed next step
+- CA pilot group + date
+- AI visibility workshop yes/no
+- Purview vs Prisma owners
+- Sentinel one-pager yes/no
+
+Assumptions
+- Not a SOW. Licensed is not enforced.
