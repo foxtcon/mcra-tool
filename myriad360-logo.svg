@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 96" fill="none" role="img" aria-labelledby="m360Title m360Desc">
+  <title id="m360Title">Myriad360</title>
+  <desc id="m360Desc">Amber 360 mark, navy MYRIAD, amber 360, tagline Rethink IT</desc>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&amp;display=swap");
+    .wm { font-family: Poppins, Arial, Helvetica, sans-serif; font-weight: 700; font-size: 36px; letter-spacing: 0.01em; }
+    .tg { font-family: Poppins, Arial, Helvetica, sans-serif; font-weight: 400; font-size: 13px; letter-spacing: 0.02em; }
+  </style>
+  <g transform="translate(4 8)" aria-hidden="true">
+    <circle cx="40" cy="40" r="10.5" stroke="#FEC234" stroke-width="7.2"/>
+    <g fill="none" stroke="#FEC234" stroke-width="5.1" stroke-linecap="butt">
+      <path d="M 60.55 35.74 A 20.5 20.5 0 0 0 45.46 20.11"/>
+      <path d="M 36.24 19.95 A 20.5 20.5 0 0 0 20.61 35.04"/>
+      <path d="M 20.45 44.26 A 20.5 20.5 0 0 0 35.54 59.89"/>
+      <path d="M 44.76 60.05 A 20.5 20.5 0 0 0 60.39 44.96"/>
+    </g>
+    <g fill="none" stroke="#FEC234" stroke-width="5.1" stroke-linecap="butt">
+      <path d="M 54.98 16.94 A 27.5 27.5 0 0 0 34.75 13.01"/>
+      <path d="M 16.94 25.02 A 27.5 27.5 0 0 0 13.01 45.25"/>
+      <path d="M 25.02 63.06 A 27.5 27.5 0 0 0 45.25 66.99"/>
+      <path d="M 63.06 54.98 A 27.5 27.5 0 0 0 66.99 34.75"/>
+    </g>
+  </g>
+  <text class="wm" x="98" y="52"><tspan fill="#0A3971">MYRIAD</tspan><tspan fill="#FEC234">360</tspan></text>
+  <text class="tg" x="508" y="76" text-anchor="end" fill="#0A3971">Rethink IT</text>
+</svg>
