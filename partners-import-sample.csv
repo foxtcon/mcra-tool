@@ -1,0 +1,3 @@
+name,aliases,types,tier,url,notes
+Example Vendor,EV|ExampleCo,data-security,,https://example.com,Empty tier = no badge. Replace this file with the Foxtcon partner list.
+Example Partner,EP,Access and Identity,Alpine,https://example.com/partner,Non-empty tier shows a Live badge only. Present never shows it.
